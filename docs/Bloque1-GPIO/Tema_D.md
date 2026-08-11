@@ -18,7 +18,7 @@ En la práctica, el comparador interno decide 1/0 por **umbrales**:
 * **0** típico: ≤ \~0.5–0.8 VDD
   Entre ambos hay **zona incierta** → evita operar ahí.
 
-![Niveles lógicos](../../../images/logicleve.png)
+![Niveles lógicos](../images/logicleve.png)
 
 ---
 
@@ -62,7 +62,7 @@ Las entradas flotantes o cables largos capturan interferencia.
 * Resistencia **serie 100–330 Ω** para limitar picos.
 * **TVS** si el entorno es hostil (industrial/automotriz).
 
-![Schmitt Trigger](../../../images/schmitt.png)
+![Schmitt Trigger](../images/schmitt.png)
 
 ---
 
@@ -158,7 +158,7 @@ int main(void) {
 
 ### Hardware (RC + Schmitt)
 
-![Debounce Circuit](../../../images/debounce-sch.webp)
+![Debounce Circuit](../images/debounce-sch.webp)
 
 * Filtra rebotes con una constante de tiempo **2–10 ms**.
 * Habilita **Schmitt** para histéresis.

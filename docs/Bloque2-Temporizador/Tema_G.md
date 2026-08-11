@@ -5,7 +5,7 @@
 La **Modulación por Ancho de Pulso (PWM)** es una técnica digital que permite controlar la **potencia promedio** aplicada a una carga alternando rápidamente entre ON y OFF.  
 Ajustando la **relación cíclica (duty cycle)** se logra un efecto análogo a variar la tensión.
 
-![PWM](../../../images/pwm.png){loading=lazy}
+![PWM](../images/pwm.png){loading=lazy}
 
 **Aplicaciones:** control de brillo en LEDs, motores DC (puente H), servos RC, generación de tonos (buzzer), conversión DAC con filtro RC, etc.
 
@@ -44,7 +44,7 @@ En un filtro RC, la salida no es perfectamente plana: oscila un poco por cada ci
 - Menos rizado ⇢ mayor frecuencia PWM o filtros con constante de tiempo mayor que el período de conmutación.  
 - Más rizado ⇢ frecuencia baja o carga sensible.
 
-![Ripple](../../../images/ripple_1pwm.png){loading=lazy}
+![Ripple](../images/ripple_1pwm.png){loading=lazy}
 
 ---
 
@@ -100,8 +100,8 @@ Un **armónico** es un componente de frecuencia que aparece en una señal perió
 - **Edge-aligned:** refuerza armónicos pares → más ruido EMI.  
 - **Center-aligned:** cancela armónicos pares → menos ruido audible/EMI.  
 
-![Edge-aligned](../../../images/PWM_LeftAligned_0_s.gif){loading=lazy}  
-![Center-aligned](../../../images/PWM_CenterAligned_0_s.gif){loading=lazy}
+![Edge-aligned](../images/PWM_LeftAligned_0_s.gif){loading=lazy}  
+![Center-aligned](../images/PWM_CenterAligned_0_s.gif){loading=lazy}
 
 ---
 

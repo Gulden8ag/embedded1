@@ -10,7 +10,7 @@
 
 **Trama típica:**
 
-![Trama UART](../../../images/uart_frame.png)
+![Trama UART](../images/uart_frame.png)
 
 * **Start bit:** 0 → marca inicio del byte.
 * **Bits de datos:** 5–9 (normalmente 8).
@@ -68,7 +68,7 @@ UART puede funcionar correctamente si el error entre el emisor y el receptor se 
 | UART0 | GP0, GP12, GP16, GP28 | GP1, GP13, GP17, GP29 |
 | UART1 | GP4, GP8, GP20        | GP5, GP9, GP21        |
 
-![Wiring UART](../../../images/wiring_uart.png)
+![Wiring UART](../images/wiring_uart.png)
 
 
 

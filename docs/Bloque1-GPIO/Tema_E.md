@@ -21,7 +21,7 @@ Una **interrupción** es un evento asíncrono que **preempta** el flujo normal d
 
 ## Flujo de control durante una interrupción (con diagrama)
 
-![Flujo de control de una interrupción](../../../images/interrupt_diagram_2a.png)
+![Flujo de control de una interrupción](../images/interrupt_diagram_2a.png)
 
 **Lectura del diagrama (de abajo hacia arriba):**
 

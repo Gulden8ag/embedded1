@@ -2,7 +2,7 @@
 
 **Terminología**
 
-![Diagrama del sistema](../../../images/waveforms-tim3.webp){ style="display:block; margin:auto;" width="80%"}
+![Diagrama del sistema](../images/waveforms-tim3.webp){ style="display:block; margin:auto;" width="80%"}
 
 - **Período (T)**: tiempo entre eventos repetitivos (segundos).
 - **Frecuencia (f)**: eventos por segundo (Hz). Relación: $$ f = \frac{1}{T} $$.

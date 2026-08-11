@@ -31,7 +31,7 @@ La idea transversal es la misma: leer y escribir bits en registros.
 
 ## 2. GPIO por dentro
 
-![Laser 2](../../../images/GPIO.png){loading=lazy}
+![Laser 2](../images/GPIO.png){loading=lazy}
 
 Ideas clave :
 
@@ -367,11 +367,11 @@ int main() {
 
 ### Pinout Pico 2
 
-![Pinout Pico 2](../../../images/pico-2-r4-pinout.svg)
+![Pinout Pico 2](../images/pico-2-r4-pinout.svg)
 
 ### Reset Cableado
 
-![Reset Cableado](../../../images/pico-reset-button-1.png)
+![Reset Cableado](../images/pico-reset-button-1.png)
 
 ### ATOMICO un ciclo
 

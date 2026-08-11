@@ -14,7 +14,7 @@
 - Interpretar: ejecutar el programa leyendo instrucciones del código fuente (o de un bytecode) y realizando acciones durante la ejecución, sin producir un binario nativo completo por adelantado.
 - JIT (Just-In-Time): punto medio. El intérprete compila en tiempo de ejecución los fragmentos “calientes” a nativo para acelerar.
 
-![Compilado vs Interpretado](../../../images/compilervinterpreter.png){loading=lazy}
+![Compilado vs Interpretado](../images/compilervinterpreter.png){loading=lazy}
 
 
 | Aspecto               | Compilado (Ahead of Time AOT)          | Interpretado                        | JIT                            |
@@ -78,7 +78,7 @@ graph TD
 1. Instala [VS Code](https://code.visualstudio.com/)
 
 2. Abre VS Code, ve a extensiones y busca e instala "Raspberry Pi Pico".
-![Extension Pi Pico](../../../images/picoextension.png){loading=lazy}
+![Extension Pi Pico](../images/picoextension.png){loading=lazy}
 3. Crea un proyecto base.
     1. En la Barra lateral seleccion el simbolo de "Raspberry pi pico project"
     2. Selecciona nuevo proyecto C/C++
@@ -86,17 +86,17 @@ graph TD
     4. Selecciona la Plantilla "Blink" 
     5. Selecciona el tipo de placa que tienes
     6. Da clic en "Crear Proyecto"
-![Crear Proyecto](../../../images/vscodesteps.png){loading=lazy}
+![Crear Proyecto](../images/vscodesteps.png){loading=lazy}
 4. Compila y carga el programa en la placa.
     1. En la barra lateral izquierda selecciona el archivo principal blink.c.
     2. Haz clic en el botón de "Compilar" .
     3. Espera a que la compilación termine sin errores, y verifica que se haya creado un target file UF2.
     4. Conecta tu placa verificando que aparezca como dispositivo USB RPI-RP2. Para programarlo arrastra el UF2 a la unidad correspondiente o haz clic en el botón de "Cargar" .
-![Crear Proyecto](../../../images/programcompile.png){loading=lazy}
+![Crear Proyecto](../images/programcompile.png){loading=lazy}
 
 ??? warning "Error de carga"
     En caso de que aparezca el error  `No accessible RP2040/RP2350 devices in BOOTSEL mode were found.` acompañado de  `Device at bus 1, address 7 appears to be a RP2040 device in BOOTSEL mode, but picotool was unable to connect` descarga y corre [zadig](https://zadig.akeo.ie/), selecciona `RP2 Boot (Interface 1)` y selecciona `WinUSB` y dale clic a instalar driver.
-    ![Zadig](../../../images/zadig.png){loading=lazy}
+    ![Zadig](../images/zadig.png){loading=lazy}
 
 ## Primer Codigo
 

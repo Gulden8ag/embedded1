@@ -8,7 +8,7 @@ El conversor analógico a digital permite leer voltajes como números. En sistem
 
 ### 2.1 Resolución, LSB, rango y VREF
 
-![Resolución ADC](../../../images/resol_adc.avif){width="60%" align="center"}
+![Resolución ADC](../images/resol_adc.avif){width="60%" align="center"}
 
 * Resolución: número de bits N del ADC. Para 12 bits hay \(2^{12}\) niveles. 
 * Vref: referencia contra la cual el ADC compara la entrada. Puede ser interna o externa según placa.
@@ -30,7 +30,7 @@ El conversor analógico a digital permite leer voltajes como números. En sistem
 * Frecuencia de muestreo Fs. Es el número de muestras por segundo que toma el ADC sobre una señal continua. Se expresa en Hz o muestras/s.
 * Aliasing: Es el fenómeno por el cual componentes de frecuencia mayores que Fn se “plegan” hacia bajas frecuencias en el espectro muestreado, apareciendo como señales falsas.
 
-![Aliasing](../../../images/aliasing.JPG){width="80%" align="center"}
+![Aliasing](../images/aliasing.JPG){width="80%" align="center"}
 
 * Teorema de Nyquist. Para evitar aliasing, Fs debe ser al menos 2 veces la máxima frecuencia útil de la señal.
     $$
@@ -45,11 +45,11 @@ El conversor analógico a digital permite leer voltajes como números. En sistem
 * Ruido de cuantización, Es el error que aparece por redondear a la rejilla. Si la señal es suficientemente “rica” y el ADC funciona bien, ese error se puede modelar como un ruido pequeño que varía entre −LSB/2 y +LSB/2. Cuanto menor sea el LSB, menor será este ruido.
 * SNR(Signal to Noise Ratio), Es la relación entre la potencia de la señal y la potencia del ruido. Se expresa en decibelios. Un SNR grande indica que la señal sobresale claramente sobre el ruido.
 
-![SNR](../../../images/SNR-simulation-result.png){width="60%" align="center"}
+![SNR](../images/SNR-simulation-result.png){width="60%" align="center"}
 
 * THD(Harmonic Distortion), Mide cuánta energía aparece en armónicos de la señal fundamental debido a no linealidades. Un THD bajo significa poca distorsión.
 
-![THD](../../../images/thd.webp){width="60%" align="center"}
+![THD](../images/thd.webp){width="60%" align="center"}
 
 * SINAD(Signal to Noise And Distortion), Es como el SNR, pero cuenta tanto el ruido como la distorsión. Por eso, el SINAD suele ser menor que el SNR real de cuantización. Se usa mucho para caracterizar la calidad total de un ADC.
 * ENOB, (Effective Number Of Bits). Es una manera de decir “cuántos bits útiles” obtienes considerando ruido y distorsión reales. Se calcula a partir del SINAD:
@@ -63,7 +63,7 @@ Si mides SINAD = 62 dB, entonces ENOB ≈ (62 − 1.76) / 6.02 ≈ 10 bits.
 
 ### 3.1 SAR
 
-![ADC SAR](../../../images/SARADC.avif){width="60%" align="center"}
+![ADC SAR](../images/SARADC.avif){width="60%" align="center"}
 
 **Funcionamiento**
 
@@ -92,7 +92,7 @@ Básculas de precisión, instrumentación lenta, audio de alta fidelidad, medici
 
 ### 3.3 Flash
 
-![ADC Pipeline](../../../images/flash.avif){width="60%" align="center"}
+![ADC Pipeline](../images/flash.avif){width="60%" align="center"}
 
 **Funcionamiento**
 
@@ -141,7 +141,7 @@ Mide la diferencia entre dos nodos que comparten un modo común. Internamente el
 
 Es un circuito con una resistencia (R) y un condensador (C) que actúa como filtro paso bajo, permitiendo el paso de señales de baja frecuencia y atenuando las de alta frecuencia, como el ruido.
 
-![Filtro RC](../../../images/1st_Order_Lowpass_Filter_RC.svg){width="40%" align="center"}
+![Filtro RC](../images/1st_Order_Lowpass_Filter_RC.svg){width="40%" align="center"}
 
 $$ f_c = \frac{1}{2\pi RC} $$
 
@@ -150,7 +150,7 @@ Frecuencia de corte sugerida para señales lentas: fc ≈ 0.4 a 0.5 de Fs útil 
 
 ### 4.2 Buffer con op-amp
 
-![Seguidor de voltaje](../../../images/buffer_opamp_adc.png){width="40%" align="center"}
+![Seguidor de voltaje](../images/buffer_opamp_adc.png){width="40%" align="center"}
 
 * Un seguidor de voltaje de baja impedancia ayuda a cargar la capacitancia de muestreo.
 * Usar op-amp rail to rail con GBW adecuado y buen PSRR a 3.3 V.

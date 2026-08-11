@@ -19,9 +19,9 @@
 
 ## Hardware
 
-![I2C Wiring](../../../images/i2c_wiring.png)
+![I2C Wiring](../images/i2c_wiring.png)
 
-![I2C Internal](../../../images/open_i2c.png)
+![I2C Internal](../images/open_i2c.png)
 
 $$
 R_p(min)= \frac{V_{cc}-V_{oL}(max)}{I_{oL}}
@@ -32,7 +32,7 @@ $$
 R_p(min)= \frac{3.3V-0.4V}{3mA}=966.67 \Omega
 $$
 
-![I2C senales](../../../images/i2c_behaviours.png)
+![I2C senales](../images/i2c_behaviours.png)
 
 $$
 R_p(max)= \frac{t_r}{0.8473 \cdot C_b}
@@ -59,7 +59,7 @@ Tipicamente usamos los siguientes valores:
 
 ### Formato de mensaje
 
-![I2C Frame](../../../images/frame.avif)
+![I2C Frame](../images/frame.avif)
 
 
 - `START`: SDA cae (HIGH→LOW) mientras SCL está HIGH; inicio de transacción (maestro).
@@ -71,7 +71,7 @@ Tipicamente usamos los siguientes valores:
 
 ### Secuencias comunes
 
-![I2C Frame](../../../images/frames2.png)
+![I2C Frame](../images/frames2.png)
 
 
 ## API de I2C en Raspberry Pi Pico SDK
