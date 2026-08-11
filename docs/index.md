@@ -1,14 +1,20 @@
-# Documentación del Proyecto
+# **Embedded Systems I (LIIE1214)**
 
-Bienvenido 👋  
-Esta es una **plantilla** basada en [MkDocs](https://www.mkdocs.org/) + [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) para cursos y proyectos.
+
+## **Course Description**
+
+This course develops practical competencies in bare-metal embedded systems design using the RP2040 and the Pico SDK toolchain (CMake, GDB, OpenOCD). Students program the microcontroller at the register level, mastering GPIO, bitwise operations, finite state machines, hardware timers, and interrupt-driven design with measured latency and jitter. The course covers analog interfacing (PWM for LEDs, servos, and DC motors; ADC with sampling theory, filtering, and sensor linearization), UART communication with ring buffers and a minimal CLI, and advanced RP2040 features including Programmable I/O (PIO), DMA-based signal generation and telemetry, and dual-core concurrency. It closes with production-oriented topics — watchdogs, low power, EMC, boot and memory architecture, and unit testing — culminating in a Micromouse competition as capstone project.
 
 ---
 
-## Empezar rápido (3 pasos)
+## **Course Info**
 
-1. **Edita el nombre del sitio** en `mkdocs.yml`:
-   ```yaml
-   site_name: Documentación del Curso
-   theme:
-     name: material
+**Instructor**: Oliver Ochoa Garcia
+
+**Contact**: oliver.ochoa2@iberopuebla.mx
+
+**Department**: Department of Science and Engineering
+
+**Credits**: 8 
+
+**Obligatory Pre-requisites**: Digital Electronics
