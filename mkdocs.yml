@@ -8,9 +8,9 @@ nav:
   - Home: index.md
   - Block 0 — Introduction:
       - Syllabus: Bloque0-Introduccion/T1.md
-      - Introduction: Bloque0-Introduccion/Tema_0.md
-      - What is an embedded system?: Bloque0-Introduccion/Tema_A.md
       - Lab log template: Bloque0-Introduccion/T0.md
+      - Lab log Example: Bloque0-Introduccion/T2.md
+      - What is an embedded system?: Bloque0-Introduccion/Tema_A.md
   - Block 1 — GPIO:
       - Environment and toolchain: Bloque1-GPIO/Tema_B.md
       - GPIO control: Bloque1-GPIO/Tema_C.md
