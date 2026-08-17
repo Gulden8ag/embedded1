@@ -1,116 +1,116 @@
-# Interrupciones
+# Interrupts
 
 ---
 
-## ¿Qué es una interrupción? (definición + acrónimos)
+## What is an interrupt? (definition + acronyms)
 
-Una **interrupción** es un evento asíncrono que **preempta** el flujo normal de ejecución para correr una rutina corta y de alta prioridad llamada **ISR**. Se usan para reaccionar **de inmediato** a eventos de hardware o software (timer, UART RX, DMA done, PIO, GPIO, etc.) sin *busy-waiting*.
+An **interrupt** is an asynchronous event that **preempts** the normal flow of execution to run a short, high-priority routine called an **ISR**. Interrupts are used to react **immediately** to hardware or software events (timer, UART RX, DMA done, PIO, GPIO, etc.) without *busy-waiting*.
 
-**Acrónimos y conceptos:**
-- **ISR** — *Interrupt Service Routine* — Rutina de Servicio de Interrupción.  
-- **IRQ** — *Interrupt ReQuest* — Petición de Interrupción (la línea/evento).  
-- **NVIC** — *Nested Vectored Interrupt Controller* — Controlador de Interrupciones Anidado y Vectorizado (prioridades, despacho, anidamiento).  
-- **Vector table** — *Vector Table* — Tabla de vectores (arreglo de direcciones de ISR).  
-- **Masking** — *Interrupt Masking* — Enmascaramiento de interrupciones (bloqueo temporal).  
-- **Priority** — *Interrupt Priority* — Prioridad (número menor = mayor urgencia en Cortex-M).  
-- **Edge vs Level** — *Edge-triggered vs Level-triggered* — Disparo por flanco vs por nivel.  
-- **Polarity** — *Polarity* — Polaridad (Rising/Falling, Active-High/Active-Low).  
-- **NMI** — *Non-Maskable Interrupt* — Interrupción No Enmascarable (prioridad máxima, no se puede bloquear).
-
----
-
-## Flujo de control durante una interrupción (con diagrama)
-
-![Flujo de control de una interrupción](../images/interrupt_diagram_2a.png)
-
-**Lectura del diagrama (de abajo hacia arriba):**
-
-1. **Interrupt Enable** (habilitación global/de línea)  
-   Si está **LOW**, la CPU **ignora** la petición. Al pasar a **HIGH**, la CPU puede atender la **IRQ** (*Interrupt ReQuest* — Petición de Interrupción).
-
-2. **Interrupt Request** (evento)  
-   Es el **disparo** (edge o level). Con la línea habilitada, el **NVIC** marca la IRQ como **pendiente** y compara **prioridades**.
-
-3. **Background Code → Enter ISR**  
-   La CPU interrumpe el hilo de fondo y **auto-apila** registros (R0–R3, R12, LR, PC, xPSR).  
-   Carga la dirección de la **ISR** desde la **Vector Table**.  
-   **Latencia de interrupción** = tiempo desde que la IRQ es válida hasta la **primera instrucción** de la ISR.
-
-4. **ISR Code**  
-   **Regla de oro**: **ack/clear temprano** (limpiar la fuente) y trabajo **mínimo**.  
-   **Tiempo de servicio** = duración dentro de la ISR (perfílalo con un pin de traza).
-
-5. **Exit ISR → Background Code**  
-   **Exception return**: la CPU **desapila** el contexto y reanuda en el punto exacto donde se interrumpió.  
-   **Overhead de retorno**: costo fijo del desenlace.
-
-**Detalles (Cortex-M33):**  
-- **Preemption**: una IRQ de **mayor prioridad** (número menor) puede interrumpir una ISR en curso.  
-- **Tail-chaining**: si termina una ISR y hay otra pendiente con prioridad válida, el core **encadena** sin restaurar/guardar todo de nuevo → menos overhead.  
-- **Late arrival**: si llega una IRQ más prioritaria **durante** la entrada a otra, el NVIC puede redirigir a la más alta antes de ejecutar la primera.
-
-**Medición práctica (traza):** sube un **GPIO** al entrar a la ISR y bájalo al salir.  
-- **Ancho del pulso** = tiempo de servicio.  
-- **Distancia** entre el evento y el flanco de subida = **latencia**.
+**Acronyms and concepts:**
+- **ISR** — *Interrupt Service Routine*.
+- **IRQ** — *Interrupt ReQuest* (the line/event).
+- **NVIC** — *Nested Vectored Interrupt Controller* (priorities, dispatch, nesting).
+- **Vector table** — array of ISR addresses.
+- **Masking** — *Interrupt Masking* (temporary blocking).
+- **Priority** — *Interrupt Priority* (lower number = more urgent on Cortex-M).
+- **Edge vs Level** — *Edge-triggered vs Level-triggered*.
+- **Polarity** — Rising/Falling, Active-High/Active-Low.
+- **NMI** — *Non-Maskable Interrupt* (maximum priority, cannot be blocked).
 
 ---
 
-## Tipos de interrupciones comunes (no solo GPIO)
+## Control flow during an interrupt (with diagram)
 
-| Clase | Motivo típico | Líneas IRQ (ejemplos) | Patrón de limpieza (*ack/clear*) |
+![Interrupt control flow](../images/interrupt_diagram_2a.png)
+
+**Reading the diagram (bottom to top):**
+
+1. **Interrupt Enable** (global/line enable)
+   If **LOW**, the CPU **ignores** the request. When it goes **HIGH**, the CPU can service the **IRQ** (*Interrupt ReQuest*).
+
+2. **Interrupt Request** (event)
+   This is the **trigger** (edge or level). With the line enabled, the **NVIC** marks the IRQ as **pending** and compares **priorities**.
+
+3. **Background Code → Enter ISR**
+   The CPU interrupts the background thread and **auto-stacks** registers (R0–R3, R12, LR, PC, xPSR).
+   It loads the **ISR** address from the **Vector Table**.
+   **Interrupt latency** = time from the IRQ becoming valid until the **first instruction** of the ISR.
+
+4. **ISR Code**
+   **Golden rule**: **ack/clear early** (clear the source) and do **minimal** work.
+   **Service time** = time spent inside the ISR (profile it with a trace pin).
+
+5. **Exit ISR → Background Code**
+   **Exception return**: the CPU **unstacks** the context and resumes at the exact point where it was interrupted.
+   **Return overhead**: fixed cost of the wind-down.
+
+**Details (Cortex-M33):**
+- **Preemption**: a **higher-priority** IRQ (lower number) can interrupt an ISR in progress.
+- **Tail-chaining**: if one ISR ends and another is pending with a valid priority, the core **chains** into it without restoring/saving everything again → less overhead.
+- **Late arrival**: if a more urgent IRQ arrives **during** entry into another, the NVIC can redirect to the higher-priority one before executing the first.
+
+**Practical measurement (trace):** raise a **GPIO** on ISR entry and lower it on exit.
+- **Pulse width** = service time.
+- **Distance** between the event and the rising edge = **latency**.
+
+---
+
+## Common interrupt types (not just GPIO)
+
+| Class | Typical reason | IRQ lines (examples) | Clear pattern (*ack/clear*) |
 |---|---|---|---|
-| **Timer/Alarm** | tick periódico, *scheduling* | `TIMER_IRQ_0..3` | W1C en `timer_hw->intr`; programar el próximo `alarm[i]` |
-| **UART** | RX llegó dato; TX tiene espacio | `UART0_IRQ`, `UART1_IRQ` | Drenar FIFO / leer estado (al desaparecer la condición baja la IRQ) |
-| **DMA** | transferencia completa / error | `DMA_IRQ_0`, `DMA_IRQ_1` | W1C en estado/IRQ del canal |
-| **PIO** | IRQ de SM, umbrales de FIFO | `PIO0_IRQ_0/1`, `PIO1_IRQ_0/1` | Leer/limpiar flags o drenar FIFO |
-| **PWM** | *wrap*, compare | `PWM_IRQ_WRAP` | W1C en bit de IRQ de PWM |
-| **I²C/SPI** | fin de transferencia, FIFOs, errores | `I2C0_IRQ/I2C1_IRQ`, `SPI0_IRQ/SPI1_IRQ` | Leer estado/limpiar flags |
-| **SysTick** (núcleo) | *timebase* del core | Excepción SysTick | Gestionado por registros de SysTick |
+| **Timer/Alarm** | periodic tick, scheduling | `TIMER_IRQ_0..3` | W1C in `timer_hw->intr`; program the next `alarm[i]` |
+| **UART** | RX data arrived; TX has room | `UART0_IRQ`, `UART1_IRQ` | Drain FIFO / read status (IRQ drops when the condition clears) |
+| **DMA** | transfer complete / error | `DMA_IRQ_0`, `DMA_IRQ_1` | W1C in the channel's status/IRQ |
+| **PIO** | SM IRQs, FIFO thresholds | `PIO0_IRQ_0/1`, `PIO1_IRQ_0/1` | Read/clear flags or drain FIFO |
+| **PWM** | wrap, compare | `PWM_IRQ_WRAP` | W1C in the PWM IRQ bit |
+| **I²C/SPI** | transfer end, FIFOs, errors | `I2C0_IRQ/I2C1_IRQ`, `SPI0_IRQ/SPI1_IRQ` | Read status/clear flags |
+| **SysTick** (core) | core timebase | SysTick exception | Managed via SysTick registers |
 
 ---
 
-## Edge-triggered vs Level-triggered y polaridad
+## Edge-triggered vs Level-triggered and polarity
 
-- **Edge-triggered**: dispara en una transición (p. ej., flanco interno de timer o GPIO rising/falling).  
-  **Pro**: no re-dispara mientras se mantenga el nivel; ideal para eventos discretos.  
-  **Contra**: si se pierde el flanco, se pierde el evento.
+- **Edge-triggered**: fires on a transition (e.g., internal timer edge or GPIO rising/falling).
+  **Pro**: doesn't re-fire while the level holds; ideal for discrete events.
+  **Con**: if the edge is missed, the event is lost.
 
-- **Level-triggered**: permanece pendiente mientras la **condición** siga activa (p. ej., RX FIFO no vacía).  
-  **Pro**: difícil “perder” eventos sostenidos.  
-  **Contra**: **debes** remover la causa (leer FIFO, limpiar flag) o re-entrará.
+- **Level-triggered**: stays pending as long as the **condition** remains active (e.g., RX FIFO not empty).
+  **Pro**: hard to "lose" sustained events.
+  **Con**: you **must** remove the cause (read FIFO, clear flag) or it re-enters.
 
-**Polarity (polaridad):**  
-- En GPIO: flancos `Rising/Falling` o niveles `Active-High/Active-Low`.  
-- En periféricos: piensa **“¿qué condición la activa y cómo la elimino?”**.
+**Polarity:**
+- On GPIO: `Rising/Falling` edges or `Active-High/Active-Low` levels.
+- On peripherals: think **"what condition activates it, and how do I remove it?"**.
 
 ---
 
-## Vectores de ISR y **Prioridades NVIC en Cortex-M33 (16 niveles)**
+## ISR vectors and **NVIC priorities on Cortex-M33 (16 levels)**
 
-**Idea clave:** en Cortex-M, un **número de prioridad más bajo significa mayor prioridad** 
+**Key idea:** on Cortex-M, a **lower priority number means higher priority**.
 
-En M33, el número de niveles efectivos es `2^(__NVIC_PRIO_BITS)`. En muchos M33 hay **4 bits → 16 niveles (0–15)**.
+On the M33, the effective number of levels is `2^(__NVIC_PRIO_BITS)`. Many M33 parts have **4 bits → 16 levels (0–15)**.
 
 <!-- ```c
-// Macro útil para programar prioridades correctamente (escala a 8 bits de registro)
+// Handy macro to program priorities correctly (scales to the 8-bit register)
 #define NVIC_PRIO(level) ((uint8_t)((level) << (8 - __NVIC_PRIO_BITS)))
 ``` -->
 
 
 
-**Asignación sugerida:**
+**Suggested assignment:**
 
-| Nivel (0 = altísima) | Uso típico | Motivo |
+| Level (0 = highest) | Typical use | Reason |
 |---|---|---|
-| 0–1 | Captura/tiempos ultra críticos, hard-deadline | Preemption garantizada |
-| 2–3 | **DMA done** que alimenta pipelines | Minimiza latencia de reabastecimiento |
-| 4–5 | **Timer/Alarm** base de tiempo/planificador | Jitter bajo razonable |
-| 6–7 | **UART RX** con tráfico alto | Evitar overflow de FIFO |
-| 8–10 | **PIO/PWM/I²C/SPI** según caso | Trabajo regular |
-| 11–13 | GPIO y tareas no críticas |  |
-| 14–15 | Telemetría/depuración | Menor prioridad |
+| 0–1 | Ultra-critical capture/timing, hard deadlines | Guaranteed preemption |
+| 2–3 | **DMA done** feeding pipelines | Minimizes refill latency |
+| 4–5 | **Timer/Alarm** timebase/scheduler | Reasonably low jitter |
+| 6–7 | **UART RX** with heavy traffic | Avoid FIFO overflow |
+| 8–10 | **PIO/PWM/I²C/SPI** as appropriate | Regular work |
+| 11–13 | GPIO and non-critical tasks |  |
+| 14–15 | Telemetry/debugging | Lowest priority |
 
-**Timers (2 instancias × 4 alarmas)**
+**Timers (2 instances × 4 alarms)**
 
 - `TIMER0_IRQ_0..3`, `TIMER1_IRQ_0..3`.
 
@@ -127,98 +127,98 @@ En M33, el número de niveles efectivos es `2^(__NVIC_PRIO_BITS)`. En muchos M33
 
 **USB**
 
-- `USBCTRL_IRQ`.    
+- `USBCTRL_IRQ`.
 
-**PIO (3 bloques, 2 IRQ c/u)**
+**PIO (3 blocks, 2 IRQs each)**
 
 - `PIO0_IRQ_0`, `PIO0_IRQ_1`, `PIO1_IRQ_0`, `PIO1_IRQ_1`, `PIO2_IRQ_0`, `PIO2_IRQ_1`.
 
 
 **GPIO / IO Banks**
 
-- `IO_IRQ_BANK0` (GPIO “normales”)
+- `IO_IRQ_BANK0` ("regular" GPIOs)
 
-- `IO_IRQ_BANK0_NS` (versión Non-Secure para TrustZone)
+- `IO_IRQ_BANK0_NS` (Non-Secure version for TrustZone)
 
-- `IO_IRQ_QSPI` (Banco 1: QSPI/USB)
+- `IO_IRQ_QSPI` (Bank 1: QSPI/USB)
 
 - `IO_IRQ_QSPI_NS` (Non-Secure)
 
 
 **SIO (core-local)**
 
-- `SIO_IRQ_FIFO`, `SIO_IRQ_BELL`, `SIO_IRQ_FIFO_NS`, `SIO_IRQ_BELL_NS`, `SIO_IRQ_MTIMECMP`. 
+- `SIO_IRQ_FIFO`, `SIO_IRQ_BELL`, `SIO_IRQ_FIFO_NS`, `SIO_IRQ_BELL_NS`, `SIO_IRQ_MTIMECMP`.
 
 
-**Relojes / buses / periféricos**
+**Clocks / buses / peripherals**
 
 - `CLOCKS_IRQ`, `SPI0_IRQ`, `SPI1_IRQ`, `UART0_IRQ`, `UART1_IRQ`, `ADC_IRQ_FIFO`, `I2C0_IRQ`, `I2C1_IRQ`, `OTP_IRQ`, `TRNG_IRQ`, `PROC0_IRQ_CTI`, `PROC1_IRQ_CTI`, `PLL_SYS_IRQ`, `PLL_USB_IRQ`, `POWMAN_IRQ_POW`, `POWMAN_IRQ_TIMER`.
 
 
-??? Note "Tips de Interrupciones"
-    - Una ISR solo puede ser preemptada por otra con número de prioridad menor (más urgente).
-    - Misma prioridad ≠ preempción. Se encolan; el NVIC optimiza con tail-chaining (salir de una ISR y entrar a la siguiente sin pasar por el hilo).
-    - Si mientras ejecutas una ISR llega una más urgente, puede aplicarse late arrival: el NVIC salta directamente a la más urgente.
+??? Note "Interrupt tips"
+    - An ISR can only be preempted by another one with a lower priority number (more urgent).
+    - Same priority ≠ preemption. They queue up; the NVIC optimizes with tail-chaining (exiting one ISR and entering the next without returning to the thread).
+    - If a more urgent IRQ arrives while an ISR is running, late arrival may apply: the NVIC jumps straight to the more urgent one.
 
 
-**Máscaras de interrupción en Cortex-M33:**  
+**Interrupt masks on Cortex-M33:**
 
-Son **registros globales** dentro del núcleo que controlan qué interrupciones pueden activarse:
+These are **global registers** inside the core that control which interrupts can fire:
 
-- PRIMASK: 1 = bloquea todas las IRQ configurables (las “normales”). No bloquea NMI ni HardFault.
-- BASEPRI: valor ≠ 0 = bloquea las IRQ con prioridad numérica ≥ umbral; deja pasar las más urgentes (con número menor).
-- FAULTMASK: 1 = bloquea todo excepto NMI. Incluso mantiene en pausa HardFault. Es la más “dura”.
+- PRIMASK: 1 = blocks all configurable ("normal") IRQs. Does not block NMI or HardFault.
+- BASEPRI: value ≠ 0 = blocks IRQs whose numeric priority is ≥ the threshold; lets the more urgent ones through (lower numbers).
+- FAULTMASK: 1 = blocks everything except NMI. It even holds off HardFault. The "hardest" one.
 
-No son máscaras “por bit” de cada IRQ. Son puertas globales: PRIMASK y FAULTMASK apagan “todo” (con excepciones), y BASEPRI pone un umbral de prioridad.
+These are not per-bit masks for each IRQ. They are global gates: PRIMASK and FAULTMASK turn "everything" off (with exceptions), and BASEPRI sets a priority threshold.
 
-```c title="Glosario de máscaras"
-// PRIMASK: todo OFF (menos NMI/HardFault) → Úsalo muy poco y muy corto.
+```c title="Mask glossary"
+// PRIMASK: everything OFF (except NMI/HardFault) → Use very rarely and very briefly.
 __disable_irq();         // PRIMASK = 1
-// ... sección ultracorta ...
+// ... ultra-short section ...
 __enable_irq();          // PRIMASK = 0
 
-// BASEPRI: umbral (recomendado para secciones críticas “RTOS-friendly”)
+// BASEPRI: threshold (recommended for "RTOS-friendly" critical sections)
 uint32_t old = __get_BASEPRI();
-__set_BASEPRI(NVIC_PRIO(8));  // bloquea 8..15; deja pasar 0..7
-__DSB(); __ISB();              // garantizar efecto inmediato
-// ... sección crítica con urgentes habilitadas ...
+__set_BASEPRI(NVIC_PRIO(8));  // blocks 8..15; lets 0..7 through
+__DSB(); __ISB();              // guarantee immediate effect
+// ... critical section with urgent IRQs still enabled ...
 __set_BASEPRI(old);
 
-// Levantar solo el umbral (nunca bajarlo accidentalmente)
+// Raise the threshold only (never lower it accidentally)
 __set_BASEPRI_MAX(NVIC_PRIO(6));
 
-// FAULTMASK: extremo; casi nunca en app normal
-__set_FAULTMASK(1);     // bloquea todo excepto NMI
-// ... código de emergencia ...
+// FAULTMASK: extreme; almost never in a normal app
+__set_FAULTMASK(1);     // blocks everything except NMI
+// ... emergency code ...
 __set_FAULTMASK(0);
 ```
 
 
-## Programacion de IRQ
+## Programming IRQs
 
-**Comandos Basicos**
+**Basic commands**
 
 - `gpio_set_irq_enabled_with_callback(gpio, events, enabled, callback)`
-    - Habilita/deshabilita IRQ en un pin y registra un callback 
-    - Eventos:
+    - Enables/disables an IRQ on a pin and registers a callback
+    - Events:
         - `GPIO_IRQ_EDGE_FALL`
         - `GPIO_IRQ_EDGE_RISE`
         - `GPIO_IRQ_LEVEL_HIGH`
         - `GPIO_IRQ_LEVEL_LOW`
-    - Un callback es una función que se llama cuando ocurre el evento de interrupción.
-    - Ejemplo de uso:
+    - A callback is a function that gets called when the interrupt event occurs.
+    - Usage example:
     ```c
     gpio_set_irq_enabled_with_callback(16, GPIO_IRQ_EDGE_FALL, true, &isr);
     ```
 - `gpio_set_irq_enabled(gpio, events, enabled)`
-    - Habilita/deshabilita IRQ en un pin sin callback
-    - Ejemplo de uso:
+    - Enables/disables an IRQ on a pin without a callback
+    - Usage example:
     ```c
     gpio_set_irq_enabled(16, GPIO_IRQ_EDGE_FALL, true);
     ```
 - `gpio_acknowledge_irq(gpio, event_mask)`
-    - Limpia el flag latcheado del evento en la ISR (si no, sigue disparando).
-    - Ejemplo de uso:
+    - Clears the latched event flag inside the ISR (otherwise it keeps firing).
+    - Usage example:
     ```c
     void isr(uint gpio, uint32_t events) {
         if (events & GPIO_IRQ_EDGE_FALL) { /* ... */ }
@@ -226,24 +226,24 @@ __set_FAULTMASK(0);
     }
     ```
 - `gpio_get_irq_event_mask(gpio)`
-    - Lee qué evento(s) activaron la IRQ (útil para decidir lógica).
-    - Ejemplo de uso:
+    - Reads which event(s) triggered the IRQ (useful to decide logic).
+    - Usage example:
     ```c
     if (gpio_get_irq_event_mask(16) & GPIO_IRQ_EDGE_FALL) { /* ... */ }
     ```
 
-```c title="Ejemplo de uso Basico"
+```c title="Basic usage example"
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
 
-#define LED_PIN 25   // LED onboard (Pico 2)
-#define BTN_PIN 16   // botón con pull-up externo a 3V3, pulsador a GND
+#define LED_PIN 25   // onboard LED (Pico 2)
+#define BTN_PIN 16   // button with external pull-up to 3V3, switch to GND
 
 static void button_isr(uint gpio, uint32_t events) {
     if (gpio == BTN_PIN && (events & GPIO_IRQ_EDGE_RISE)) {
-        gpio_xor_mask(1u << LED_PIN);   
+        gpio_xor_mask(1u << LED_PIN);
     }
-    gpio_acknowledge_irq(gpio, events);  // limpia el flag de la IRQ
+    gpio_acknowledge_irq(gpio, events);  // clears the IRQ flag
 }
 
 int main(void) {
@@ -254,12 +254,12 @@ int main(void) {
     gpio_set_dir(LED_PIN, GPIO_OUT);
     gpio_put(LED_PIN, 0);
 
-    // Botón: entrada sin pulls internos (usas el pull-up externo del hardware)
+    // Button: input without internal pulls (uses the hardware's external pull-up)
     gpio_init(BTN_PIN);
     gpio_set_dir(BTN_PIN, GPIO_IN);
-    gpio_disable_pulls(BTN_PIN);   // importante: no mezclar con pull interno
+    gpio_disable_pulls(BTN_PIN);   // important: don't mix with an internal pull
 
-    // Interrupción por flanco de bajada (alto -> bajo al presionar)
+    // Interrupt on rising edge
     gpio_set_irq_enabled_with_callback(BTN_PIN,
                                        GPIO_IRQ_EDGE_RISE,
                                        true,
@@ -272,25 +272,25 @@ int main(void) {
 
 ```
 
-``` c title="Ejemplo de uso Encadenado"
+``` c title="Chained usage example"
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
 #include "hardware/irq.h"
 
-#define LED_A_PIN   0    // LED para botón A (externo)
-#define LED_B_PIN   25   // LED para botón B (onboard Pico 2)
+#define LED_A_PIN   0    // LED for button A (external)
+#define LED_B_PIN   25   // LED for button B (onboard Pico 2)
 
-#define BTN_A_PIN   16   // Botón A con pull-up externo, a GND (FALL al presionar)
-#define BTN_B_PIN   17   // Botón B con pull-up externo, a GND (FALL al presionar)
+#define BTN_A_PIN   16   // Button A with external pull-up, to GND (FALL on press)
+#define BTN_B_PIN   17   // Button B with external pull-up, to GND (FALL on press)
 
-// Prototipo del callback global de GPIO (unico por core)
+// Prototype of the global GPIO callback (only one per core)
 static void gpio_isr(uint pin, uint32_t event_mask);
 
-// Parpadeo bloqueante (SOLO para demostración en ISR; en producción, evitar)
+// Blocking blink (ONLY for demonstration inside an ISR; avoid in production)
 static void blink_blocking(uint led_pin, int times, int ms_delay) {
     for (int i = 0; i < times; ++i) {
         gpio_xor_mask(1u << led_pin);
-        busy_wait_ms(ms_delay);   // bloqueo intencional para notar la “ocupación”
+        busy_wait_ms(ms_delay);   // intentional blocking to make the "busyness" noticeable
         gpio_xor_mask(1u << led_pin);
         busy_wait_ms(ms_delay);
     }
@@ -316,15 +316,15 @@ int main(void) {
     gpio_set_dir(BTN_B_PIN, GPIO_IN);
     gpio_disable_pulls(BTN_B_PIN);
 
-    // Habilitar IRQ por flanco de BAJADA en ambos pines
+    // Enable FALLING-edge IRQ on both pins
     gpio_set_irq_enabled_with_callback(BTN_A_PIN,
                                        GPIO_IRQ_EDGE_FALL,
                                        true,
                                        &gpio_isr);
-    // El segundo pin usa el MISMO callback:
+    // The second pin uses the SAME callback:
     gpio_set_irq_enabled(BTN_B_PIN, GPIO_IRQ_EDGE_FALL, true);
 
-    irq_set_priority(IO_IRQ_BANK0, 0x80);   // cualquier valor (no hay otra línea para competir)
+    irq_set_priority(IO_IRQ_BANK0, 0x80);   // any value (no other line to compete with)
     irq_set_enabled(IO_IRQ_BANK0, true);
 
     while (true) {
@@ -332,14 +332,14 @@ int main(void) {
     }
 }
 
-// Callback 
+// Callback
 static void gpio_isr(uint pin, uint32_t event_mask) {
     if (event_mask & GPIO_IRQ_EDGE_FALL) {
         if (pin == BTN_A_PIN) {
-            // Cada botón tiene SU propio “blink_blocking”
-            blink_blocking(LED_A_PIN, 4, 1000);  // 4 veces, 1 s
+            // Each button has ITS own "blink_blocking"
+            blink_blocking(LED_A_PIN, 4, 1000);  // 4 times, 1 s
         } else if (pin == BTN_B_PIN) {
-            blink_blocking(LED_B_PIN, 4, 1000);  // 4 veces, 1 s
+            blink_blocking(LED_B_PIN, 4, 1000);  // 4 times, 1 s
         }
     }
     gpio_acknowledge_irq(pin, event_mask);

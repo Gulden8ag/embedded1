@@ -1,106 +1,106 @@
-# Entorno y Toolchain
+# Environment and Toolchain
 
-## Conceptos base
+## Core concepts
 
-### Lenguajes de alto, bajo y nivel intermedio
+### High-, low-, and mid-level languages
 
-- **Bajo nivel**: cercanos al hardware, poca abstracción. Ej.: ensamblador. Control fino de registros y memoria; máxima dependencia de la arquitectura.
-- **Alto nivel**: mucha abstracción (tipos complejos, manejo automático de memoria, librerías ricas). Ej.: Python, Java, C#.
-- **Nivel intermedio** (también llamado nivel medio): balance entre control de hardware y abstracción. Tradicionalmente se ubica aquí C (permite acceso directo a memoria y, a la vez, estructuras y funciones portables).
+- **Low level**: close to the hardware, little abstraction. E.g.: assembly. Fine-grained control of registers and memory; maximum architecture dependence.
+- **High level**: lots of abstraction (complex types, automatic memory management, rich libraries). E.g.: Python, Java, C#.
+- **Mid level** (also called middle level): a balance between hardware control and abstraction. C traditionally sits here (it allows direct memory access alongside portable structures and functions).
 
-### Compilar e Interpretar
+### Compiling vs Interpreting
 
-- Compilar: traducir el código fuente a código máquina nativo (o a ensamblador/objeto intermedio) antes de ejecutar. El resultado es un binario para una arquitectura/ABI específicas. Puede incluir enlazado, optimización y símbolos de depuración.
-- Interpretar: ejecutar el programa leyendo instrucciones del código fuente (o de un bytecode) y realizando acciones durante la ejecución, sin producir un binario nativo completo por adelantado.
-- JIT (Just-In-Time): punto medio. El intérprete compila en tiempo de ejecución los fragmentos “calientes” a nativo para acelerar.
+- Compiling: translating source code to native machine code (or to assembly/intermediate object code) before execution. The result is a binary for a specific architecture/ABI. It may include linking, optimization, and debug symbols.
+- Interpreting: executing the program by reading instructions from the source code (or from bytecode) and performing actions during execution, without producing a complete native binary in advance.
+- JIT (Just-In-Time): a middle ground. The interpreter compiles the "hot" fragments to native code at runtime to speed things up.
 
-![Compilado vs Interpretado](../images/compilervinterpreter.png){loading=lazy}
+![Compiled vs Interpreted](../images/compilervinterpreter.png){loading=lazy}
 
 
-| Aspecto               | Compilado (Ahead of Time AOT)          | Interpretado                        | JIT                            |
+| Aspect                | Compiled (Ahead of Time, AOT) | Interpreted                         | JIT                            |
 | --------------------- | ------------------------ | ----------------------------------- | ------------------------------ |
-| Momento de traducción | Antes de correr          | Durante la ejecución                | Durante, por partes            |
-| Binario nativo        | Sí                       | No (o parcial)                      | Parcial/temporal               |
-| Rendimiento típico    | Alto y estable           | Menor, depende del intérprete       | Sube con el calentamiento      |
-| Portabilidad          | Menor (por arquitectura) | Alta (un intérprete por plataforma) | Alta, con coste de complejidad |
-| Tiempo de arranque    | Rápido                   | Rápido (si no compila)              | Puede tardar en “calentar”     |
-| Depuración            | Con símbolos y GDB/LLDB  | A menudo con REPL y trazas          | Mezcla: profiler + depurador   |
+| Translation time      | Before running           | During execution                    | During, in pieces              |
+| Native binary         | Yes                      | No (or partial)                     | Partial/temporary              |
+| Typical performance   | High and stable          | Lower, interpreter-dependent        | Improves as it warms up        |
+| Portability           | Lower (per architecture) | High (one interpreter per platform) | High, at the cost of complexity |
+| Startup time          | Fast                     | Fast (if not compiling)             | May take time to "warm up"     |
+| Debugging             | With symbols and GDB/LLDB | Often with REPL and traces         | Mix: profiler + debugger       |
 
-### De codigo a silicio
+### From code to silicon
 
-***Compilado (Ahead of Time AOT)***
+***Compiled (Ahead of Time, AOT)***
 
-1. **Preprocesado**: expandir #include y macros, quitar comentarios/condicionales, para obtener un código limpio.
-1. **Análisis y parseo**: leer tokens, validar sintaxis y construir una representación interna AST/IR (árbol o representación intermedia).
-1. **Optimizacion**: aplicar mejoras independientes de la arquitectura (inlining, eliminar código muerto, etc.).
-1. **Seleccion de instrucciones y registros**: traducir el IR a código para la ISA destino y asignar registros/pila. Obteniendo un ensamblador o codigo máquina.
-1. **Ensamblado**: Convierte el ensamblador a objeto relocable (.o).
-1. **Enlazado**: Combina objetos/bibliotecas, resuelve símbolos y genera el binario final.
-1. **Carga (loader/bootloader)**: colocar el binario en memoria y saltar al punto de entrada, para ejecutar.
+1. **Preprocessing**: expand #include and macros, strip comments/conditionals, to obtain clean code.
+1. **Analysis and parsing**: read tokens, validate syntax, and build an internal AST/IR representation (tree or intermediate representation).
+1. **Optimization**: apply architecture-independent improvements (inlining, dead-code elimination, etc.).
+1. **Instruction selection and register allocation**: translate the IR into code for the target ISA and assign registers/stack, producing assembly or machine code.
+1. **Assembling**: converts the assembly into a relocatable object (.o).
+1. **Linking**: combines objects/libraries, resolves symbols, and generates the final binary.
+1. **Loading (loader/bootloader)**: place the binary in memory and jump to the entry point to execute.
 
-***Interpretado***
+***Interpreted***
 
-1. **Análisis y parseo del fuente**: leer tokens, validar sintaxis y preparar una forma interna navegable.
-2. **Inicialización del entorno de ejecución**: preparar espacios de nombres, stack de llamadas, heap y cargar bibliotecas estándar del lenguaje.
-3. **Bucle del intérprete (evaluación)**: recorrer el AST (o estructura equivalente) nodo por nodo y ejecutar sus acciones (expresiones, sentencias, control de flujo).
-4. **Gestión de funciones y llamadas externas (FFI)** — opcional: permitir que el código interpretado invoque primitivas nativas (E/S, tiempo, sockets) a través del runtime. 
-5. **Depuración y trazas**: instrumentar la ejecución con REPL, tracebacks, logging y puntos de interrupción a nivel fuente.
-6. **Finalización**: liberar recursos del runtime y reportar estado de salida. 
+1. **Source analysis and parsing**: read tokens, validate syntax, and prepare a navigable internal form.
+2. **Runtime environment initialization**: prepare namespaces, call stack, heap, and load the language's standard libraries.
+3. **Interpreter loop (evaluation)**: walk the AST (or equivalent structure) node by node and execute its actions (expressions, statements, control flow).
+4. **Function management and external calls (FFI)** — optional: allow interpreted code to invoke native primitives (I/O, time, sockets) through the runtime.
+5. **Debugging and tracing**: instrument execution with a REPL, tracebacks, logging, and source-level breakpoints.
+6. **Finalization**: release runtime resources and report exit status.
 
-### Términos Comunes
+### Common terms
 
-- **IR / AST***: representaciones internas del programa que facilitan análisis y optimización.
-- **Enlazador (linker)**: une objetos/bibliotecas y resuelve símbolos → binario final.
-- **Loader/bootloader**: coloca el binario en memoria y transfiere el control al programa.
-- **ISA**: conjunto de instrucciones de la CPU (define cómo debe generarse el código).
-- **ABI**: reglas binarias (llamadas, registros, layout) para que objetos/bibliotecas encajen.
-- **Objeto relocable (.o)**: código ya ensamblado pero sin direcciones finales (previo al enlazado).
-- **Símbolos de depuración**: metadatos que relacionan direcciones con líneas/variables (clave para depurar).
-- **Toolchain**: conjunto de herramientas (compilador, enlazador, etc.) para construir el software.
+- **IR / AST**: internal representations of the program that ease analysis and optimization.
+- **Linker**: joins objects/libraries and resolves symbols → final binary.
+- **Loader/bootloader**: places the binary in memory and transfers control to the program.
+- **ISA**: the CPU's instruction set (defines how code must be generated).
+- **ABI**: binary rules (calling conventions, registers, layout) so that objects/libraries fit together.
+- **Relocatable object (.o)**: assembled code without final addresses (pre-linking).
+- **Debug symbols**: metadata relating addresses to lines/variables (key for debugging).
+- **Toolchain**: the set of tools (compiler, linker, etc.) used to build the software.
 
-## Plataforma y entorno con VS Code
+## Platform and environment with VS Code
 
-### Arquitectura objetivo
+### Target architecture
 
-La Pico 2 monta el RP2350, que permite elegir una de estas rutas de compilación:
+The Pico 2 carries the RP2350, which lets you choose one of these compilation paths:
 
 ```mermaid
 graph TD
-    A[RP2350] -->|Opción recomendada| ARM[Cortex-M33]
-    A -->|Opción secundaria| RISCV[RISC-V Hazard3]
+    A[RP2350] -->|Recommended option| ARM[Cortex-M33]
+    A -->|Secondary option| RISCV[RISC-V Hazard3]
 ```
 
-!!! note "Nota"
-    La opción recomendada (Cortex-M33) ofrece un mejor rendimiento y soporte, mientras que la opción secundaria (RISC-V Hazard3) puede ser útil para experimentación o compatibilidad con otros proyectos.
+!!! note "Note"
+    The recommended option (Cortex-M33) offers better performance and support, while the secondary option (RISC-V Hazard3) can be useful for experimentation or compatibility with other projects.
 
-### Instalacion y Configuracion
+### Installation and configuration
 
-1. Instala [VS Code](https://code.visualstudio.com/)
+1. Install [VS Code](https://code.visualstudio.com/)
 
-2. Abre VS Code, ve a extensiones y busca e instala "Raspberry Pi Pico".
-![Extension Pi Pico](../images/picoextension.png){loading=lazy}
-3. Crea un proyecto base.
-    1. En la Barra lateral seleccion el simbolo de "Raspberry pi pico project"
-    2. Selecciona nuevo proyecto C/C++
-    3. Da clic en el boton para cambiar a plantillas ejemplo
-    4. Selecciona la Plantilla "Blink" 
-    5. Selecciona el tipo de placa que tienes
-    6. Da clic en "Crear Proyecto"
-![Crear Proyecto](../images/vscodesteps.png){loading=lazy}
-4. Compila y carga el programa en la placa.
-    1. En la barra lateral izquierda selecciona el archivo principal blink.c.
-    2. Haz clic en el botón de "Compilar" .
-    3. Espera a que la compilación termine sin errores, y verifica que se haya creado un target file UF2.
-    4. Conecta tu placa verificando que aparezca como dispositivo USB RPI-RP2. Para programarlo arrastra el UF2 a la unidad correspondiente o haz clic en el botón de "Cargar" .
-![Crear Proyecto](../images/programcompile.png){loading=lazy}
+2. Open VS Code, go to extensions, then search for and install "Raspberry Pi Pico".
+![Pi Pico Extension](../images/picoextension.png){loading=lazy}
+3. Create a base project.
+    1. In the sidebar, select the "Raspberry Pi Pico project" icon
+    2. Select New C/C++ Project
+    3. Click the button to switch to example templates
+    4. Select the "Blink" template
+    5. Select your board type
+    6. Click "Create Project"
+![Create Project](../images/vscodesteps.png){loading=lazy}
+4. Compile and load the program onto the board.
+    1. In the left sidebar, select the main file blink.c.
+    2. Click the "Compile" button.
+    3. Wait for the compilation to finish without errors, and verify that a UF2 target file was created.
+    4. Connect your board and verify it appears as an RPI-RP2 USB device. To program it, drag the UF2 onto the corresponding drive or click the "Run" button.
+![Create Project](../images/programcompile.png){loading=lazy}
 
-??? warning "Error de carga"
-    En caso de que aparezca el error  `No accessible RP2040/RP2350 devices in BOOTSEL mode were found.` acompañado de  `Device at bus 1, address 7 appears to be a RP2040 device in BOOTSEL mode, but picotool was unable to connect` descarga y corre [zadig](https://zadig.akeo.ie/), selecciona `RP2 Boot (Interface 1)` y selecciona `WinUSB` y dale clic a instalar driver.
+??? warning "Upload error"
+    If the error `No accessible RP2040/RP2350 devices in BOOTSEL mode were found.` appears, accompanied by `Device at bus 1, address 7 appears to be a RP2040 device in BOOTSEL mode, but picotool was unable to connect`, download and run [zadig](https://zadig.akeo.ie/), select `RP2 Boot (Interface 1)`, choose `WinUSB`, and click install driver.
     ![Zadig](../images/zadig.png){loading=lazy}
 
-## Primer Codigo
+## First code
 
-Codigo minimo para un blink
+Minimal blink code
 
 ```c
 #include "pico/stdlib.h"
@@ -118,12 +118,12 @@ int main(void) {
 }
 ```
 
-### Descripcion de partes
+### Breakdown of the parts
 
-- `#include "pico/stdlib.h"`: Incluye la biblioteca estándar de Pico, que proporciona funciones para interactuar con el hardware.
-- `int main(void)`: Punto de entrada de la aplicación, En embebidos, el startup code inicializa memoria y llama a `main`.
-- `const uint led = PICO_DEFAULT_LED_PIN;`: 
-    -`const` protege contra reasignaciones accidentales.
-    -`uint`: entero sin signo (un GPIO no es negativo). Alternativa fija: uint32_t.
-    - `PICO_DEFAULT_LED_PIN`: constante que representa el pin LED predeterminado de la placa.
-- `while(true)`: Bucle infinito que mantiene el programa en ejecución.
+- `#include "pico/stdlib.h"`: Includes the Pico standard library, which provides functions for interacting with the hardware.
+- `int main(void)`: Entry point of the application. In embedded systems, the startup code initializes memory and calls `main`.
+- `const uint led = PICO_DEFAULT_LED_PIN;`:
+    - `const` protects against accidental reassignment.
+    - `uint`: unsigned integer (a GPIO is never negative). Fixed-width alternative: uint32_t.
+    - `PICO_DEFAULT_LED_PIN`: constant representing the board's default LED pin.
+- `while(true)`: Infinite loop that keeps the program running.

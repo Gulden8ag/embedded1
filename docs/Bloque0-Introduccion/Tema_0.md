@@ -1,42 +1,41 @@
-# Introduccion
+# Introduction
 
-## Objetivos de aprendizaje
+## Learning objectives
 
-- Conocer la estructura básica de un microcontrolador (reloj, bus, memoria, periféricos SIO).
+- Understand the basic structure of a microcontroller (clock, bus, memory, SIO peripherals).
 
-- Instalar y configurar el toolchain (Pico SDK, CMake, OpenOCD, GDB).
+- Install and configure the toolchain (Pico SDK, CMake, OpenOCD, GDB).
 
-- Comprender el uso de registros para el control de GPIO.
+- Understand the use of registers for GPIO control.
 
-- Implementar FSM con antirrebote.
+- Implement FSMs with debouncing.
 
-- Configurar SysTick (1 ms) y medir latencias/jitter vía trazas.
+- Configure SysTick (1 ms) and measure latency/jitter via traces.
 
-## Materiales sugeridos
+## Suggested materials
 
-- Hardware: 
+- Hardware:
     - Raspberry Pi Pico
-    - protoboard
+    - breadboard
     - LED
-    - resistencia (330–1kΩ)
-    - Push Button 
-    - Resistencias de 10kΩ
-    - cables 
-    - osciloscopio
+    - resistor (330–1kΩ)
+    - push button
+    - 10kΩ resistors
+    - jumper wires
+    - oscilloscope
 
-- Software: 
+- Software:
     - Visual Studio Code
     - Pico SDK
-    - CMake (≥3.13) 
+    - CMake (≥3.13)
     - arm-none-eabi-gcc
     - OpenOCD
     - GDB
 
-## Material de apoyo
+## Supporting material
 
-- Documentación del Pico SDK (GPIO, clocks, depuración, etc.).
+- Pico SDK documentation (GPIO, clocks, debugging, etc.).
 
-- Capítulos introductorios de Curso práctico para programación de AVR (refuerza bases de bitwise/registries/GPIO).
+- Introductory chapters of *Curso práctico para programación de AVR* (reinforces bitwise/register/GPIO fundamentals).
 
-- Apuntes sobre temporización y FSM simples (este repo).
-
+- Notes on timing and simple FSMs (this repo).

@@ -1,228 +1,228 @@
-# ADC Convertidor Analógico a Digital
+# ADC — Analog-to-Digital Converter
 
-## 1. Introducción
+## 1. Introduction
 
-El conversor analógico a digital permite leer voltajes como números. En sistemas embebidos se usa para sensado de temperatura, corriente, posición o audio básico. Este tema combina teoría de muestreo y cuantización con el uso práctico del ADC integrado del RP2350 en el Pico 2.
+The analog-to-digital converter lets you read voltages as numbers. In embedded systems it is used for sensing temperature, current, position, or basic audio. This topic combines sampling and quantization theory with the practical use of the RP2350's built-in ADC on the Pico 2.
 
-## 2. Conceptos fundamentales
+## 2. Fundamental concepts
 
-### 2.1 Resolución, LSB, rango y VREF
+### 2.1 Resolution, LSB, range, and VREF
 
-![Resolución ADC](../images/resol_adc.avif){width="60%" align="center"}
+![ADC resolution](../images/resol_adc.avif){width="60%" align="center"}
 
-* Resolución: número de bits N del ADC. Para 12 bits hay \(2^{12}\) niveles. 
-* Vref: referencia contra la cual el ADC compara la entrada. Puede ser interna o externa según placa.
-* LSB: tamaño del paso de cuantización.
+* Resolution: the ADC's number of bits N. For 12 bits there are \(2^{12}\) levels.
+* Vref: the reference against which the ADC compares the input. It can be internal or external depending on the board.
+* LSB: the size of the quantization step.
     $$
     \mathrm{LSB}=\frac{V_{\mathrm{ref}}}{2^{N}}
     $$
-    Por ejemplo, para un ADC de 12 bits con Vref = 3.3 V:
+    For example, for a 12-bit ADC with Vref = 3.3 V:
     $$
     \mathrm{LSB}=\frac{3.3 V}{2^{12}}= 0.806 mV
     $$
 
 
-* Rango: 0 a Vref para entradas single-ended (como el RP2350) y Vref1 a Vref2 para diferenciales.
+* Range: 0 to Vref for single-ended inputs (as on the RP2350) and Vref1 to Vref2 for differential ones.
 
 
-### 2.2 Muestreo y Nyquist
+### 2.2 Sampling and Nyquist
 
-* Frecuencia de muestreo Fs. Es el número de muestras por segundo que toma el ADC sobre una señal continua. Se expresa en Hz o muestras/s.
-* Aliasing: Es el fenómeno por el cual componentes de frecuencia mayores que Fn se “plegan” hacia bajas frecuencias en el espectro muestreado, apareciendo como señales falsas.
+* Sampling frequency Fs. The number of samples per second the ADC takes from a continuous signal. Expressed in Hz or samples/s.
+* Aliasing: the phenomenon whereby frequency components above Fn "fold" into low frequencies in the sampled spectrum, showing up as false signals.
 
 ![Aliasing](../images/aliasing.JPG){width="80%" align="center"}
 
-* Teorema de Nyquist. Para evitar aliasing, Fs debe ser al menos 2 veces la máxima frecuencia útil de la señal.
+* Nyquist theorem. To avoid aliasing, Fs must be at least 2 times the highest useful frequency in the signal.
     $$
     F_{s} \geq 2 \cdot F_{max}
     $$
-    donde \(F_{max}\) es la máxima frecuencia presente en la señal analógica.
-* Tiempo de adquisición. Es el tiempo durante el cual el circuito de sample and hold del ADC está conectado a la entrada para cargar su capacitancia interna hasta un error máximo permitido antes de iniciar la conversión.
+    where \(F_{max}\) is the highest frequency present in the analog signal.
+* Acquisition time. The time during which the ADC's sample-and-hold circuit is connected to the input to charge its internal capacitance to within a maximum allowed error before starting the conversion.
 
-### 2.3 Cuantización, ruido y ENOB
+### 2.3 Quantization, noise, and ENOB
 
-* Cuantización, Cuando un ADC mide una señal continua, solo puede reportar valores en una rejilla de pasos iguales. A este proceso de “ajustar” la señal al escalón más cercano se le llama cuantización.
-* Ruido de cuantización, Es el error que aparece por redondear a la rejilla. Si la señal es suficientemente “rica” y el ADC funciona bien, ese error se puede modelar como un ruido pequeño que varía entre −LSB/2 y +LSB/2. Cuanto menor sea el LSB, menor será este ruido.
-* SNR(Signal to Noise Ratio), Es la relación entre la potencia de la señal y la potencia del ruido. Se expresa en decibelios. Un SNR grande indica que la señal sobresale claramente sobre el ruido.
+* Quantization. When an ADC measures a continuous signal, it can only report values on a grid of equal steps. This process of "snapping" the signal to the nearest step is called quantization.
+* Quantization noise. The error that arises from rounding to the grid. If the signal is sufficiently "rich" and the ADC is working well, that error can be modeled as a small noise varying between −LSB/2 and +LSB/2. The smaller the LSB, the smaller this noise.
+* SNR (Signal to Noise Ratio). The ratio between signal power and noise power. Expressed in decibels. A large SNR means the signal clearly stands out above the noise.
 
 ![SNR](../images/SNR-simulation-result.png){width="60%" align="center"}
 
-* THD(Harmonic Distortion), Mide cuánta energía aparece en armónicos de la señal fundamental debido a no linealidades. Un THD bajo significa poca distorsión.
+* THD (Total Harmonic Distortion). Measures how much energy appears in harmonics of the fundamental signal due to non-linearities. Low THD means little distortion.
 
 ![THD](../images/thd.webp){width="60%" align="center"}
 
-* SINAD(Signal to Noise And Distortion), Es como el SNR, pero cuenta tanto el ruido como la distorsión. Por eso, el SINAD suele ser menor que el SNR real de cuantización. Se usa mucho para caracterizar la calidad total de un ADC.
-* ENOB, (Effective Number Of Bits). Es una manera de decir “cuántos bits útiles” obtienes considerando ruido y distorsión reales. Se calcula a partir del SINAD:
+* SINAD (Signal to Noise And Distortion). Like SNR, but it counts both noise and distortion. That's why SINAD is usually lower than the pure quantization SNR. It is widely used to characterize an ADC's overall quality.
+* ENOB (Effective Number Of Bits). A way of expressing "how many useful bits" you get, considering real noise and distortion. It's computed from SINAD:
 $$
 ENOB = (SINAD − 1.76) / 6.02.
 $$
-Ejemplo
-Si mides SINAD = 62 dB, entonces ENOB ≈ (62 − 1.76) / 6.02 ≈ 10 bits.
+Example
+If you measure SINAD = 62 dB, then ENOB ≈ (62 − 1.76) / 6.02 ≈ 10 bits.
 
-## 3. Arquitecturas de ADC
+## 3. ADC architectures
 
 ### 3.1 SAR
 
-![ADC SAR](../images/SARADC.avif){width="60%" align="center"}
+![SAR ADC](../images/SARADC.avif){width="60%" align="center"}
 
-**Funcionamiento**
+**Operation**
 
-1. Muestreo. Un circuito sample and hold captura la tensión de entrada durante una ventana breve y la mantiene constante.
-1. Aproximaciones sucesivas. Un registro SAR controla un DAC interno. Empezando por el bit más significativo, el DAC genera un valor de prueba y un comparador decide si la entrada es mayor o menor.
-1. Búsqueda binaria. En cada ciclo se fija un bit según el resultado del comparador y se actualiza el DAC. Tras N ciclos en un ADC de N bits, se obtiene el código final.
-1. Temporización. La conversión requiere un tiempo de adquisición más N ciclos de comparación. Muchos SAR en MCUs permiten ajustar el tiempo de adquisición para asegurar que el sample and hold se cargue adecuadamente cuando la fuente tiene alta impedancia.
-1. Múltiples canales. Un multiplexor selecciona el canal antes del muestreo. Al cambiar de canal, la capacitancia interna debe asentarse de nuevo, por lo que el tiempo de adquisición es crítico.
+1. Sampling. A sample-and-hold circuit captures the input voltage over a brief window and holds it constant.
+1. Successive approximations. A SAR register controls an internal DAC. Starting from the most significant bit, the DAC generates a trial value and a comparator decides whether the input is above or below it.
+1. Binary search. On each cycle one bit is fixed according to the comparator's result and the DAC is updated. After N cycles on an N-bit ADC, the final code is obtained.
+1. Timing. The conversion requires an acquisition time plus N comparison cycles. Many SARs in MCUs allow adjusting the acquisition time to ensure the sample-and-hold charges properly when the source has high impedance.
+1. Multiple channels. A multiplexer selects the channel before sampling. When switching channels, the internal capacitance must settle again, so acquisition time is critical.
 
-**Uso típico**
-Sensores generales en MCUs, medición de corriente con shunt, control y automatización donde la latencia baja y el consumo moderado son importantes.
+**Typical use**
+General sensors in MCUs, current measurement with shunts, control and automation where low latency and moderate power consumption matter.
 
 ### 3.2 Sigma-Delta
 
-**Funcionamiento**
+**Operation**
 
-1. Modulador de lazo cerrado. La entrada pasa por un integrador y un cuantizador de 1 bit o pocos bits. La salida digital se alimenta a un DAC interno que cierra el lazo con realimentación.
-1. Modelado de ruido. El lazo empuja el ruido de cuantización hacia altas frecuencias fuera de la banda de interés.
-1. Sobremuestreo. El modulador opera a una frecuencia muy superior a la banda útil. El flujo de 1 bit contiene la señal más ruido modelado.
-1. Filtro y decimación digital. Un filtro digital de baja pasa (CIC y FIR en cascada en muchos casos) elimina el ruido fuera de banda y reduce la tasa de datos hasta la frecuencia de salida deseada.
-1. Orden y ganancia en SNR. Un modulador de primer orden mejora el SNR aproximadamente 9 dB por cada duplicación del ratio de sobremuestreo. De segundo orden, alrededor de 15 dB por duplicación.
-1. Latencia. La salida sufre el retardo de grupo del filtro digital, por lo que la latencia es mayor que en SAR.
+1. Closed-loop modulator. The input goes through an integrator and a 1-bit (or few-bit) quantizer. The digital output feeds an internal DAC that closes the loop with feedback.
+1. Noise shaping. The loop pushes quantization noise toward high frequencies, outside the band of interest.
+1. Oversampling. The modulator operates at a frequency far above the useful band. The 1-bit stream contains the signal plus shaped noise.
+1. Digital filtering and decimation. A digital low-pass filter (often cascaded CIC and FIR) removes out-of-band noise and reduces the data rate to the desired output frequency.
+1. Order and SNR gain. A first-order modulator improves SNR by roughly 9 dB for every doubling of the oversampling ratio. Second-order, about 15 dB per doubling.
+1. Latency. The output suffers the digital filter's group delay, so latency is higher than in a SAR.
 
-***Uso típico***
-Básculas de precisión, instrumentación lenta, audio de alta fidelidad, mediciones de temperatura y presión de alta resolución.
+***Typical use***
+Precision scales, slow instrumentation, high-fidelity audio, high-resolution temperature and pressure measurements.
 
 ### 3.3 Flash
 
-![ADC Pipeline](../images/flash.avif){width="60%" align="center"}
+![Pipeline ADC](../images/flash.avif){width="60%" align="center"}
 
-**Funcionamiento**
+**Operation**
 
-1. Etapas en cascada. Cada etapa realiza una conversión gruesa de m bits usando un sub-ADC rápido.
-1. Sub-DAC y residuo. La etapa reconstruye con un sub-DAC el valor de esos m bits y lo resta de la señal de entrada para generar un residuo.
-1. Amplificación del residuo. El residuo se amplifica típicamente por 2^m y se pasa a la siguiente etapa donde se repite el proceso.
-1. Alineación y corrección digital. Los bits de todas las etapas se alinean temporalmente y se corrigen errores pequeños mediante lógica digital redundante.
-1. Latencia. La latencia total es el número de etapas medido en ciclos de reloj. A cambio se obtiene alta velocidad con resoluciones medias a altas.
+1. Cascaded stages. Each stage performs a coarse m-bit conversion using a fast sub-ADC.
+1. Sub-DAC and residue. The stage reconstructs the value of those m bits with a sub-DAC and subtracts it from the input signal to generate a residue.
+1. Residue amplification. The residue is typically amplified by 2^m and passed to the next stage, where the process repeats.
+1. Alignment and digital correction. The bits from all stages are time-aligned and small errors are corrected through redundant digital logic.
+1. Latency. Total latency is the number of stages, measured in clock cycles. In exchange you get high speed with medium-to-high resolutions.
 
-**Uso típico**
-Sistemas de radio definidos por software, digitalizadores de banda intermedia, adquisición de datos de medio a alto ancho de banda y visión embebida.
+**Typical use**
+Software-defined radio systems, intermediate-frequency digitizers, medium-to-high-bandwidth data acquisition, and embedded vision.
 
-### 3.4 Selección de arquitectura
+### 3.4 Choosing an architecture
 
-* Señales lentas y precisas. Sigma-Delta.
-* Sensores generales en MCU. SAR.
-* Altas velocidades. Pipeline o Flash.
+* Slow, precise signals. Sigma-Delta.
+* General sensors in MCUs. SAR.
+* High speeds. Pipeline or Flash.
 
 | ADC Type                       | Pros                                                        | Cons                                   | Max Resolution | Max Sample Rate | Main Applications                              |
 | ------------------------------ | ----------------------------------------------------------- | -------------------------------------- | -------------- | --------------- | ---------------------------------------------- |
-| Successive Approximation (SAR) | Buena relación velocidad/resolución                         | Sin protección antialiasing intrínseca | 18 bits        | 10 MHz          | Adquisición de datos                           |
-| Delta-sigma (ΔΣ)               | Alto desempeño dinámico, protección antialiasing intrínseca | Histéresis en señales no naturales     | 32 bits        | 1 MHz           | Adquisición de datos, ruido y vibración, audio |
-| Dual Slope                     | Preciso, económico                                          | Baja velocidad                         | 20 bits        | 100 Hz          | Voltímetros                                    |
-| Pipelined                      | Muy rápido                                                  | Resolución limitada                    | 16 bits        | 1 GHz           | Osciloscopios                                  |
-| Flash                          | El más rápido                                               | Baja resolución en bits                | 12 bits        | 10 GHz          | Osciloscopios                                  |
+| Successive Approximation (SAR) | Good speed/resolution ratio                                 | No intrinsic anti-aliasing protection  | 18 bits        | 10 MHz          | Data acquisition                               |
+| Delta-sigma (ΔΣ)               | High dynamic performance, intrinsic anti-aliasing protection | Hysteresis on non-natural signals     | 32 bits        | 1 MHz           | Data acquisition, noise and vibration, audio   |
+| Dual Slope                     | Accurate, inexpensive                                       | Low speed                              | 20 bits        | 100 Hz          | Voltmeters                                     |
+| Pipelined                      | Very fast                                                   | Limited resolution                     | 16 bits        | 1 GHz           | Oscilloscopes                                  |
+| Flash                          | The fastest                                                 | Low bit resolution                     | 12 bits        | 10 GHz          | Oscilloscopes                                  |
 
 
-#### 3.5 Topologías de entrada
+#### 3.5 Input topologies
 
-No es una arquitectura de conversión. Describe cómo se aplica la señal al ADC.
+This is not a conversion architecture. It describes how the signal is applied to the ADC.
 
 **Single-ended**
-Mide la tensión de un pin respecto a una referencia común. Es simple y usa menos pines. Requiere retornos limpios y buen layout para evitar que el ruido de tierra degrade la medición.
+Measures the voltage on one pin with respect to a common reference. It's simple and uses fewer pins. It requires clean returns and good layout to prevent ground noise from degrading the measurement.
 
-**Diferencial**
-Mide la diferencia entre dos nodos que comparten un modo común. Internamente el ADC samplea ambas entradas y las resta, lo que mejora el rechazo de ruido de modo común. Requiere front-end y ADC compatibles, y respetar el rango permitido de modo común.
+**Differential**
+Measures the difference between two nodes that share a common mode. Internally the ADC samples both inputs and subtracts them, which improves common-mode noise rejection. It requires a compatible front-end and ADC, and the allowed common-mode range must be respected.
 
-| Topología | Cómo mide | Ventajas | Precauciones | Usos típicos |
+| Topology | How it measures | Advantages | Precautions | Typical uses |
 |---|---|---|---|---|
-| Single-ended | Contra referencia común | Simplicidad, menos pines | Sensible a ruido de tierra y lazos de retorno | MCUs, sensores generales, potenciómetros |
-| Diferencial | Diferencia entre dos nodos | Alto rechazo de modo común, mejor inmunidad a ruido | Requiere ADC y front-end diferenciales, respetar modo común | Sensores puente, audio pro, RF, instrumentación |
+| Single-ended | Against a common reference | Simplicity, fewer pins | Sensitive to ground noise and return loops | MCUs, general sensors, potentiometers |
+| Differential | Difference between two nodes | High common-mode rejection, better noise immunity | Requires differential ADC and front-end, respect common mode | Bridge sensors, pro audio, RF, instrumentation |
 
-## 4. Front-end mínimo y anti-alias
+## 4. Minimal front-end and anti-alias
 
-### 4.1 Filtro RC de entrada
+### 4.1 Input RC filter
 
-Es un circuito con una resistencia (R) y un condensador (C) que actúa como filtro paso bajo, permitiendo el paso de señales de baja frecuencia y atenuando las de alta frecuencia, como el ruido.
+A circuit with a resistor (R) and a capacitor (C) that acts as a low-pass filter, letting low-frequency signals through and attenuating high-frequency ones such as noise.
 
-![Filtro RC](../images/1st_Order_Lowpass_Filter_RC.svg){width="40%" align="center"}
+![RC filter](../images/1st_Order_Lowpass_Filter_RC.svg){width="40%" align="center"}
 
 $$ f_c = \frac{1}{2\pi RC} $$
 
-Frecuencia de corte sugerida para señales lentas: fc ≈ 0.4 a 0.5 de Fs útil o definida por los requisitos de banda.
+Suggested cutoff frequency for slow signals: fc ≈ 0.4 to 0.5 of the useful Fs, or as defined by the bandwidth requirements.
 
 
-### 4.2 Buffer con op-amp
+### 4.2 Op-amp buffer
 
-![Seguidor de voltaje](../images/buffer_opamp_adc.png){width="40%" align="center"}
+![Voltage follower](../images/buffer_opamp_adc.png){width="40%" align="center"}
 
-* Un seguidor de voltaje de baja impedancia ayuda a cargar la capacitancia de muestreo.
-* Usar op-amp rail to rail con GBW adecuado y buen PSRR a 3.3 V.
+* A low-impedance voltage follower helps charge the sampling capacitance.
+* Use a rail-to-rail op-amp with adequate GBW and good PSRR at 3.3 V.
 
-### 4.3 Protección
+### 4.3 Protection
 
-* Resistencia serie pequeña para limitar corrientes de entrada.
-* Diodos de clamping o protección ESD según el entorno.
+* A small series resistor to limit input currents.
+* Clamping diodes or ESD protection depending on the environment.
 
-## 5. ADC en RP2350
+## 5. ADC on the RP2350
 
-**Resumen de características**
+**Feature summary**
 
-* ADC de 12 bits tipo SAR.
-* Velocidad representativa del orden de cientos de kSps según reloj y configuración.
-* Canales single-ended multiplexados. Cantidad de entradas externas depende del paquete de silicio y la placa.
-    * ADC0 –  GPIO26
-    * ADC1 –  GPIO27
-    * ADC2 –  GPIO28
-    * ADC3 –  GPIO29 (existe pero no está conectado a pines)
-    * ADC4 –  Sensor de temperatura interno
-* Vref se toma de la red de 3.3 V o del pin VREF si está disponible en la placa.
-* No hay modo diferencial expuesto. Evitar compartir líneas analógicas con cargas digitales ruidosas. Separar rutas de retorno cuando sea posible.
+* 12-bit SAR-type ADC.
+* Representative speed on the order of hundreds of kSps depending on clock and configuration.
+* Multiplexed single-ended channels. The number of external inputs depends on the silicon package and the board.
+    * ADC0 – GPIO26
+    * ADC1 – GPIO27
+    * ADC2 – GPIO28
+    * ADC3 – GPIO29 (exists but is not connected to a pin)
+    * ADC4 – Internal temperature sensor
+* Vref is taken from the 3.3 V rail or from the VREF pin if available on the board.
+* No differential mode is exposed. Avoid sharing analog lines with noisy digital loads. Separate return paths whenever possible.
 
-### 5.1 Glosario de funciones (SDK Pico)
+### 5.1 Function glossary (Pico SDK)
 
-| Función                                      | Descripción                                   | Ejemplo                                             |
-| -------------------------------------------- | --------------------------------------------- | --------------------------------------------------- |
-| `adc_init()`                                 | Habilita el periférico ADC                    | `adc_init();`                                       |
-| `adc_gpio_init(pin)`                         | Configura el GPIO como entrada ADC            | `adc_gpio_init(26);`                                |
-| `adc_select_input(n)`                        | Selecciona el canal ADC n                     | `adc_select_input(0);`                              |
-| `adc_read()`                                 | Realiza una conversión y devuelve 12 bits     | `uint16_t v = adc_read();`                          |
-| `adc_set_clkdiv(div)`                        | Ajusta el divisor del reloj del ADC           | `adc_set_clkdiv(479.0f);`                           |
-| `adc_fifo_setup(en, dreq, thr, err, shift)`  | Configura FIFO, DREQ para DMA y umbral        | `adc_fifo_setup(true, true, 1, false, false);`      |
-| `adc_run(run)`                               | Inicia o detiene conversiones en free-running | `adc_run(true);`                                    |
-| `adc_set_round_robin(mask)`                  | Habilita escaneo automático de canales        | `adc_set_round_robin(0b00001111);`                  |
-| `adc_set_temp_sensor_enabled(en)`            | Activa el sensor de temperatura interno       | `adc_set_temp_sensor_enabled(true);`                |
-| `adc_fifo_drain()`                           | Vacía la FIFO del ADC antes de iniciar        | `adc_fifo_drain();`                                 |
-| `adc_fifo_get_level()`                       | Lee cuántos datos hay en FIFO                 | `uint lvl = adc_fifo_get_level();`                  |
-| `irq_set_exclusive_handler(ADC_IRQ_FIFO, h)` | Registra ISR para IRQ del ADC                 | `irq_set_exclusive_handler(ADC_IRQ_FIFO, adc_isr);` |
-| `irq_set_enabled(ADC_IRQ_FIFO, en)`          | Habilita o deshabilita la IRQ del ADC         | `irq_set_enabled(ADC_IRQ_FIFO, true);`              |
-| `adc_irq_set_enabled(en)`                    | Activa la generación de IRQ por FIFO          | `adc_irq_set_enabled(true);`                        |
-| `DREQ_ADC`                                   | Selección DREQ para DMA desde FIFO del ADC    | `channel_config_set_dreq(&cfg, DREQ_ADC);`          |
+| Function                                     | Description                                    | Example                                             |
+| -------------------------------------------- | ---------------------------------------------- | --------------------------------------------------- |
+| `adc_init()`                                 | Enables the ADC peripheral                     | `adc_init();`                                       |
+| `adc_gpio_init(pin)`                         | Configures the GPIO as an ADC input            | `adc_gpio_init(26);`                                |
+| `adc_select_input(n)`                        | Selects ADC channel n                          | `adc_select_input(0);`                              |
+| `adc_read()`                                 | Performs one conversion and returns 12 bits    | `uint16_t v = adc_read();`                          |
+| `adc_set_clkdiv(div)`                        | Sets the ADC clock divider                     | `adc_set_clkdiv(479.0f);`                           |
+| `adc_fifo_setup(en, dreq, thr, err, shift)`  | Configures the FIFO, DREQ for DMA, and threshold | `adc_fifo_setup(true, true, 1, false, false);`    |
+| `adc_run(run)`                               | Starts or stops free-running conversions       | `adc_run(true);`                                    |
+| `adc_set_round_robin(mask)`                  | Enables automatic channel scanning             | `adc_set_round_robin(0b00001111);`                  |
+| `adc_set_temp_sensor_enabled(en)`            | Enables the internal temperature sensor        | `adc_set_temp_sensor_enabled(true);`                |
+| `adc_fifo_drain()`                           | Empties the ADC FIFO before starting           | `adc_fifo_drain();`                                 |
+| `adc_fifo_get_level()`                       | Reads how many entries are in the FIFO         | `uint lvl = adc_fifo_get_level();`                  |
+| `irq_set_exclusive_handler(ADC_IRQ_FIFO, h)` | Registers an ISR for the ADC IRQ               | `irq_set_exclusive_handler(ADC_IRQ_FIFO, adc_isr);` |
+| `irq_set_enabled(ADC_IRQ_FIFO, en)`          | Enables or disables the ADC IRQ                | `irq_set_enabled(ADC_IRQ_FIFO, true);`              |
+| `adc_irq_set_enabled(en)`                    | Enables IRQ generation from the FIFO           | `adc_irq_set_enabled(true);`                        |
+| `DREQ_ADC`                                   | DREQ selection for DMA from the ADC FIFO       | `channel_config_set_dreq(&cfg, DREQ_ADC);`          |
 
-### 5.2 Ejemplos ADC básica
+### 5.2 Basic ADC examples
 
-1. Inicializar el subsistema ADC.
-2. Configurar el pin como entrada ADC.
-3. Seleccionar el canal.
-4. Leer por conversión única y guarda el valor.
+1. Initialize the ADC subsystem.
+2. Configure the pin as an ADC input.
+3. Select the channel.
+4. Read with a single conversion and store the value.
 
-```c title="Ejemplo básico de lectura ADC"
+```c title="Basic ADC read example"
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "hardware/adc.h"
 
-// Configurar el canal ADC a usar
-#define ADC_INPUT 0 // canal 0
+// Configure the ADC channel to use
+#define ADC_INPUT 0 // channel 0
 
 int main() {
     stdio_init_all();
     adc_init();
-    // Configura el pin GPIO correspondiente como entrada ADC
-    adc_gpio_init(26); // GPIO26 suele mapear a ADC0 en Pico 2
-    // Seleccionar canal
+    // Configure the corresponding GPIO pin as an ADC input
+    adc_gpio_init(26); // GPIO26 usually maps to ADC0 on the Pico 2
+    // Select the channel
     adc_select_input(ADC_INPUT);
 
-    // Opcional: ajustar división de reloj si necesitas limitar Fs
+    // Optional: adjust the clock divider if you need to limit Fs
     // adc_set_clkdiv(div);
 
     while (true) {
-        uint16_t adc = adc_read(); // 12 bits alineados a 0..4095
+        uint16_t adc = adc_read(); // 12 bits aligned to 0..4095
         // float v = (adc * VREF) / 4095.0f;
         printf("%u\n", adc);
         sleep_ms(10);
@@ -230,56 +230,56 @@ int main() {
 }
 ```
 
-## 6. Mejora de mediciones por software
+## 6. Improving measurements in software
 
-### 6.1 Promediado y mediana
+### 6.1 Averaging and median
 
-* Media móvil y media exponencial para rechazar picos.
+* Moving average and exponential average to reject spikes.
 
-```c title="Ejemplo de Media Movil"
+```c title="Moving Average example"
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "hardware/adc.h"
 
-// Configurar el canal ADC a usar
-#define ADC_INPUT 0 // canal 0
-// número de muestras para promediar
-#define N_muestras 16 
+// Configure the ADC channel to use
+#define ADC_INPUT 0 // channel 0
+// number of samples to average
+#define N_SAMPLES 16
 
 int main() {
     stdio_init_all();
     adc_init();
-    // Configura el pin GPIO correspondiente como entrada ADC
-    adc_gpio_init(26); // GPIO26 suele mapear a ADC0 en Pico 2
-    // Seleccionar canal
+    // Configure the corresponding GPIO pin as an ADC input
+    adc_gpio_init(26); // GPIO26 usually maps to ADC0 on the Pico 2
+    // Select the channel
     adc_select_input(ADC_INPUT);
 
     // -- Variables --
-    uint16_t buffer[N_muestras];
-    uint32_t sum = 0; 
-    uint8_t  indice = 0;              // proxima posicion a sobrescribir
-    uint8_t  cuenta = 0;            // numero de muestras llenas hasta N_muestras
+    uint16_t buffer[N_SAMPLES];
+    uint32_t sum = 0;
+    uint8_t  index = 0;              // next position to overwrite
+    uint8_t  count = 0;              // number of filled samples, up to N_SAMPLES
 
     while (true) {
-        uint16_t adc = adc_read(); // 12 bits alineados a 0..4095
-        if (cuenta < N_muestras) {
-            // llenar buffer inicialmente
-            buffer[indice] = adc;
+        uint16_t adc = adc_read(); // 12 bits aligned to 0..4095
+        if (count < N_SAMPLES) {
+            // fill the buffer initially
+            buffer[index] = adc;
             sum += adc;
-            cuenta++;
-            indice++;
+            count++;
+            index++;
         } else {
-            // buffer lleno, proceder con media movil
-            sum -= buffer[indice];         // restar valor viejo
-            buffer[indice] = adc;          // agregar nuevo valor al buffer
-            sum += adc;                 // sumar nuevo valor al total
-            // Avance en el buffer circular
-            indice++;
-            if (indice >= N_muestras) indice = 0;
-            // calcular promedio
-            uint16_t promedio = sum / N_muestras; 
-                    
-            printf("%u\n", promedio);
+            // buffer full, proceed with the moving average
+            sum -= buffer[index];         // subtract the old value
+            buffer[index] = adc;          // add the new value to the buffer
+            sum += adc;                   // add the new value to the total
+            // Advance through the circular buffer
+            index++;
+            if (index >= N_SAMPLES) index = 0;
+            // compute the average
+            uint16_t average = sum / N_SAMPLES;
+
+            printf("%u\n", average);
             sleep_ms(10);
         }
 
@@ -287,22 +287,22 @@ int main() {
 }
 ```
 
-* Media exponencial para suavizado rápido con menor retardo, usa una formula recursiva para suavizar el ruido. Formula:
+* Exponential average for fast smoothing with less lag; it uses a recursive formula to smooth out noise. Formula:
   $$
   y(n) = alpha \cdot x(n) + (1 - alpha) \cdot y(n-1)
   $$
-  donde:
-  y(n) es la salida suavizada en la muestra n,
-  x(n) es la entrada actual en la muestra n,
-  y(n-1) es la salida suavizada en la muestra anterior,
-  alpha es el factor de suavizado (0 < alpha ≤ 1).
+  where:
+  y(n) is the smoothed output at sample n,
+  x(n) is the current input at sample n,
+  y(n-1) is the smoothed output at the previous sample,
+  alpha is the smoothing factor (0 < alpha ≤ 1).
 
-```c title="Ejemplo de Media Exponencial"
+```c title="Exponential Average example"
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "hardware/adc.h"
 
-#define ADC_INPUT 0          // canal 0 -> GPIO26
+#define ADC_INPUT 0          // channel 0 -> GPIO26
 const float alpha = 0.0625f; // 0<alpha<=1 (0.0625 = 1/16)
 
 int main() {
@@ -318,13 +318,13 @@ int main() {
         uint16_t x = adc_read();   // 0..4095 (12 bits)
 
         if (!y_init) {
-            y = (float)x;          // inicializamos con la primera lectura
+            y = (float)x;          // initialize with the first reading
             y_init = true;
         } else {
             y = alpha * (float)x + (1.0f - alpha) * y;  // y(n) = αx + (1-α)y
         }
 
-        // Si prefieres entero para imprimir/salidas:
+        // If you prefer an integer for printing/outputs:
         uint16_t y_u16 = (uint16_t)(y + 0.5f);
 
         printf("raw=%u ema=%u\n", x, y_u16);
@@ -334,16 +334,16 @@ int main() {
 
 ```
 
-### 6.2 Sobremuestreo y decimación
+### 6.2 Oversampling and decimation
 
-* Aumentar la tasa de muestreo M veces y promediar para ganar bits efectivos. Regla aproximada: cada 4 veces de sobremuestreo aumenta 1 bit si el ruido es suficiente para dither.
+* Increase the sampling rate M times and average to gain effective bits. Rule of thumb: every 4× oversampling adds 1 bit, provided there is enough noise for dithering.
 
-### 6.3 Filtros IIR y FIR
+### 6.3 IIR and FIR filters
 
-* IIR de primer orden para suavizado rápido. FIR para fases lineales.
+* First-order IIR for fast smoothing. FIR for linear phase.
 
-### 6.4 Linealización y calibración de dos puntos
+### 6.4 Linearization and two-point calibration
 
-* Medir salida con 0 V y con un punto de referencia conocido cercano a Vref. Calcular offset y ganancia y corregir en software.
+* Measure the output at 0 V and at a known reference point close to Vref. Compute offset and gain and correct in software.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/hIRZeYgcG5E?si=uIy8H0GFnar9grEK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>

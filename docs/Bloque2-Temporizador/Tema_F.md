@@ -1,45 +1,45 @@
-# Temporizadores
+# Timers
 
-**Terminología**
+**Terminology**
 
-![Diagrama del sistema](../images/waveforms-tim3.webp){ style="display:block; margin:auto;" width="80%"}
+![System diagram](../images/waveforms-tim3.webp){ style="display:block; margin:auto;" width="80%"}
 
-- **Período (T)**: tiempo entre eventos repetitivos (segundos).
-- **Frecuencia (f)**: eventos por segundo (Hz). Relación: $$ f = \frac{1}{T} $$.
-- **Tick**: unidad discreta de tiempo del temporizador $$ \Delta t = \frac{1}{f_{\text{timer}}} $$.
-- **Resolución**: el paso temporal mínimo que puedes representar $$ \text{Resolucion} \approx \frac{1}{f_{\text{timer}}} $$.
-- **Jitter**: variación no deseada del instante real respecto al ideal.
-- **Prescaler**: divisor del reloj que alimenta al temporizador (reduce f_timer). Nota: el timer de sistema del RP2350 no usa prescaler clásico; selecciona la fuente de tick (µs o ciclos de clk_sys).
-- **Overflow / wrap**: cuando el contador alcanza su límite y “se da la vuelta”.
-- **One-shot vs periódico**: dispara una vez vs se rearma automáticamente.
+- **Period (T)**: time between repeating events (seconds).
+- **Frequency (f)**: events per second (Hz). Relationship: $$ f = \frac{1}{T} $$.
+- **Tick**: the timer's discrete unit of time $$ \Delta t = \frac{1}{f_{\text{timer}}} $$.
+- **Resolution**: the smallest time step you can represent $$ \text{Resolution} \approx \frac{1}{f_{\text{timer}}} $$.
+- **Jitter**: unwanted variation of the actual instant with respect to the ideal one.
+- **Prescaler**: divider of the clock feeding the timer (reduces f_timer). Note: the RP2350 system timer does not use a classic prescaler; it selects the tick source (µs or clk_sys cycles).
+- **Overflow / wrap**: when the counter reaches its limit and "wraps around".
+- **One-shot vs periodic**: fires once vs re-arms automatically.
 
-**Relojes del sistema y dominios**
+**System clocks and domains**
 
-- **Reloj de CPU (f_core/f_sys)**: ejecuta instrucciones.
-- **Reloj de periféricos (f_periph)**: algunos periféricos usan reloj propio.
-- **PLL/DFS**: multiplicadores/divisores que alteran f_core y f_periph.
-- **Estabilidad**: si cambias clocks en runtime, recalcula configuraciones temporales.
+- **CPU clock (f_core/f_sys)**: executes instructions.
+- **Peripheral clock (f_periph)**: some peripherals use their own clock.
+- **PLL/DFS**: multipliers/dividers that alter f_core and f_periph.
+- **Stability**: if you change clocks at runtime, recompute timing configurations.
 
-**Modos de Timer**
+**Timer modes**
 
-- **Temporizador**: avanza con un reloj conocido (mide tiempo).
-- **Contador**: avanza con eventos externos (mide sucesos).
-- **Modos comunes**: up, down, up/down, one-shot, periódico, compare, capture.
-- **Salidas**: flags, interrupciones, compare-match, toggles de pin, DMA trigger.
+- **Timer**: advances with a known clock (measures time).
+- **Counter**: advances with external events (measures occurrences).
+- **Common modes**: up, down, up/down, one-shot, periodic, compare, capture.
+- **Outputs**: flags, interrupts, compare-match, pin toggles, DMA trigger.
 
-**Cálculo de Tiempo**
+**Time calculation**
 
-- **f_clk**: reloj de entrada del timer (core o periférico).
-- **P**: valor de preescalador (según proveedor puede ser N, N-1, o potencias de 2).
-- **f_timer** = f_clk / (P_efectivo)
-- **Reload**: valor de recarga (ancho N bits)
+- **f_clk**: the timer's input clock (core or peripheral).
+- **P**: prescaler value (depending on the vendor it may be N, N-1, or powers of 2).
+- **f_timer** = f_clk / (P_effective)
+- **Reload**: reload value (N bits wide)
 
 $$
 T \approx \frac{\mathrm{Reload}+1}{f_{\mathrm{timer}}}
 $$
 
 $$
-\Delta t = \frac{1}{f_{\mathrm{timer}}} = \frac{P_{\mathrm{efectivo}}}{f_{\mathrm{clk}}}
+\Delta t = \frac{1}{f_{\mathrm{timer}}} = \frac{P_{\mathrm{effective}}}{f_{\mathrm{clk}}}
 $$
 
 $$
@@ -48,53 +48,53 @@ $$
 
 **RP2350**
 
-**Contador de 64 bits** que avanza con un **tick** seleccionado:
+**64-bit counter** advancing with a selectable **tick**:
 
-- **Modo µs:** \(\Delta t = 1~\mu s\).
-- **Modo ciclos:** \(\Delta t = \frac{1}{f_{\text{sys}}}\) *(p. ej., \(1/150~\text{MHz} \approx 6.67~\text{ns}\)).*
+- **µs mode:** \(\Delta t = 1~\mu s\).
+- **Cycle mode:** \(\Delta t = \frac{1}{f_{\text{sys}}}\) *(e.g., \(1/150~\text{MHz} \approx 6.67~\text{ns}\)).*
 
-**Alarmas por comparación** con el contador (varias alarmas disponibles).
+**Compare-based alarms** against the counter (several alarms available).
 
-Las alarmas comparan **32 bits bajos** del contador ⇒ el **máximo tiempo programable** hacia el futuro es:
+The alarms compare the **lower 32 bits** of the counter ⇒ the **maximum programmable time** into the future is:
 
 \[
-T_{\max}^{\text{alarma}} \approx 2^{32} \cdot \Delta t
+T_{\max}^{\text{alarm}} \approx 2^{32} \cdot \Delta t
 \]
 
-- Ej.: en **1 µs/tick** → \(\approx 71.6~\text{min}\)  
-- En **ciclos @ 150 MHz** → \(\approx 28.6~\text{s}\)
+- E.g.: at **1 µs/tick** → \(\approx 71.6~\text{min}\)
+- In **cycles @ 150 MHz** → \(\approx 28.6~\text{s}\)
 
-Usar **deadlines absolutos** y **rearme acumulativo**:
+Use **absolute deadlines** and **cumulative re-arming**:
 
 \[
-\text{intervalo\_ticks}=\frac{T_{\text{deseado}}}{\Delta t},
+\text{interval\_ticks}=\frac{T_{\text{desired}}}{\Delta t},
 \qquad
-\text{next} \leftarrow \text{now} + \text{intervalo_ticks}
+\text{next} \leftarrow \text{now} + \text{interval_ticks}
 \]
 
-En la ISR:
+In the ISR:
 
 \[
-\text{next} \leftarrow \text{next} + \text{intervalo_ticks}
+\text{next} \leftarrow \text{next} + \text{interval_ticks}
 \]
 
-*(Así evitas que la latencia de la ISR acumule error de fase).*
+*(This prevents the ISR's latency from accumulating phase error.)*
 
 ---
 
-**Calculos de ejemplos:**
+**Example calculations:**
 
-**Periodo 10 µs (100 kHz)**  
-- **Modo µs:** \(\text{intervalo\_ticks}=10\)  
-- **Modo ciclos @ 150 MHz:** \(\text{intervalo\_ticks}=1500\)
+**10 µs period (100 kHz)**
+- **µs mode:** \(\text{interval\_ticks}=10\)
+- **Cycle mode @ 150 MHz:** \(\text{interval\_ticks}=1500\)
 
-**Periodo 3.3 µs**  
-- **Modo µs:** no exacto (solo enteros de µs).  
-- **Modo ciclos @ 150 MHz:** \(3.3 \cdot 150 = 495\) ciclos → **exacto**.
+**3.3 µs period**
+- **µs mode:** not exact (integer µs only).
+- **Cycle mode @ 150 MHz:** \(3.3 \cdot 150 = 495\) cycles → **exact**.
 
 
 
-## Funciones
+## Functions
 
 ```c
 static inline bool add_repeating_timer_ms(int32_t delay_ms, repeating_timer_callback_t callback, void *user_data, repeating_timer_t *out) {
@@ -102,45 +102,45 @@ static inline bool add_repeating_timer_ms(int32_t delay_ms, repeating_timer_call
 }
 ```
 
-- `int32_t delay_ms` : el retardo de repetición en milisegundos; si es > 0, este es el tiempo entre que termina un callback (función de devolución de llamada) y comienza el siguiente; si es < 0, entonces es el negativo del tiempo entre los inicios de los callbacks. El valor 0 se trata como 1 microsegundo.
-- `repeating_timer_callback_t callback` : La funcion callback del temporizador repetible
-- `void *user_data` : datos del usuario que se pasarán y almacenarán en la estructura `repeating_timer` para ser utilizados por el callback.
-- `repeating_timer_t *out` : el puntero a la estructura propiedad del usuario donde se almacenará la información del temporizador repetitivo.
+- `int32_t delay_ms`: the repeat delay in milliseconds; if > 0, this is the time between one callback ending and the next starting; if < 0, it is the negative of the time between callback starts. A value of 0 is treated as 1 microsecond.
+- `repeating_timer_callback_t callback`: the repeating timer's callback function.
+- `void *user_data`: user data that will be passed along and stored in the `repeating_timer` structure, for use by the callback.
+- `repeating_timer_t *out`: pointer to the user-owned structure where the repeating timer's information will be stored.
 
 `irq_set_exclusive_handler(ALARM_IRQ, on_alarm_irq);`
 
-- **Qué hace:** registra tu función `on_alarm_irq` como **único** manejador para la línea de interrupción `ALARM_IRQ` en el NVIC (vector de interrupciones del M33).
+- **What it does:** registers your `on_alarm_irq` function as the **sole** handler for the `ALARM_IRQ` interrupt line in the NVIC (the M33's interrupt vector).
 
 `hw_set_bits(&timer_hw->inte, 1u << ALARM_NUM);`
 
-- **Qué hace:** habilita **dentro del periférico TIMER** la **fuente** de interrupción para la alarma `ALARM_NUM`.
-- **Otros Params**
-    - `intr` = estado bruto de flags (quién pidió interrupción).
-    - `inte` = enables (quién tiene permiso de pedir).
-    - `ints` = estado enmascarado (intr & inte).
+- **What it does:** enables, **inside the TIMER peripheral**, the interrupt **source** for alarm `ALARM_NUM`.
+- **Other params**
+    - `intr` = raw flag state (who requested an interrupt).
+    - `inte` = enables (who has permission to request).
+    - `ints` = masked state (intr & inte).
 
 `irq_set_enabled(ALARM_IRQ, true);`
 
-- **Qué hace:** habilita la línea de interrupción `ALARM_IRQ` en el NVIC (controlador de interrupciones del núcleo).
-- **Opcional:** puedes ajustar la prioridad:
-`irq_set_priority(ALARM_IRQ, priority); // 0 = más alta, 255 = más baja`
+- **What it does:** enables the `ALARM_IRQ` interrupt line in the NVIC (the core's interrupt controller).
+- **Optional:** you can adjust the priority:
+`irq_set_priority(ALARM_IRQ, priority); // 0 = highest, 255 = lowest`
 
-## Ejemplos
+## Examples
 
-**Blink Basico sin delay**
+**Basic Blink without delay**
 
 ```c
-// Blink con timer (SDK alto nivel): cambia BLINK_MS para ajustar
+// Blink with a timer (high-level SDK): change BLINK_MS to adjust
 #include "pico/stdlib.h"
 #include "pico/time.h"
 
 #define LED_PIN PICO_DEFAULT_LED_PIN
-static const int BLINK_MS = 250;  // <-- ajusta tu periodo aquí
+static const int BLINK_MS = 250;  // <-- set your period here
 
 bool blink_cb(repeating_timer_t *t) {
     static bool on = false;
     gpio_put(LED_PIN, on = !on);
-    return true; // seguir repitiendo la alarma
+    return true; // keep the alarm repeating
 }
 
 int main() {
@@ -150,89 +150,89 @@ int main() {
     gpio_set_dir(LED_PIN, true);
 
     repeating_timer_t timer;
-    // Programa una interrupción periódica cada BLINK_MS:
+    // Schedule a periodic interrupt every BLINK_MS:
     add_repeating_timer_ms(BLINK_MS, blink_cb, NULL, &timer);
 
     while (true) {
-        // El trabajo "pesado" debería ir aquí (no en la ISR).
+        // The "heavy" work should go here (not in the ISR).
         tight_loop_contents();
     }
 }
 ```
 
-**Blink con alarma configurable**
+**Blink with a configurable alarm**
 
 ```c
-// Blink con timer de sistema (bajo nivel): programando ALARM0 e IRQ
+// Blink with the system timer (low level): programming ALARM0 and its IRQ
 #include "pico/stdlib.h"
 #include "hardware/irq.h"
 #include "hardware/structs/timer.h"
 
 #define LED_PIN       PICO_DEFAULT_LED_PIN
-#define ALARM_NUM     0  // usaremos la alarma 0
+#define ALARM_NUM     0  // we'll use alarm 0
 
-// Calcula el número de IRQ para esa alarma 
+// Compute the IRQ number for that alarm
 #define ALARM_IRQ     timer_hardware_alarm_get_irq_num(timer_hw, ALARM_NUM)
 
-static volatile uint32_t next_deadline;   // próximo instante (en us) en 32 bits bajos
-// Por defecto el timer cuenta µs (no cambiamos la fuente).
-static volatile uint32_t intervalo_us = 1000000u;    // periodo en microsegundos
+static volatile uint32_t next_deadline;   // next instant (in µs) in the lower 32 bits
+// By default the timer counts µs (we don't change the source).
+static volatile uint32_t interval_us = 1000000u;    // period in microseconds
 
 void on_alarm_irq(void) {
-    // 1) Limpiar el flag de la alarma
+    // 1) Clear the alarm flag
     hw_clear_bits(&timer_hw->intr, 1u << ALARM_NUM);
 
-    // 2) Hacer el trabajo toggle LED
+    // 2) Do the work: toggle the LED
     sio_hw->gpio_togl = 1u << LED_PIN;
 
-    // 3) Rearmar la siguiente alarma con "deadline acumulativo"
-    next_deadline += intervalo_us;
+    // 3) Re-arm the next alarm with a "cumulative deadline"
+    next_deadline += interval_us;
     timer_hw->alarm[ALARM_NUM] = next_deadline;
 }
 
 int main() {
     stdio_init_all();
 
-    // Configura el LED
+    // Configure the LED
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, true);
 
-    // "now" = 32 bits bajos del contador (tiempo en µs)
-    uint32_t now_us = timer_hw->timerawl;          // lectura 32b (low) del contador
-    next_deadline = now_us + intervalo_us;         // primer deadline
+    // "now" = lower 32 bits of the counter (time in µs)
+    uint32_t now_us = timer_hw->timerawl;          // 32-bit (low) read of the counter
+    next_deadline = now_us + interval_us;          // first deadline
 
-    // Programa la alarma
+    // Program the alarm
     timer_hw->alarm[ALARM_NUM] = next_deadline;
 
-    // Crea un handler exclusivo para ligar el callback a la IRQ de la alarma
+    // Register an exclusive handler linking the callback to the alarm's IRQ
     irq_set_exclusive_handler(ALARM_IRQ, on_alarm_irq);
-    // Habilita dentro del periférico TIMER la fuente de interrupción para la alarma ALARM_NUM inte = interrupt enable
+    // Enable, inside the TIMER peripheral, the interrupt source for alarm ALARM_NUM (inte = interrupt enable)
     hw_set_bits(&timer_hw->inte, 1u << ALARM_NUM);
-    //Habilita la IRQ en el NVIC (controlador de interrupciones del núcleo)
+    // Enable the IRQ in the NVIC (the core's interrupt controller)
     irq_set_enabled(ALARM_IRQ, true);
 
     while (true) {
-        // Mantén el bucle principal libre; lo pesado va aquí, no en la ISR
+        // Keep the main loop free; heavy work goes here, not in the ISR
         tight_loop_contents();
     }
 }
 ```
 
-**Blink Multiples**
+**Multiple Blinks**
 
 ```c
-// Dos LEDs con múltiples alarmas del timer de sistema (RP2350 / Pico 2) en modo µs
-// - ALARM0 controla el LED "default" (PICO_DEFAULT_LED_PIN).
-// - ALARM1 controla un LED externo en GPIO 0.
-// Cambia LED0_MS y LED1_MS para ajustar la velocidad de parpadeo de cada LED.
+// Two LEDs with multiple system-timer alarms (RP2350 / Pico 2) in µs mode
+// - ALARM0 drives the "default" LED (PICO_DEFAULT_LED_PIN).
+// - ALARM1 drives an external LED on GPIO 0.
+// Change LED0_MS and LED1_MS to adjust each LED's blink rate.
 
 #include "pico/stdlib.h"
 #include "hardware/irq.h"
 #include "hardware/structs/timer.h"
 #include "hardware/gpio.h"
 
-#define LED0_PIN     PICO_DEFAULT_LED_PIN   // LED integrado
-#define LED1_PIN     0                      // LED externo en GPIO 0
+#define LED0_PIN     PICO_DEFAULT_LED_PIN   // built-in LED
+#define LED1_PIN     0                      // external LED on GPIO 0
 
 #define ALARM0_NUM   0
 #define ALARM1_NUM   1
@@ -241,24 +241,24 @@ int main() {
 #define ALARM1_IRQ   timer_hardware_alarm_get_irq_num(timer_hw, ALARM1_NUM)
 
 
-// Próximos "deadlines" (32 bits bajos en µs) y sus intervalos en µs
+// Next "deadlines" (lower 32 bits, in µs) and their intervals in µs
 static volatile uint32_t next0_us, next1_us;
-static const uint32_t INTERVALO0_US = 250000u;
-static const uint32_t INTERVALO1_US = 400000u;
+static const uint32_t INTERVAL0_US = 250000u;
+static const uint32_t INTERVAL1_US = 400000u;
 
-// ISR para ALARM0
+// ISR for ALARM0
 static void on_alarm0_irq(void) {
     hw_clear_bits(&timer_hw->intr, 1u << ALARM0_NUM);
     sio_hw->gpio_togl = 1u << LED0_PIN;
-    next0_us += INTERVALO0_US;
+    next0_us += INTERVAL0_US;
     timer_hw->alarm[ALARM0_NUM] = next0_us;
 }
 
-// ISR para ALARM1
+// ISR for ALARM1
 static void on_alarm1_irq(void) {
     hw_clear_bits(&timer_hw->intr, 1u << ALARM1_NUM);
     sio_hw->gpio_togl = 1u << LED1_PIN;
-    next1_us += INTERVALO1_US;
+    next1_us += INTERVAL1_US;
     timer_hw->alarm[ALARM1_NUM] = next1_us;
 }
 
@@ -272,37 +272,36 @@ int main() {
     gpio_set_dir(LED1_PIN, GPIO_OUT);
     gpio_put(LED1_PIN, 0);
 
-    // Timer de sistema en microsegundos (por defecto source = 0)
+    // System timer in microseconds (default source = 0)
     timer_hw->source = 0u;
-    
+
     uint32_t now_us = timer_hw->timerawl;
 
-    // Primeros deadlines
-    next0_us = now_us + INTERVALO0_US;
-    next1_us = now_us + INTERVALO1_US;
+    // First deadlines
+    next0_us = now_us + INTERVAL0_US;
+    next1_us = now_us + INTERVAL1_US;
 
-    // Programa ambas alarmas
+    // Program both alarms
     timer_hw->alarm[ALARM0_NUM] = next0_us;
     timer_hw->alarm[ALARM1_NUM] = next1_us;
 
-    // Limpia flags pendientes antes de habilitar
+    // Clear pending flags before enabling
     hw_clear_bits(&timer_hw->intr, (1u << ALARM0_NUM) | (1u << ALARM1_NUM));
 
-    // Registra handlers exclusivos para cada alarma
+    // Register exclusive handlers for each alarm
     irq_set_exclusive_handler(ALARM0_IRQ, on_alarm0_irq);
     irq_set_exclusive_handler(ALARM1_IRQ, on_alarm1_irq);
 
-    // Habilita fuentes de interrupción en el periférico TIMER
+    // Enable interrupt sources in the TIMER peripheral
     hw_set_bits(&timer_hw->inte, (1u << ALARM0_NUM) | (1u << ALARM1_NUM));
 
-    // Habilita ambas IRQ en el NVIC
+    // Enable both IRQs in the NVIC
     irq_set_enabled(ALARM0_IRQ, true);
     irq_set_enabled(ALARM1_IRQ, true);
 
-    // Bucle principal: todo el parpadeo ocurre en las ISRs
+    // Main loop: all the blinking happens in the ISRs
     while (true) {
         tight_loop_contents();
     }
 }
 ```
-

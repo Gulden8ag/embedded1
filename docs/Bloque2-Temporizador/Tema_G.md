@@ -1,82 +1,82 @@
-# PWM — Modulación por Ancho de Pulso
+# PWM — Pulse Width Modulation
 
-## 1) Introducción
+## 1) Introduction
 
-La **Modulación por Ancho de Pulso (PWM)** es una técnica digital que permite controlar la **potencia promedio** aplicada a una carga alternando rápidamente entre ON y OFF.  
-Ajustando la **relación cíclica (duty cycle)** se logra un efecto análogo a variar la tensión.
+**Pulse Width Modulation (PWM)** is a digital technique for controlling the **average power** delivered to a load by rapidly switching between ON and OFF.
+Adjusting the **duty cycle** produces an effect analogous to varying the voltage.
 
 ![PWM](../images/pwm.png){loading=lazy}
 
-**Aplicaciones:** control de brillo en LEDs, motores DC (puente H), servos RC, generación de tonos (buzzer), conversión DAC con filtro RC, etc.
+**Applications:** LED brightness control, DC motors (H-bridge), RC servos, tone generation (buzzer), DAC conversion with an RC filter, etc.
 
 ---
 
-## 2) Conceptos Fundamentales del PWM
+## 2) Fundamental PWM concepts
 
-### Valor Promedio y RMS
-Una señal PWM de amplitud \( V_{high} \) y duty \( D \) tiene un valor promedio:
+### Average and RMS values
+A PWM signal of amplitude \( V_{high} \) and duty \( D \) has an average value of:
 
 \[
 V_{avg} = V_{high} \cdot D
 \]
 
-En cargas resistivas, el parámetro relevante para la disipación de potencia es el **valor RMS**:
+In resistive loads, the relevant parameter for power dissipation is the **RMS value**:
 
 \[
 V_{rms} = V_{high} \cdot \sqrt{D}
 \]
 
-La potencia en una carga \( R \) se calcula como:
+Power in a load \( R \) is computed as:
 
 \[
 P = \frac{V_{rms}^2}{R}
 \]
 
-⚠️ Nota: La fórmula \( V_{avg} = D \cdot V_{cc} \) es válida cuando el nivel bajo = 0V y el nivel alto = \( V_{cc} \).
+⚠️ Note: The formula \( V_{avg} = D \cdot V_{cc} \) holds when the low level = 0V and the high level = \( V_{cc} \).
 
 ---
 
-### Rizado (Ripple)
+### Ripple
 
-El **rizado (ripple)** es la variación periódica alrededor del valor promedio debido a que la señal real conmuta ON/OFF.  
-En un filtro RC, la salida no es perfectamente plana: oscila un poco por cada ciclo PWM.
+**Ripple** is the periodic variation around the average value caused by the real signal switching ON/OFF.
+With an RC filter, the output is not perfectly flat: it oscillates slightly with each PWM cycle.
 
-- Menos rizado ⇢ mayor frecuencia PWM o filtros con constante de tiempo mayor que el período de conmutación.  
-- Más rizado ⇢ frecuencia baja o carga sensible.
+- Less ripple ⇢ higher PWM frequency or filters with a time constant much larger than the switching period.
+- More ripple ⇢ low frequency or a sensitive load.
 
 ![Ripple](../images/ripple_1pwm.png){loading=lazy}
 
 ---
 
-### Cómo elegir la frecuencia
+### Choosing the frequency
 
-1. **LEDs:** ≥ 1 kHz para el ojo humano, 10–20 kHz si se usan cámaras para evitar *banding*.  
-2. **Motores DC:** 15–25 kHz para salir del rango audible humano.  
-3. **Servos RC:** 50 Hz con pulsos de 1–2 ms (protocolo especial).  
-4. **DAC por PWM:** mientras más alta \( f_{PWM} \) frente al filtro, menor rizado.
+1. **LEDs:** ≥ 1 kHz for the human eye, 10–20 kHz if cameras are involved, to avoid *banding*.
+2. **DC motors:** 15–25 kHz to get out of the human audible range.
+3. **RC servos:** 50 Hz with 1–2 ms pulses (a special protocol).
+4. **PWM DAC:** the higher \( f_{PWM} \) is relative to the filter, the lower the ripple.
 
 ---
 
-## 3) Parámetros prácticos
+## 3) Practical parameters
 
-### TOP y Resolución
-- **TOP:** valor máximo que alcanza el contador antes de reiniciarse.  
-- Define la **resolución** del PWM:
-
-\[
-Resolución\ (bits) = \log_2(TOP+1)
-\]
-
-O de forma más intuitiva:
+### TOP and resolution
+- **TOP:** maximum value the counter reaches before restarting.
+- It defines the PWM's **resolution**:
 
 \[
-2^{Resolución} = TOP+1
+Resolution\ (bits) = \log_2(TOP+1)
 \]
 
-- Ejemplo: TOP=255 → 8 bits, TOP=1023 → 10 bits, TOP=4095 → 12 bits.
+Or more intuitively:
 
-### Relación Duty vs Level
-El duty cycle se obtiene de la comparación entre el contador y el registro CC (level):
+\[
+2^{Resolution} = TOP+1
+\]
+
+- Example: TOP=255 → 8 bits, TOP=1023 → 10 bits, TOP=4095 → 12 bits.
+
+### Duty vs Level relationship
+The duty cycle results from comparing the counter with the CC (level) register:
 
 \[
 Duty\ Cycle = \frac{level}{TOP+1} \cdot 100\%
@@ -84,94 +84,94 @@ Duty\ Cycle = \frac{level}{TOP+1} \cdot 100\%
 
 ---
 
-### Armónicos
+### Harmonics
 
-Un **armónico** es un componente de frecuencia que aparece en una señal periódica y cuya frecuencia es un **múltiplo entero** de la fundamental. 
-  - Fundamental: f1 (ej. 2 kHz).  
-  - Armónicos: 2f1 (4 kHz), 3f1 (6 kHz), etc.  
+A **harmonic** is a frequency component that appears in a periodic signal and whose frequency is an **integer multiple** of the fundamental.
+  - Fundamental: f1 (e.g., 2 kHz).
+  - Harmonics: 2f1 (4 kHz), 3f1 (6 kHz), etc.
 
-**Efectos de los armónicos:**
-- Ruido audible: si un armónico cae en 20 Hz–20 kHz, se percibe como zumbido.  
-- Interferencia electromagnética (EMI): armónicos altos se irradian en cables/pistas.  
-- Calentamiento adicional: excitación de transistores y bobinas a altas frecuencias.  
-- Distorsión visual: en LEDs/pantallas, los armónicos pueden generar parpadeo o banding en cámaras.
+**Effects of harmonics:**
+- Audible noise: if a harmonic falls within 20 Hz–20 kHz, it is heard as a hum.
+- Electromagnetic interference (EMI): high harmonics radiate from wires/traces.
+- Additional heating: excitation of transistors and coils at high frequencies.
+- Visual distortion: in LEDs/displays, harmonics can cause flicker or banding on cameras.
 
-**Alineación de bordes:**
-- **Edge-aligned:** refuerza armónicos pares → más ruido EMI.  
-- **Center-aligned:** cancela armónicos pares → menos ruido audible/EMI.  
+**Edge alignment:**
+- **Edge-aligned:** reinforces even harmonics → more EMI noise.
+- **Center-aligned:** cancels even harmonics → less audible/EMI noise.
 
-![Edge-aligned](../images/PWM_LeftAligned_0_s.gif){loading=lazy}  
+![Edge-aligned](../images/PWM_LeftAligned_0_s.gif){loading=lazy}
 ![Center-aligned](../images/PWM_CenterAligned_0_s.gif){loading=lazy}
 
 ---
 
-## 4) Arquitectura del PWM en microcontroladores
+## 4) PWM architecture in microcontrollers
 
 ```mermaid
 flowchart TD
-    A[Clock del sistema] --> B[Divisor de reloj]
-    B --> C[Contador 0..TOP]
-    C -->|Comparación| D[Registro CC Duty A/B]
-    D --> E[Conmutador de salida]
-    E --> F[GPIO en función PWM]
-    C --> G[Evento de Wrap TOP]
-    G --> H[IRQ opcional]
+    A[System clock] --> B[Clock divider]
+    B --> C[Counter 0..TOP]
+    C -->|Comparison| D[CC Register Duty A/B]
+    D --> E[Output switch]
+    E --> F[GPIO in PWM function]
+    C --> G[Wrap event TOP]
+    G --> H[Optional IRQ]
 ```
 
-1. **Clock del sistema (A):** define la base temporal del PWM.  
-2. **Divisor de reloj (B):** ajusta el rango de frecuencias útiles.  
-3. **Contador 0..TOP (C):** corazón del PWM, define la resolución.  
-4. **Comparación (C→D):** si contador < CC ⇒ salida HIGH; si ≥ CC ⇒ LOW.  
-5. **Conmutador de salida (E):** puede incluir polaridad normal/invertida y estado inactivo (LOW, HIGH, Hi-Z).  
-6. **GPIO en modo PWM (F):** el pin físico emite la señal PWM.  
-7. **Evento de Wrap (C→G):** útil para sincronizar procesos.  
-8. **IRQ opcional (H):** permite ejecutar código en cada ciclo PWM.
+1. **System clock (A):** defines the PWM's time base.
+2. **Clock divider (B):** adjusts the useful frequency range.
+3. **Counter 0..TOP (C):** the heart of the PWM, defines the resolution.
+4. **Comparison (C→D):** if counter < CC ⇒ output HIGH; if ≥ CC ⇒ LOW.
+5. **Output switch (E):** may include normal/inverted polarity and an idle state (LOW, HIGH, Hi-Z).
+6. **GPIO in PWM mode (F):** the physical pin emits the PWM signal.
+7. **Wrap event (C→G):** useful for synchronizing processes.
+8. **Optional IRQ (H):** lets you run code on every PWM cycle.
 
 ---
 
-## 5) PWM en Raspberry Pi Pico 2
+## 5) PWM on the Raspberry Pi Pico 2
 
-- **Slices:** 8 bloques PWM con 2 canales (A y B) ⇒ 16 salidas.  
-- **TOP ajustable:** hasta 16 bits.  
-- **Divisor de reloj:** entero/fraccional.  
+- **Slices:** 8 PWM blocks with 2 channels (A and B) ⇒ 16 outputs.
+- **Adjustable TOP:** up to 16 bits.
+- **Clock divider:** integer/fractional.
 
-### Relación frecuencia–divisor–TOP
+### Frequency–divider–TOP relationship
 
 \[
 f_{PWM} = \frac{f_{clk}}{div \cdot (TOP+1)}
 \]
 
-donde:
-- \( f_{clk} \) = frecuencia de reloj del sistema (125 MHz en Pico).  
-- \( div \) = divisor (1–255, fraccional).  
-- \( TOP \) = valor de recuento máximo.  
+where:
+- \( f_{clk} \) = system clock frequency (125 MHz on the Pico).
+- \( div \) = divider (1–255, fractional).
+- \( TOP \) = maximum count value.
 
 ---
 
-### Funciones útiles (SDK)
+### Useful functions (SDK)
 
-| API | ¿Qué hace? | Notas |
+| API | What does it do? | Notes |
 |---|---|---|
-| `gpio_set_function(pin, GPIO_FUNC_PWM)` | Pone el pin en modo PWM. | `GPIO_FUNC_PWM` conecta el pin al generador PWM interno. |
-| `pwm_gpio_to_slice_num(pin)` | Obtiene el slice asociado. | Cada slice maneja 2 canales. |
-| `pwm_gpio_to_channel(pin)` | Retorna A o B. | Necesario para fijar duty. |
-| `pwm_set_wrap(slice, top)` | Define `TOP`. | Determina resolución. |
-| `pwm_set_clkdiv(slice, div)` | Define divisor. | Ajusta frecuencia. |
-| `pwm_set_chan_level(slice, chan, level)` | Ajusta duty. | Relación con duty: \( \frac{level}{TOP+1} \). |
-| `pwm_set_enabled(slice, bool)` | Activa/desactiva slice. | Inicia PWM. |
+| `gpio_set_function(pin, GPIO_FUNC_PWM)` | Puts the pin in PWM mode. | `GPIO_FUNC_PWM` connects the pin to the internal PWM generator. |
+| `pwm_gpio_to_slice_num(pin)` | Gets the associated slice. | Each slice drives 2 channels. |
+| `pwm_gpio_to_channel(pin)` | Returns A or B. | Needed to set the duty. |
+| `pwm_set_wrap(slice, top)` | Sets `TOP`. | Determines the resolution. |
+| `pwm_set_clkdiv(slice, div)` | Sets the divider. | Adjusts the frequency. |
+| `pwm_set_chan_level(slice, chan, level)` | Sets the duty. | Duty relationship: \( \frac{level}{TOP+1} \). |
+| `pwm_set_enabled(slice, bool)` | Enables/disables the slice. | Starts the PWM. |
 
 ---
 
-### Ejemplo en C (SDK)
+### Example in C (SDK)
 
 ```c
-// pwm_led.c — Atenuar LED con PWM en GPIO 2
+// pwm_led.c — Dim an LED with PWM on GPIO 2
 #include "pico/stdlib.h"
 #include "hardware/pwm.h"
 
 #define LED_PIN 2
-#define F_PWM_HZ 2000   // 2 kHz: fuera del rango visible
-#define TOP 1023        // 10 bits de resolución
+#define F_PWM_HZ 2000   // 2 kHz: outside the visible range
+#define TOP 1023        // 10 bits of resolution
 
 int main() {
     stdio_init_all();
@@ -180,7 +180,7 @@ int main() {
     uint slice = pwm_gpio_to_slice_num(LED_PIN);
     uint chan  = pwm_gpio_to_channel(LED_PIN);
 
-    // Calcular divisor
+    // Compute the divider
     float f_clk = 125000000.0f; // 125 MHz
     float div = f_clk / (F_PWM_HZ * (TOP + 1));
     pwm_set_clkdiv(slice, div);

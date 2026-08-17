@@ -1,93 +1,93 @@
-# Entradas digitales
+# Digital inputs
 
-## Qué es una entrada digital
+## What is a digital input
 
-Una **entrada digital** es un GPIO configurado para **leer** un nivel lógico: **alto (1)** o **bajo (0)**. A diferencia de una salida, **no impone** voltaje; solo observa el que llega desde un botón, sensor digital o lógica externa.
+A **digital input** is a GPIO configured to **read** a logic level: **high (1)** or **low (0)**. Unlike an output, it does **not drive** a voltage; it only observes the one arriving from a button, digital sensor, or external logic.
 
-### Estados posibles
+### Possible states
 
-* **Alto (1):** voltaje considerado como “1”.
-* **Bajo (0):** voltaje considerado como “0”.
-* **Flotante (Z):** sin referencia; puede leer valores aleatorios (evítalo).
+* **High (1):** voltage read as a "1".
+* **Low (0):** voltage read as a "0".
+* **Floating (Z):** no reference; may read random values (avoid it).
 
-### Niveles lógicos y umbrales
+### Logic levels and thresholds
 
-En la práctica, el comparador interno decide 1/0 por **umbrales**:
+In practice, the internal comparator decides 1/0 by **thresholds**:
 
-* **1** típico: ≥ \~2.0–2.4 VDD
-* **0** típico: ≤ \~0.5–0.8 VDD
-  Entre ambos hay **zona incierta** → evita operar ahí.
+* Typical **1**: ≥ \~2.0–2.4 VDD
+* Typical **0**: ≤ \~0.5–0.8 VDD
+  Between them lies an **uncertain zone** → avoid operating there.
 
-![Niveles lógicos](../images/logicleve.png)
-
----
-
-## Pull-ups / Pull-downs (evitar “flotante”)
-
-Los **pulls** son resistencias hacia **VDD** (pull-up) o **GND** (pull-down) que fijan un estado por defecto cuando la línea puede quedar flotante.
-En el Pi pico2 puedes usar **pulls internos** o **externos**.
-
-**Pulls internos (≈ 50–80 kΩ, típ. \~50 kΩ)**
-
-* **Útiles:** prototipos rápidos, botones cercanos (cables cortos), señales lentas/limpias.
-* **Limitaciones:** son **débiles**; con cables largos o capacitancia elevada los flancos suben lento y entra ruido. No aptos para buses como **I²C/1-Wire**.
-
-**Pulls externos (1 kΩ–100 kΩ)**
-
-* **Útiles:** buses abiertos (I²C), cables largos/ambientes ruidosos, control preciso de **RC** (debounce), o para ajustar **consumo/tiempos de subida**.
-* **Trade-off:** R baja → más corriente y flancos rápidos; R alta → menos corriente y flancos lentos/sensibles a ruido.
-
-**Guía rápida de elección**
-
-* **Botón local:** interno o 10 kΩ externo.
-* **Cable largo/ruidoso:** 4.7–10 kΩ externo (+ Schmitt).
-* **I²C (open-drain):** 4.7–10 kΩ y ajustar según capacitancia/frecuencia.
+![Logic levels](../images/logicleve.png)
 
 ---
 
-## Problemas típicos y mitigación
+## Pull-ups / Pull-downs (avoiding "floating")
 
-### Rebote (“bounce”)
+**Pulls** are resistors to **VDD** (pull-up) or **GND** (pull-down) that establish a default state when the line could float.
+On the Pi Pico 2 you can use **internal** or **external pulls**.
 
-Un botón mecánico genera múltiples conmutaciones en 1–20 ms al presionar/soltar.
-**Mitiga** con **debounce** en **hardware (RC + Schmitt)**, en **software**, o ambos.
+**Internal pulls (≈ 50–80 kΩ, typ. \~50 kΩ)**
 
-### Ruido (EMI, cables, Z)
+* **Useful for:** quick prototypes, nearby buttons (short wires), slow/clean signals.
+* **Limitations:** they are **weak**; with long wires or high capacitance the edges rise slowly and noise creeps in. Not suitable for buses like **I²C/1-Wire**.
 
-Las entradas flotantes o cables largos capturan interferencia.
-**Mitiga** con:
+**External pulls (1 kΩ–100 kΩ)**
 
-* Pull-ups/downs adecuados.
+* **Useful for:** open-drain buses (I²C), long wires/noisy environments, precise **RC** control (debounce), or tuning **power/rise times**.
+* **Trade-off:** low R → more current and fast edges; high R → less current and slow, noise-sensitive edges.
+
+**Quick selection guide**
+
+* **Local button:** internal or 10 kΩ external.
+* **Long/noisy cable:** 4.7–10 kΩ external (+ Schmitt).
+* **I²C (open-drain):** 4.7–10 kΩ, tuned to capacitance/frequency.
+
+---
+
+## Typical problems and mitigation
+
+### Bounce
+
+A mechanical button generates multiple transitions over 1–20 ms when pressed/released.
+**Mitigate** with **debounce** in **hardware (RC + Schmitt)**, in **software**, or both.
+
+### Noise (EMI, wires, Z)
+
+Floating inputs or long wires pick up interference.
+**Mitigate** with:
+
+* Proper pull-ups/downs.
 * **RC** + **Schmitt trigger**.
-* Resistencia **serie 100–330 Ω** para limitar picos.
-* **TVS** si el entorno es hostil (industrial/automotriz).
+* A **100–330 Ω series** resistor to limit spikes.
+* **TVS** in hostile environments (industrial/automotive).
 
 ![Schmitt Trigger](../images/schmitt.png)
 
 ---
 
-## Dimensionamiento práctico
+## Practical sizing
 
-**Consumo al presionar** (activo-bajo con pull-up): $I \approx \dfrac{V}{R}$
+**Current when pressed** (active-low with pull-up): $I \approx \dfrac{V}{R}$
 
 * 3.3 V / 10 kΩ ≈ **0.33 mA**
 * 3.3 V / 4.7 kΩ ≈ **0.7 mA**
 
-**RC para debounce (hardware):** $\tau = R \cdot C$
+**RC for debounce (hardware):** $\tau = R \cdot C$
 
-* Punto de partida: **2–10 ms** (p. ej., 10 kΩ + 220 nF → 2.2 ms).
+* Starting point: **2–10 ms** (e.g., 10 kΩ + 220 nF → 2.2 ms).
 
-**Buses abiertos (I²C):**
+**Open-drain buses (I²C):**
 
-* Comienza con **4.7–10 kΩ** y ajusta según **capacitancia** y **frecuencia**.
+* Start with **4.7–10 kΩ** and adjust for **capacitance** and **frequency**.
 
-> **Nota RP2350 – corrientes de E/S:** las cifras de **corriente por pin (2/4/8/12 mA)** y **límite total \~50 mA** aplican a **salidas**. En **entradas**, la corriente la dominan las resistencias de pull y fugas del pad.
+> **RP2350 note – I/O currents:** the **per-pin current** figures (2/4/8/12 mA) and the **\~50 mA total limit** apply to **outputs**. On **inputs**, the current is dominated by the pull resistors and pad leakage.
 
 ---
 
-## Implementación
+## Implementation
 
-### Bajo nivel (PADS/SIO)
+### Low level (PADS/SIO)
 
 ```c
 #include "pico/stdlib.h"
@@ -96,48 +96,48 @@ Las entradas flotantes o cables largos capturan interferencia.
 #define button_pin 16
 
 int main(void) {
-    const uint32_t LED_BIT = 1u << PICO_DEFAULT_LED_PIN; // LED (p. ej. 25 en Pico/Pico2)
-    const uint32_t BTN_BIT = 1u << button_pin;                    // Botón en GPIO1
+    const uint32_t LED_BIT = 1u << PICO_DEFAULT_LED_PIN; // LED (e.g. 25 on Pico/Pico2)
+    const uint32_t BTN_BIT = 1u << button_pin;                    // Button on GPIO16
 
-    // Asegura función GPIO
+    // Ensure GPIO function
     gpio_init(PICO_DEFAULT_LED_PIN);
     gpio_init(button_pin);
 
-    // LED como salida; botón como entrada
-    sio_hw->gpio_oe_set = LED_BIT; // salida
-    sio_hw->gpio_oe_clr = BTN_BIT; // entrada
+    // LED as output; button as input
+    sio_hw->gpio_oe_set = LED_BIT; // output
+    sio_hw->gpio_oe_clr = BTN_BIT; // input
 
-    // IMPORTANTE: pull-up externo -> desactivar pulls internos
+    // IMPORTANT: external pull-up -> disable internal pulls
     gpio_disable_pulls(button_pin);
 
     while (true) {
-        // Con pull-up (externo), presionado = 0 (nivel bajo)
+        // With an (external) pull-up, pressed = 0 (low level)
         if ((sio_hw->gpio_in & BTN_BIT)) {
             sio_hw->gpio_set = LED_BIT;   // LED ON
         } else {
             sio_hw->gpio_clr = LED_BIT;   // LED OFF
         }
 
-        // Breve descanso / anti-rebote mínimo
+        // Brief rest / minimal debounce
         sleep_ms(1);
     }
 }
 ```
 
-### Alto nivel (Pico SDK)
+### High level (Pico SDK)
 
 ```c
 #include "pico/stdlib.h"
 
 int main(void) {
-    const uint LED = PICO_DEFAULT_LED_PIN; // En Pico/Pico 2 suele ser 25
+    const uint LED = PICO_DEFAULT_LED_PIN; // Usually 25 on Pico/Pico 2
     const uint BTN = 16;
 
-    // LED salida
+    // LED output
     gpio_init(LED);
     gpio_set_dir(LED, 1);
 
-    // Botón entrada con pull-up (presionado = 0)
+    // Button input with pull-up (pressed = 0)
     gpio_init(BTN);
     gpio_set_dir(BTN, 0);
 
@@ -147,30 +147,30 @@ int main(void) {
         } else {
             gpio_put(LED, 0);   // OFF
         }
-        sleep_ms(1); // anti-rebote mínimo / descanso
+        sleep_ms(1); // minimal debounce / rest
     }
 }
 ```
 
 ---
 
-## Debounce (hardware y software)
+## Debounce (hardware and software)
 
 ### Hardware (RC + Schmitt)
 
 ![Debounce Circuit](../images/debounce-sch.webp)
 
-* Filtra rebotes con una constante de tiempo **2–10 ms**.
-* Habilita **Schmitt** para histéresis.
+* Filters bounce with a **2–10 ms** time constant.
+* Enable **Schmitt** for hysteresis.
 
-### Software (tres patrones)
+### Software (three patterns)
 
-1. **Retardo fijo (bloqueante)**
-   Tras detectar cambio, espera **10–20 ms** y vuelve a leer. Simple, pero bloquea (usa `sleep_ms`).
+1. **Fixed delay (blocking)**
+   After detecting a change, wait **10–20 ms** and read again. Simple, but blocking (uses `sleep_ms`).
 
-2. **Integrador / ventana deslizante (no bloqueante)**
-   Muestrea a intervalos regulares; acepta el cambio cuando acumulas **N lecturas coherentes**. Útil con varios botones.
+2. **Integrator / sliding window (non-blocking)**
+   Sample at regular intervals; accept the change once you accumulate **N consistent readings**. Useful with several buttons.
 
-3. **Máquina de estados**
-   Estados: `estable_0 → posible_1 → estable_1 → posible_0 → ...`
-   Solo confirmas transición si se mantiene el nuevo valor por un tiempo/lecturas.
+3. **State machine**
+   States: `stable_0 → maybe_1 → stable_1 → maybe_0 → ...`
+   Only confirm a transition if the new value holds for a certain time/number of readings.
