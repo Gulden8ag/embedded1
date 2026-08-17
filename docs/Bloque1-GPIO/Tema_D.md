@@ -14,8 +14,8 @@ A **digital input** is a GPIO configured to **read** a logic level: **high (1)**
 
 In practice, the internal comparator decides 1/0 by **thresholds**:
 
-* Typical **1**: ≥ \~2.0–2.4 VDD
-* Typical **0**: ≤ \~0.5–0.8 VDD
+* Typical **1**: ≥ ~2.0 V (≈0.6–0.7·VDD)
+* Typical **0**: ≤ ~0.8 V (≈0.2–0.3·VDD)
   Between them lies an **uncertain zone** → avoid operating there.
 
 ![Logic levels](../images/logicleve.png)
@@ -113,9 +113,9 @@ int main(void) {
     while (true) {
         // With an (external) pull-up, pressed = 0 (low level)
         if ((sio_hw->gpio_in & BTN_BIT)) {
-            sio_hw->gpio_set = LED_BIT;   // LED ON
+            sio_hw->gpio_set = LED_BIT;   // LED OFF
         } else {
-            sio_hw->gpio_clr = LED_BIT;   // LED OFF
+            sio_hw->gpio_clr = LED_BIT;   // LED ON
         }
 
         // Brief rest / minimal debounce
@@ -137,7 +137,7 @@ int main(void) {
     gpio_init(LED);
     gpio_set_dir(LED, 1);
 
-    // Button input with pull-up (pressed = 0)
+    // Button input with external pull-up (pressed = 0)
     gpio_init(BTN);
     gpio_set_dir(BTN, 0);
 

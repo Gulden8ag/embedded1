@@ -236,7 +236,7 @@ __set_FAULTMASK(0);
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
 
-#define LED_PIN 25   // onboard LED (Pico 2)
+#define LED_PIN PICO_DEFAULT_LED_PIN  // onboard LED (Pico 2)
 #define BTN_PIN 16   // button with external pull-up to 3V3, switch to GND
 
 static void button_isr(uint gpio, uint32_t events) {
@@ -278,7 +278,7 @@ int main(void) {
 #include "hardware/irq.h"
 
 #define LED_A_PIN   0    // LED for button A (external)
-#define LED_B_PIN   25   // LED for button B (onboard Pico 2)
+#define LED_B_PIN   PICO_DEFAULT_LED_PIN   // LED for button B (onboard Pico 2)
 
 #define BTN_A_PIN   16   // Button A with external pull-up, to GND (FALL on press)
 #define BTN_B_PIN   17   // Button B with external pull-up, to GND (FALL on press)

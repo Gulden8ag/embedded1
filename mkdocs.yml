@@ -1,47 +1,47 @@
 site_name: Embedded Systems I (LIIE1214)
-site_description: Notas del curso de Sistemas Embebidos I — RP2350 / Raspberry Pi Pico 2
+site_description: Course notes for Embedded Systems I — RP2350 / Raspberry Pi Pico 2
 site_author: Oliver Ochoa Garcia
 repo_url: https://github.com/Gulden8ag/embedded1
 repo_name: Gulden8ag/embedded1
 
 nav:
-  - Inicio: index.md
-  - Bloque 0 — Introducción:
+  - Home: index.md
+  - Block 0 — Introduction:
       - Syllabus: Bloque0-Introduccion/T1.md
-      - Introducción: Bloque0-Introduccion/Tema_0.md
-      - ¿Qué es un sistema embebido?: Bloque0-Introduccion/Tema_A.md
-      - Plantilla de bitácora: Bloque0-Introduccion/T0.md
-  - Bloque 1 — GPIO:
-      - Entorno y toolchain: Bloque1-GPIO/Tema_B.md
-      - Control de GPIO: Bloque1-GPIO/Tema_C.md
-      - Entradas digitales: Bloque1-GPIO/Tema_D.md
-      - Interrupciones: Bloque1-GPIO/Tema_E.md
-  - Bloque 2 — Temporización:
-      - Temporizadores y PWM: Bloque2-Temporizador/Tema_F.md
+      - Introduction: Bloque0-Introduccion/Tema_0.md
+      - What is an embedded system?: Bloque0-Introduccion/Tema_A.md
+      - Lab log template: Bloque0-Introduccion/T0.md
+  - Block 1 — GPIO:
+      - Environment and toolchain: Bloque1-GPIO/Tema_B.md
+      - GPIO control: Bloque1-GPIO/Tema_C.md
+      - Digital inputs: Bloque1-GPIO/Tema_D.md
+      - Interrupts: Bloque1-GPIO/Tema_E.md
+  - Block 2 — Timing and serial:
+      - Timers: Bloque2-Temporizador/Tema_F.md
       - PWM: Bloque2-Temporizador/Tema_G.md
       - UART: Bloque2-Temporizador/Tema_H.md
-  - Bloque 3 — Analógico y buses:
+  - Block 3 — Analog and buses:
       - ADC: Bloque3/Tema_I.md
       - I2C: Bloque3/Tema_J.md
-  - Proyecto:
-      - Capstone Micromouse: Proyecto/Instrucciones.md
+  - Project:
+      - Capstone Project: Proyecto/Instrucciones.md
 
 theme:
   name: material
-  language: es
+  language: en
   palette:
     - scheme: default
       primary: red
       accent: red
       toggle:
         icon: material/brightness-7
-        name: Modo oscuro
+        name: Dark mode
     - scheme: slate
       primary: red
       accent: red
       toggle:
         icon: material/brightness-4
-        name: Modo claro
+        name: Light mode
   features:
     - navigation.sections
     - navigation.top
@@ -55,7 +55,7 @@ theme:
 
 plugins:
   - search:
-      lang: es
+      lang: en
 
 markdown_extensions:
   - abbr

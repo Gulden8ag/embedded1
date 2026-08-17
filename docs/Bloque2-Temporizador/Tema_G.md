@@ -168,6 +168,7 @@ where:
 // pwm_led.c — Dim an LED with PWM on GPIO 2
 #include "pico/stdlib.h"
 #include "hardware/pwm.h"
+#include "hardware/clocks.h" // only if using
 
 #define LED_PIN 2
 #define F_PWM_HZ 2000   // 2 kHz: outside the visible range
@@ -181,7 +182,9 @@ int main() {
     uint chan  = pwm_gpio_to_channel(LED_PIN);
 
     // Compute the divider
-    float f_clk = 125000000.0f; // 125 MHz
+    float f_clk = 150000000.0f; // 150 MHz
+    // Or
+    // float f_clk = clock_get_hz(clk_sys); 
     float div = f_clk / (F_PWM_HZ * (TOP + 1));
     pwm_set_clkdiv(slice, div);
     pwm_set_wrap(slice, TOP);

@@ -19,11 +19,11 @@ Examples across families:
   * `DDRB` → data direction (input/output)
   * `PORTB` → output values
   * `PINB` → input reads
-* RP2040 (Pico 2):
+* RP2350 (Pico 2):
 
-  * `SIO->gpio_oe` → configuring pins as outputs
-  * `SIO->gpio_out` → output values
-  * `SIO->gpio_in` → input reads
+  * `sio_hw->gpio_oe` → configuring pins as outputs
+  * `sio_hw->gpio_out` → output values
+  * `sio_hw->gpio_in` → input reads
 
 The underlying idea is the same everywhere: reading and writing bits in registers.
 
@@ -59,7 +59,7 @@ Bitwise operators are used to manipulate registers:
 
 | Operator           | Use                    | Example             | Explanation                                |                                                   |
 | ------------------ | ---------------------- | ------------------- | ------------------------------------------ | ------------------------------------------------- |
-| ` | ` (OR)      | Set bits to 1          | \`reg               | = (1u << n);\`                             | Forces bit *n* to 1 without affecting other bits at 0 |
+| ` | ` (OR)      | Set bits to 1          | `reg |= (1u << n);`                             | Forces bit *n* to 1 without affecting other bits at 0 |
 | `&` (AND)          | Keep certain bits      | `reg &= mask;`      | Keeps 1 **only** where `mask` has 1        |                                                   |
 | `~` (NOT)          | Invert bits            | `~(1u << n)`        | Mask with all 1s **except** bit *n*        |                                                   |
 | `^` (XOR)          | Toggle                 | `reg ^= (1u << n);` | Flips bit *n* between 0↔1                  |                                                   |
@@ -99,9 +99,9 @@ Examples per operator
 
 ---
 
-## 5. The SIO (Single-Cycle I/O) block on the RP2040
+## 5. The SIO (Single-Cycle I/O) block on the RP2350
 
-SIO is the RP2040's unit for fast GPIO access. It provides direct read/write registers with atomic bitwise operations.
+SIO is the RP2350's unit for fast GPIO access. It provides direct read/write registers with atomic bitwise operations.
 
 ### Main SIO registers
 
@@ -139,7 +139,7 @@ Each bit corresponds to one GPIO (bit 2 controls GPIO2, etc.).
 - `Pin(n, Pin.OUT/Pin.IN, pull=Pin.PULL_UP/PULL_DOWN)`
 - `p.on()`, `p.off()`, `p.value()`
 
-## 9. First Blink code
+## 6. First Blink code
 
 
 ```c title="sio_blink.c"
@@ -220,7 +220,7 @@ int main() {
 
 ---
 
-## Masks
+## 7. Masks
 
 A mask is a bit pattern used to select, modify, or check specific bits within a register or a data set. Masks are commonly used in bit-manipulation operations, such as configuring GPIO pins, where a mask lets you affect only a subset of pins instead of all of them.
 
@@ -289,7 +289,7 @@ Example
 ```c title="SDK"
 
 #include "pico/stdlib.h"
-#include "hardware/structs/sio.h"
+#include "hardware/gpio.h"
 
 #define PIN_A 2
 #define PIN_B 4
@@ -305,7 +305,7 @@ int main() {
     gpio_init(6);
 
     // 3) Direction: output (OE=1) for ALL pins with ONE single instruction
-    sio_hw->gpio_oe_set = MASK;
+    gpio_set_dir_out_masked(MASK);
 
     while (true) {
         gpio_set_mask(MASK);            // high on 2,4,6
@@ -363,7 +363,7 @@ int main() {
 ```
 
 
-## Reference
+## 8. Reference
 
 ### Pico 2 Pinout
 
