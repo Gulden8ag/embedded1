@@ -317,6 +317,28 @@ And whenever non-volatile memory is written during normal operation:
 - **How frequently will it be written?**
 - **Will its endurance be sufficient for the expected lifetime of the system?**
 
+### Code Example
+
+``` C
+#include <stdint.h>
+#include <stdlib.h>
+
+const uint16_t LOOKUP[4] = {10, 20, 30, 40};   // 1
+uint32_t sample_count = 0;                     // 2
+uint8_t rx_buffer[512];                        // 3
+
+float apply_gain(float raw) {                  // 4 (the function itself)
+    float result = raw * 1.25f;                // 5
+    return result;
+}
+
+void process(void) {
+    uint8_t *frame = malloc(256);              // 6 (the 256 bytes)
+    frame[0] = rx_buffer[0];
+    free(frame);
+}
+```
+
 ---
 
 ## Memory models
