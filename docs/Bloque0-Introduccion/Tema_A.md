@@ -2,487 +2,564 @@
 
 ## Definition
 
-An **embedded system** is a computing system **designed to perform specific functions** within a larger product, interacting with the physical world through sensors and actuators.
+An **embedded system** is a computing system **designed to fulfill a specific final purpose within a product or larger system**, usually interacting with the physical world through sensors and actuators.
 
 !!! important "Important"
-    It must be a final product, not a standalone PC.
+    An embedded system is intended to become part of the final product or system, rather than remain a general-purpose computer used only as a development tool.
 
 ### Defining traits
 
 - **Specific purpose**: performs one task or a bounded set of tasks.
-- **Physical-digital interaction**: acquires variables (sensors) and acts on the world (actuators).
-- **Hard constraints**: power consumption, memory, processing, cost, size.
-- **Reliability and availability**: long life cycles, continuous operation.
-- **Real time (often)**: responses within defined time limits.
-- **HW/SW co-design**: electronics, firmware, and software are decided together.
-- **Safety and cybersecurity**: protection of the user and the environment (functional and digital).
+- **Physical-digital interaction**: acquires variables through sensors and acts on the world through actuators.
+- **Hard constraints**: power consumption, memory, processing capability, cost, and size.
+- **Reliability and availability**: designed for dependable operation, often over long life cycles.
+- **Real time (often)**: responses may need to occur within defined time limits.
+- **HW/SW co-design**: electronics, firmware, and software are designed together.
+- **Safety and cybersecurity**: protection of the user, the system, and its information.
 
 ### PC vs Embedded System comparison
 
-| Criterion                    | General-purpose PC                | Embedded system                                    |
-| ---------------------------- | --------------------------------- | -------------------------------------------------- |
-| Functional scope             | Broad, multitasking               | Application-specific                               |
-| User interface               | Keyboard, mouse, display          | May lack a UI; LEDs, buttons, dedicated HMI        |
-| Resources (CPU/RAM/storage)  | Abundant                          | Limited by cost/power/space                        |
-| OS                           | Desktop Windows/macOS/Linux       | Bare-metal/RTOS/embedded Linux                     |
-| Real time                    | Non-deterministic                 | Frequently deterministic                           |
-| Power                        | Mains power                       | Battery/ultra-low power                            |
-| Robustness/environmental     | Moderate                          | High (temperature, vibration, EMI)                 |
-| Life cycle                   | Short/medium                      | Long (years or decades)                            |
-| Functional cybersecurity     | Important                         | Critical (physical safety + information security)  |
+| Criterion | General-purpose PC | Embedded system |
+|---|---|---|
+| Functional scope | Broad, multitasking | Application-specific |
+| User interface | Keyboard, mouse, display | May lack a UI; LEDs, buttons, dedicated HMI |
+| Resources (CPU/RAM/storage) | Abundant | Limited by cost, power, and space |
+| OS | Desktop Windows/macOS/Linux | Bare-metal, RTOS, or embedded Linux |
+| Real time | Usually non-deterministic | Frequently deterministic |
+| Power | Commonly mains powered | Frequently power-constrained or battery powered |
+| Robustness/environmental | Moderate | May require tolerance to temperature, vibration, EMI, etc. |
+| Life cycle | Short/medium | Can remain in service for years or decades |
+| Functional cybersecurity | Important | Can be critical because software may affect physical behavior |
 
 ### What is *not* an embedded system?
 
-- A desktop PC used as-is (not integrated into a product).
+- A desktop PC used as-is and not integrated into a product.
 - A generic general-purpose server.
-- A laptop script reading a USB sensor (unless the laptop is part of the final product).
+- A laptop script reading a USB sensor, unless the laptop itself is part of the final system.
 
 ### Use cases
 
-| Domain       | Product/Function          | Key requirement                    | Real time |
-| ------------ | ------------------------- | ---------------------------------- | --------- |
-| Automotive   | Brake ECU (ABS/ESP)       | Latency and functional safety      | Hard      |
-| Medical      | Pacemaker                 | Reliability and biocompatibility   | Hard      |
-| Industrial   | Inline motor control      | Determinism and robustness         | Hard      |
-| Consumer     | Smart thermostat          | Connectivity and efficiency        | Soft      |
-| Wearable IoT | Wearable (smartwatch)     | Low power and UX                   | Soft      |
-| Home automation | Smart lock             | Security/encryption                | Variable  |
+| Domain | Product / Function | Key requirement | Real time |
+|---|---|---|---|
+| Automotive | Brake ECU (ABS/ESP) | Latency and functional safety | Hard |
+| Medical | Pacemaker | Reliability and biocompatibility | Hard |
+| Industrial | Inline motor control | Determinism and robustness | Hard |
+| Consumer | Smart thermostat | Connectivity and efficiency | Soft |
+| Wearable IoT | Smartwatch | Low power and UX | Soft |
+| Home automation | Smart lock | Security/encryption | Variable |
 
+**Hard real time**: missing a deadline means system failure, for example an ABS braking controller.
 
-_**Hard real time**_: missing a deadline means system failure (e.g., ABS braking).
-_**Soft real time**_: delays degrade quality but do not mean failure (e.g., audio).
+**Soft real time**: delays degrade quality or performance but do not necessarily mean system failure, for example audio playback.
+
 ---
 
 ## Typical structure of an embedded system
 
-- **MCU (Microcontroller)**: CPU + memory + peripherals on a single chip, optimized for real-time I/O control.
+- **MCU (Microcontroller)**: CPU + memory + peripherals integrated on a single chip, optimized for direct control of hardware and I/O.
+- **MPU (Microprocessor)**: a processor intended for higher-complexity systems, typically relying on external RAM/storage and often capable of running a full operating system. It may still integrate many peripherals.
+- **SoC (System on Chip)**: a broader term for a highly integrated device that may combine CPU cores, memory controllers, accelerators, GPUs, radios, and peripherals.
 
-- **MPU (Microprocessor)**: CPU "alone" (external memory and peripherals). SoC: umbrella term that may include GPU, radios, etc.
+### Key components
 
-### Key components:
-
-
-***Diagram 1 — High-level view***
+**Diagram 1 — High-level view**
 
 ```mermaid
 flowchart LR
-  %% ---------- External signals ----------
-  CLK["Clock / PLL"]
-  RST["Reset"]
-  PWR["Power management<br/>(LDO / DCDC / Sleep)"]
-  EXT_IO["External sensors / actuators"]
+    %% ---------- External signals ----------
+    CLK["Clock / PLL"]
+    RST["Reset"]
+    PWR["Power management<br/>(LDO / DCDC / Sleep)"]
+    EXT_IO["External sensors / actuators"]
 
-  %% ---------- MCU boundary ----------
-  subgraph MCU["Microcontroller (SoC)"]
-    direction LR
+    %% ---------- MCU boundary ----------
+    subgraph MCU["Microcontroller"]
+        direction LR
 
-    %% Central interconnect
-    BUS[["SoC interconnect<br/>(AXI / AHB / APB)"]]
+        BUS[["Internal interconnect / bus"]]
 
-    %% CPU subsystem (keep it simple at high level)
-    subgraph CPU["CPU"]
-      direction TB
-      CORE["Core"]
-      INTCTRL["Interrupt control (NVIC/INTC)"]
-      REGFILE["Registers"]
-      ALU["ALU (optional FPU/DSP)"]
-      CORE --- INTCTRL
-      CORE --- REGFILE
-      CORE --- ALU
+        subgraph CPU["CPU"]
+            direction TB
+            CORE["Core / Control Unit"]
+            INTCTRL["Interrupt control"]
+            REGFILE["Registers"]
+            ALU["ALU + optional FPU / DSP"]
+            CORE --- INTCTRL
+            CORE --- REGFILE
+            CORE --- ALU
+        end
+
+        subgraph MEM["Memory"]
+            direction TB
+            FLASH[(Flash - Code)]
+            SRAM[(SRAM - Data)]
+            EEPROM[(EEPROM / persistent data)]
+        end
+
+        subgraph PER["Peripherals"]
+            direction TB
+            GPIO[[GPIO / digital I/O]]
+            TIM[[Timers / PWM / RTC]]
+            ANA[[ADC / DAC / Comparator]]
+            COM[[UART · SPI · I2C · CAN · USB · ETH]]
+            WDT[[Watchdog]]
+            DMA[[DMA]]
+        end
     end
 
-    %% Memory
-    subgraph MEM["Memory"]
-      direction TB
-      FLASH[(Flash - Code)]
-      SRAM[(SRAM - Data)]
-      EEPROM[(EEPROM/Emulated - Parameters)]
-      TCM[(Cache / optional TCM)]
-    end
+    CPU --- BUS
+    MEM --- BUS
+    PER --- BUS
+    DMA --- BUS
 
-    %% Peripherals (grouped)
-    subgraph PER["Peripherals"]
-      direction TB
-      GPIO[[GPIO / digital I/O]]
-      TIM[[Timers / PWM / RTC]]
-      ANA[[ADC / DAC / Comparator]]
-      COM[[UART · SPI · I2C · CAN · USB · ETH]]
-      WDT[[Watchdog]]
-      DMA[[DMA]]
-    end
-  end
+    EXT_IO --- GPIO
 
-  %% ---------- Clean wiring via hub ----------
-  CPU --- BUS
-  MEM --- BUS
-  PER --- BUS
-  DMA --- BUS
-
-  %% External world
-  EXT_IO --- GPIO
-
-  %% Service signals (limit fan-out to reduce clutter)
-  CLK --> CPU
-  CLK --> PER
-  RST --> CPU
-  RST --> PER
-  PWR --> CPU
-  PWR --> MEM
+    CLK --> CPU
+    CLK --> PER
+    RST --> CPU
+    RST --> PER
+    PWR --> CPU
+    PWR --> MEM
 ```
 
-| Component             | Main function                               | Design points / typical risks                                              |
-|-----------------------|---------------------------------------------|----------------------------------------------------------------------------|
-| ALU / FPU / DSP       | Integer, floating-point, signal computation | Latency, precision, power; is an FPU justified?                            |
-| Control Unit          | Sequencing instructions                     | ISA support                                                                |
-| Registers/PC/SP       | Internal state and flow                     | Register bank size, nested calls/ISRs                                      |
-| NVIC/INTC             | Interrupt management                        | Priorities, latencies, determinism                                         |
-| DMA                   | Transfers without CPU                       | Correct configuration, cache coherency                                     |
-| Flash                 | Firmware storage                            | Endurance, program/read timing                                             |
-| SRAM                  | Runtime data                                | Size/cost, initialization and protection                                   |
-| EEPROM                | Persistent parameters                       | Write cycles, wear leveling                                                |
-| GPIO                  | Digital I/O                                 | Pull-ups, debounce, ESD protection                                         |
-| Timers/PWM/RTC        | Time, capture/compare, control              | Resolution, jitter, ADC synchronization                                    |
-| ADC/DAC/Comp.         | Analog interfaces                           | Noise, reference, sample rate, linearity                                   |
-| UART/SPI/I²C/CAN…     | Communications                              | Speed, errors, EMC, higher-level protocols                                 |
-| Clock/PLL             | Time base                                   | Stability, startup, power                                                  |
-| Reset/Watchdog        | Fault recovery                              | Windows, false triggers, fault coverage                                    |
-| Power Mgmt            | Sleep/standby modes                         | Wake-up latencies, state retention                                         |
-
+| Component | Main function | Design points / typical risks |
+|---|---|---|
+| ALU / FPU / DSP | Integer, floating-point, signal computation | Latency, precision, power |
+| Control Unit | Sequencing and decoding instructions | ISA support, timing |
+| Registers / PC / SP | Internal CPU state and program flow | Register availability, nested calls/ISRs |
+| Interrupt control | Interrupt management | Priorities, latency, determinism |
+| DMA | Transfers data without continuous CPU intervention | Correct configuration, buffer ownership |
+| Flash | Firmware storage | Capacity, endurance, program/read timing |
+| SRAM | Runtime data | Capacity, cost, stack/heap usage |
+| EEPROM | Persistent parameters | Write endurance, update frequency |
+| GPIO | Digital I/O | Pull-ups, debounce, ESD protection |
+| Timers / PWM / RTC | Time, capture/compare, control | Resolution, jitter, synchronization |
+| ADC / DAC / Comparator | Analog interfaces | Noise, reference, sample rate, linearity |
+| UART / SPI / I²C / CAN… | Communications | Speed, errors, EMC, higher-level protocols |
+| Clock / PLL | Time base | Stability, startup, power |
+| Reset / Watchdog | Startup and fault recovery | False triggers, fault coverage |
+| Power management | Sleep/standby modes | Wake-up latency, state retention |
 
 ### Interconnect buses
 
-Inside an embedded system, functional blocks communicate with each other through interconnect buses. These buses carry data, addresses, and control signals between the different components of the system. There are several types of buses, each with its own characteristics and purposes:
+Inside an embedded system, functional blocks communicate through **interconnect buses**. These carry information, addresses, and control signals between the different parts of the system.
 
-!!! note "Note"
-    A bus is the set of physical connections that allow communication between the different components of a system.
+1. **Data bus**: carries the information being transferred.
+2. **Address bus**: identifies the memory or peripheral location being accessed.
+3. **Control bus**: carries signals that coordinate the transfer and system operation.
 
-1. **Data bus**: Carries the information between components.
-2. **Address bus**: Carries the memory addresses being accessed.
-3. **Control bus**: Carries the control signals that coordinate the system's operations.
+We can also distinguish between:
 
-We can also distinguish:
-
-- **Masters/Initiators** (AMBA: Initiator): Devices that initiate data transfers (e.g., CPU, DMA).
-- **Slaves/Targets** (AMBA: Target): Devices that respond to master requests (e.g., memory, peripherals).
-
+- **Masters / Initiators**: devices that initiate transfers, such as a CPU or DMA controller.
+- **Slaves / Targets**: devices that respond to transfers, such as memories and peripherals.
 
 ```mermaid
 flowchart LR
-  subgraph Fabric[Fabric / Internal bus]
-    CPU2["CPU (Master)"]
-    DMA2["DMA (Master)"]
-    MEM2["Memories (Slaves): Flash/SRAM"]
-    P1["APB peripherals (Slaves)"]
-    P2["Fast peripherals (Slaves)"]
-  end
+    subgraph Fabric["Fabric / Internal bus"]
+        CPU2["CPU (Initiator)"]
+        DMA2["DMA (Initiator)"]
+        MEM2["Flash / SRAM (Targets)"]
+        P1["Peripherals (Targets)"]
+        P2["Fast peripherals (Targets)"]
+    end
 
-  CPU2 -->|Address/Control| MEM2
-  MEM2 -->|Data| CPU2
-
-  CPU2 <---> P1
-  CPU2 <---> P2
-  DMA2 <---> MEM2
-  DMA2 <---> P2
+    CPU2 -->|Address / Control| MEM2
+    MEM2 -->|Data| CPU2
+    CPU2 <--> P1
+    CPU2 <--> P2
+    DMA2 <--> MEM2
+    DMA2 <--> P2
 ```
-
-## Memories: types and uses
-
-In an embedded system we choose memories based on **volatility**, **latency/bandwidth**, **endurance** (write cycles), **size**, and **cost/power**. Here's a practical map.
-
-### Volatile (fast, lost on power-off)
-
-| Type             | Volatile | Read/Write | Approx. endurance | Typical size in MCUs | Typical use                                 | Risks / design |
-|------------------|:------:|-------------------|------------------:|-----------------------:|---------------------------------------------|------------------|
-| **SRAM**         |  Yes   | Very fast / fast  | Unlimited (logic) | 2–512 KiB              | Runtime variables, buffers                  | Sleep-mode power; limited size |
-| **TCM (ITCM/DTCM)** | Yes | **Very fast** (near 1-cycle) | Unlimited | 16–512 KiB | Critical code or real-time ISR data          | Small size; requires linker script |
-| **Cache (I/D)**  |  Yes   | Transparent (acceleration) | — | — | Accelerating Flash/external access          | Invalidation/coherency with DMA |
-| **PSRAM**        |  Yes   | Medium / medium   | Unlimited        | 2–16 MiB (external)    | Framebuffers, UI, light ML                  | Higher latency than SRAM; power |
-| **SDRAM/DDR**    |  Yes   | High BW / medium latency | Unlimited | 16–1024 MiB (MPU/SoC) | Linux/GUI, vision/ML, large buffers         | Complex controller; refresh, EMC |
-
-### Non-volatile (persist without power)
-
-| Type                 | Volatile | Read/Write                | Approx. endurance | Typical size | Typical use                                       | Risks / design |
-|----------------------|:------:|---------------------------|------------------:|--------------:|---------------------------------------------------|------------------|
-| **Internal Flash (NOR)** | No | Fast read; **page/block write/erase** | 10³–10⁵ cycles | 64 KiB–2 MiB | **Firmware**, constants, sometimes logs           | Page size; wait states; **wear leveling** for logs |
-| **External QSPI NOR** | No    | Fast read; XIP possible   | 10³–10⁵          | 4–256 MiB     | XIP code, assets (UI), small models               | Latency > internal; QSPI lines; protection/secure firmware |
-| **NAND (eMMC/SD)**   | No     | High sequential BW; slow random | 10³–10⁵     | 4–256 GiB     | Bulk data: files, audio/video, databases          | File system, **wear leveling**, integrity (journaling) |
-| **EEPROM**           | No     | Byte/page writes (simple) | 10⁵–10⁶          | 512 B–256 KiB | Calibration/configuration **parameters**          | Endurance: distribute writes; write time |
-| **FRAM**             | No     | **Near-SRAM** (fast) read/write | 10¹²–10¹⁴  | 4–1024 KiB    | Frequent logs, counters, critical state           | Cost/KB; availability |
-| **MRAM** *(opt.)*    | No     | Fast; non-volatile        | 10¹²+            | 128 KiB–16 MiB | Power-fail-safe state                             | Cost; limited supply |
-| **OTP / eFuse**      | No     | One-time programming      | 1                | Tens–hundreds of bits | IDs, keys, boot configuration             | **Irreversible**; plan fields carefully |
-
-!!! tip "Quick rules"
-    - **Code**: internal Flash; if it doesn't fit or you want **XIP**, external QSPI NOR.
-    - **Real-time data** (ISR queues, filters): SRAM/TCM.
-    - **Parameters** that rarely change: EEPROM / FRAM (if they change a lot).
-    - **Frequent logs**: FRAM or a wear-leveling strategy on Flash.
-    - **Large assets** (images, audio): QSPI NOR or SD/eMMC.
-    - **Linux/GUI/heavy ML**: SDRAM/DDR + mass storage.
-
-!!! note "What is XIP (Execute-In-Place)?"
-    Executing code **directly** from an external memory (e.g., QSPI NOR) without copying it to SRAM. Saves SRAM at the cost of latency; ideal for non-critical code.
-
-
-### Memory checklist
-- **Firmware** size (Flash) and **runtime data** (SRAM/TCM).
-- Do you need **XIP**? What latency can your critical loop tolerate?
-- Expected **endurance** (parameters/logs) and **wear leveling** strategy.
-- DMA and cache? Coherency/invalidation plan.
-- **Sleep/retention** power and **wake-up** times.
-- Integrity/security: **signed firmware**, read/write protection.
-
-
-## Memory models
-
-Embedded systems use different memory models to manage data storage and access.
-
-This is done through instructions and data stored in different types of memory.
-
-- Instructions: The operations the CPU must perform, stored in program memory.
-- Data: The information the CPU operates on, stored in data memory.
-
-Some of the most common models are:
-
-1. **Von Neumann memory model**: The CPU uses a single memory for instructions and data, which simplifies the design but limits performance because it cannot access both at the same time.
-
-2. **Harvard memory model**: This model uses separate memories for instructions and data, allowing simultaneous accesses and improving performance. However, it is more complex to implement.
-
-```mermaid
-flowchart LR
-
-%% =======================
-%%   VON NEUMANN (left)
-%% =======================
-subgraph VN["Von Neumann"]
-direction TB
-  VN_MEM["Memory (Data + Code)"]
-  VN_CPU["CPU"]
-  VN_IO["I/O Devices"]
-
-  VN_MEM -->|Data| VN_CPU
-  VN_CPU -->|Address| VN_MEM
-  VN_CPU -->|Data| VN_IO
-end
-
-%% =======================
-%%   HARVARD (right)
-%% =======================
-subgraph HV["Harvard"]
-direction TB
-  HV_PM["Program Memory"]
-  HV_DM["Data Memory"]
-  HV_CPU["CPU"]
-  HV_IO["I/O Devices"]
-
-  %% Keep PM and DM on the same top row
-  HV_PM --- HV_DM
-
-  %% Instructions (PM -> CPU) and their address (CPU -> PM)
-  HV_PM -->|Instruction| HV_CPU
-  HV_CPU -.->|Instruction address| HV_PM
-
-  %% Data (DM -> CPU) and their address (CPU -> DM)
-  HV_DM -->|Data| HV_CPU
-  HV_CPU -.->|Variable address| HV_DM
-
-  %% I/O below the CPU
-  HV_CPU -->|Data| HV_IO
-end
-
-%% ==== Optional styling (remove if not needed) ====
-classDef box fill:#f7f7f7,stroke:#444,stroke-width:1px;
-class VN_MEM,VN_CPU,VN_IO,HV_PM,HV_DM,HV_CPU,HV_IO box;
-linkStyle default stroke:#444,stroke-width:1px;
-```
-
-## "Architecture size"
-
-The "architecture size" usually refers to the CPU's word width (the number of bits of its general registers and ALU: 8, 16, 32, 64 bits). However, when choosing hardware you also care about:
-
-- **Address bus width** (how many distinct addresses the CPU/DMA can issue).
-- **Data bus width** (how many bits can be transferred in parallel).
-- **Pointer size** (how many bits are used to represent a memory address).
-
-!!! note "Note"
-    Combinations exist — e.g., a 32-bit CPU with 24 address bits, or 8/16-bit data buses toward peripherals.
-
-#### Effects of size:
-
-1. The address width limits the maximum memory.
-2. More bits allow arithmetic and memory operations in fewer cycles.
-3. Smaller architectures can save power and cost.
-
-| **Address width** | **Maximum addressable** |
-| -----------------------: | -----------------------: |
-|                    8 bit |                    256 B |
-|                   16 bit |                   64 KiB |
-|                   24 bit |                   16 MiB |
-|                   32 bit |                    4 GiB |
-|                   40 bit |                    1 TiB |
-|                   48 bit |                  256 TiB |
-|                   64 bit |         16 EiB (theoretical) |
-
-
-#### Comparison between sizes
-
-| Criterion                               | **8/16 bits**                                                                            | **32 bits (MCU/MPU)**                                                                                                                                          | **64 bits (SoC)**                                                                                                                                                            |
-| --------------------------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **HW complexity / cost**                | Very low                                                                                 | Low–medium                                                                                                                                                     | Medium–high                                                                                                                                                                  |
-| **Power consumption**                   | Very low (modest frequencies)                                                            | Low with good performance/Hz                                                                                                                                   | Higher on average                                                                                                                                                            |
-| **Addressable space (approx.)**         | 8–16 b: 256 B–64 KiB                                                                     | Up to 4 GiB (theoretical)                                                                                                                                      | Up to 16 EiB (theoretical)                                                                                                                                                   |
-| **Typical pointer size (C/C++)**        | 16 b                                                                                     | 32 b                                                                                                                                                           | 64 b                                                                                                                                                                         |
-| **Integer/32-bit performance**          | Limited (multi-cycle)                                                                    | Very good (native)                                                                                                                                             | Excellent                                                                                                                                                                    |
-| **FPU/DSP / Cryptography**              | Rare / external                                                                          | Common (M4/M7/RV32-F/D; AES/SHA accelerators)                                                                                                                  | Common / advanced (SIMD, AES-NI, etc.)                                                                                                                                       |
-| **RTOS / Real time**                    | Possible, with limits                                                                    | Very good (determinism + modern peripherals)                                                                                                                   | Less deterministic on complex SoCs                                                                                                                                           |
-| **Viable OS**                           | Bare-metal/RTOS                                                                          | Bare-metal/RTOS; 32-bit Linux with **MMU** (Cortex-A, etc.)                                                                                                    | Full-fledged Linux/Unix                                                                                                                                                      |
-| **Modern connectivity (TLS/OTA)**       | Limited                                                                                  | Solid (Wi-Fi/BLE/Cell + TLS)                                                                                                                                   | Complete (networking, containers, etc.)                                                                                                                                      |
-| **Timers (resolution/range)**           | Good resolution, short range                                                             | Excellent balance (32-bit timers)                                                                                                                              | SoC-dependent; not the main focus                                                                                                                                            |
-| **Time-to-market (ecosystem)**          | Smaller current offering                                                                 | Very high (toolchains, HALs, stacks, RTOS)                                                                                                                     | High, but greater complexity                                                                                                                                                 |
-| **Typical cases**                       | Simple control, legacy, ultra-low cost                                                   | IoT, motor control, basic audio, light gateways, simple HMI                                                                                                    | Linux, complex UI, vision/light ML, RAM > 1–2 GiB                                                                                                                            |
-| **Risks**                               | Memory ceiling, limited software                                                         | Over-/under-speccing                                                                                                                                           | Power, cost, complex integration                                                                                                                                             |
-| **Commercial examples**                 | *Microchip PIC16/PIC18*, *AVR ATmega328P/ATmega32U4*, *TI MSP430* (16 b), *Renesas RL78* | *ST STM32* (F0/G0/F4/H7…), *NXP LPC55Sxx / Kinetis*, *Microchip SAMD21/SAMC21/SAME5x*, *Nordic nRF52/nRF53*, *Espressif ESP32/ESP32-C3*, *Raspberry Pi RP2040* | *Broadcom BCM2711 (Raspberry Pi 4, Cortex-A72)*, *NXP i.MX 8M (Cortex-A53)*, *TI Sitara AM64x (Cortex-A53)*, *Rockchip RK3566/68 (Cortex-A55)*, *Allwinner A64 (Cortex-A53)* |
-
-
-## Application examples
-
-### Same word size (32 bits), Von Neumann vs. Harvard
-
-Assume the following program operation:
-
-```c
-uint32_t sum = 0;
-for (size_t i = 0; i < N; i++) {
-    sum += A[i];
-}
-```
-
-For this code we make the following assumptions:
-
-- 32-bit load = 1 data access.
-- ADD = 1 ALU cycle.
-- Branch/loop end = 1 instruction (its fetch is counted).
-- No cache, no memory wait states, simple pipeline.
-- Von Neumann has a single bus (instructions and data compete).
-- Harvard has two buses (instructions and data in parallel).
-
-| Concept                        | Von Neumann (single bus) |              Harvard (I/D buses) |
-| ------------------------------ | ----------------------: | -------------------------------: |
-| Fetch `LDR` (read instruction) |                 1 cycle |                  1 cycle (I-bus) |
-| Read `A[i]` (32-bit data)      |                 1 cycle | 1 cycle (D-bus, **in parallel**) |
-| Fetch `ADD`                    |                 1 cycle |                  1 cycle (I-bus) |
-| Fetch `BNE`/loop end           |                 1 cycle |                  1 cycle (I-bus) |
-| **Total per iteration**        |          **≈ 4 cycles** |                   **≈ 3 cycles** |
-
-```mermaid
-%%{init: {'gantt': {'axisFormat': '%Q'}} }%%
-gantt
-  dateFormat  x
-  title Von Neumann 32-bit (cycles per iteration)
-  section Single bus
-  Fetch LDR             :a1, 0, 1
-  Data fetch (A[i])     :a2, 1, 1
-  Fetch ADD             :a3, 2, 1
-  Fetch BNE/loop        :a4, 3, 1
-
-```
-
-```mermaid
-%%{init: {'gantt': {'axisFormat': '%Q'}} }%%
-gantt
-  dateFormat  x
-  title Harvard 32-bit (cycles per iteration)
-  section I-bus (instructions)
-  Fetch LDR        :i1, 0, 1
-  Fetch ADD        :i2, 1, 1
-  Fetch BNE/loop   :i3, 2, 1
-  section D-bus (data)
-  Read A[i]        :d1, 0, 1
-
-```
-
-### Same architecture (Harvard), different word size
-
-```c
-uint32_t sum = 0;
-for (size_t i = 0; i < N; i++) {
-    sum += A[i];
-}
-```
-
-We take the following assumptions, where w is the word size:
-
-- Loads: 32 / w data accesses
-- Add: 32 / w ALU operations
-- Branch: ≈ 1 instruction
-Cycles ≈ 2·(32/w) + 1
-
-| Word size **w** | Loads (32/w) | Adds (32/w) | Branch | **Approx. total** |
-| ----------------------: | ------------: | -----------: | -----: | ---------------: |
-|              **8 bits** |             4 |            4 |      1 |          **≈ 9** |
-|             **16 bits** |             2 |            2 |      1 |          **≈ 5** |
-|             **32 bits** |             1 |            1 |      1 |          **≈ 3** |
-
-
-!!! note "Note"
-    In practice, **modified Harvard** designs abound (I/D separation with crossover paths or shared regions to ease DMA/bootloader).
 
 ---
 
-## ISA and microarchitecture: RISC vs CISC for embedded
+## Memories: types and uses
 
-- ISA (Instruction Set Architecture) is the set of instructions a processor can understand and execute, as well as its exception/interrupt handling.
-- A microarchitecture is the way an instruction set architecture (ISA) is physically implemented in a processor; they mainly fall into two categories:
-  - RISC (Reduced Instruction Set Computer).
-  - CISC (Complex Instruction Set Computer).
+Microcontrollers use different types of memory because no single technology is ideal for every purpose.
 
-### RISC (Reduced Instruction Set Computer)
+When selecting memory, some of the most important characteristics are:
 
-The main idea is to simplify the hardware by using an instruction set made of a few basic steps for load, evaluate, and store operations — for example, a load command (LOAD) or a store command (STORE).
+- **Volatility**: Is the information lost when power is removed?
+- **Speed**: How quickly can the processor read or write the memory?
+- **Endurance**: How many times can the memory be written or erased before it begins to wear out?
+- **Capacity and cost**: How much memory can economically fit in the system?
 
-Its main characteristics are:
+For now, we will focus on **SRAM**, **Flash**, and memories used for persistent data.
 
-- Simpler instructions, therefore simple instruction decoding.
-- Instructions fit within one word or less.
-- Instructions allow a short pipeline; ideally ~1 instruction/cycle.
-- More general-purpose registers.
-- Simple addressing modes.
-- Fewer data types.
-- Pipelining is feasible.
+### Main memory types
 
-### CISC (Complex Instruction Set Computer)
-
-The main idea is that a single instruction performs all the load, evaluate, and store operations — e.g., a multiply command loads data, evaluates it, and stores it — and is therefore complex.
-
-Its main characteristics are:
-
-- Complex instructions, therefore complex instruction decoding.
-- Instructions are larger than one word.
-- An instruction can take more than one clock cycle to execute.
-- Historically fewer general-purpose registers, since operations are performed in memory itself.
-- Complex addressing modes.
-- More data types.
-
-### RISC vs CISC comparison
+| Memory | Volatile? | Speed | Endurance | Relative cost / density | Typical use |
+|---|:---:|---|---|---|---|
+| **SRAM** | Yes | Very fast | Practically unlimited writes | Expensive / low density | Variables, stack, heap, buffers |
+| **Flash** | No | Fast reads, slower writes | Limited write/erase cycles | Cheap / high density | Firmware and constants |
+| **EEPROM** | No | Slower writes | Limited, usually higher than Flash | Higher cost / lower density | Configuration and calibration |
+| **External RAM** | Yes | Usually slower than internal SRAM | Practically unlimited writes | Lower cost/bit than internal SRAM; high density | Large buffers, images, complex applications |
 
 
-| Category                          | RISC                                                                 | CISC                                                                                 |
-|-----------------------------------|----------------------------------------------------------------------|--------------------------------------------------------------------------------------|
-| **Code size**                     | Larger (more instructions required).                                 | Smaller (complex instructions reduce lines of code).                                |
-| **Execution speed**               | Faster (simple instructions, easy decoding).                         | Slower (complex instructions, longer decoding time).                                |
-| **Power consumption**             | Lower (an advantage for portable/embedded devices).                  | Higher (instruction set complexity).                                                 |
-| **Program memory usage**          | Higher (more instructions for complex tasks).                        | Lower / more efficient (fewer instructions for complex tasks).                       |
-| **Design/ISA complexity**         | Lower (smaller, more regular set).                                   | Higher (broad, heterogeneous set; more complex design and fabrication).             |
-| **Number of instructions**        | More instructions needed for complex tasks.                          | Fewer instructions for the same task (each instruction does more).                  |
-| **Development/fabrication cost**  | Can be higher.                                                       | Can be lower relative to RISC.                                                       |
-| **Example ISAs/families and typical uses** | **ARM** (Cortex-M/A/R): STMicro (STM32), NXP, TI, Microchip (SAM), Nordic, Renesas, Samsung Exynos, Qualcomm Snapdragon, Broadcom (Raspberry Pi), Apple M-series; **RISC-V**: SiFive, Espressif (ESP32-C3/C6/H2), Kendryte K210, Bouffalo Lab BL602/604, StarFive; **MIPS** (hist.): Microchip PIC32, Loongson (GP); **Power/PowerPC**: NXP MPC5xxx (automotive), IBM (server); **SPARC** (LEON in aerospace); **SuperH** (Renesas SH); **AVR** (Atmel/Microchip 8-bit); **MSP430** (TI 16-bit); **ARC** (Synopsys); **Xtensa** (Cadence, e.g. "classic" ESP32 LX6/LX7); **OpenRISC**; **Nios II** (Intel FPGA), **MicroBlaze** (Xilinx FPGA). | **x86/x86-64**: Intel (Core/Atom), AMD (Ryzen/EPYC); **Motorola 68000/ColdFire** (hist./classic embedded), **VAX** (hist.); **Z80** (Zilog, classic/retro/simple embedded), **6502** (WDC 65C02/65C816, retro/industrial), **8051** (MCS-51, multiple vendors such as Nuvoton/Silicon Labs), **Renesas RX/RL78** (32/16-bit CISC), **68HC11/HC12** (classics). |
+### SRAM
+
+**SRAM (Static Random-Access Memory)** is the main working memory of a microcontroller.
+
+It is **volatile**, meaning that its contents are lost when power is removed.
+
+During program execution, SRAM typically stores:
+
+- global and local variables;
+- the **stack**, used for function calls and local variables;
+- the **heap**, used for dynamic memory allocation;
+- communication and sensor buffers.
+
+For example:
+
+```c
+uint8_t buffer[1024];
+```
+
+This array requires approximately **1 KiB of SRAM** while the program is running.
+
+### Flash memory
+
+**Flash memory** is **non-volatile**, meaning that its contents remain stored when the system is powered off.
+
+Its main purpose in a microcontroller system is to store the **firmware**.
+
+```text
+Flash
+├── Program instructions
+└── Constant data
+```
+
+Flash is much denser than SRAM, allowing manufacturers to provide significantly more storage at a lower cost per bit.
+
+However, there is an important tradeoff:
+
+> **Flash memory wears out when it is repeatedly erased and rewritten.**
+
+Flash cannot normally overwrite individual bytes directly. Before new data can be written, an area of memory must first be **erased**, typically in blocks or sectors.
+
+### EEPROM and persistent data
+
+Embedded systems often need to preserve small amounts of information even after power is removed, such as:
+
+- calibration parameters;
+- user settings;
+- counters;
+- device configuration.
+
+Traditionally, this information can be stored in **EEPROM (Electrically Erasable Programmable Read-Only Memory)**.
+
+Some modern microcontrollers do not contain dedicated EEPROM. Instead, they use Flash together with software techniques such as **NVS (Non-Volatile Storage)**.
+
+EEPROM and Flash both have **limited write endurance**, although EEPROM is generally designed to tolerate more frequent updates.
+
+This means that a program should avoid writing persistent memory unnecessarily.
+
+### Internal and external RAM
+
+Most microcontrollers contain SRAM directly inside the chip.
+
+Some systems also include **external RAM** when more memory is required.
+
+```text
+Microcontroller
+│
+├── Internal SRAM
+│   └── Fast, limited capacity
+│
+└── External RAM
+    └── Larger capacity, usually slower
+```
+
+External RAM may use technologies such as **PSRAM** or **SDRAM**.
+
+It can be useful for applications requiring large amounts of temporary data, such as:
+
+- image frame buffers;
+- graphical interfaces;
+- audio processing;
+- networking buffers;
+- machine-learning applications.
+
+For many basic microcontroller applications, however, internal SRAM is sufficient.
+
+!!! tip "Quick rules"
+    - **Program code** → Flash
+    - **Variables and temporary data** → SRAM
+    - **Configuration that must survive power-off** → EEPROM / NVS
+    - **Frequently changing data** → avoid Flash when possible
+    - **Very large temporary data** → external RAM, when available
+
+### The fundamental tradeoff
+
+A simplified way to think about MCU memory is:
+
+```text
+                    SRAM              Flash
+                    ────              ─────
+Fast                  ✓                 —
+Keeps data off        ✗                 ✓
+Many writes           ✓                 ✗
+High density          ✗                 ✓
+Cheap per bit         ✗                 ✓
+```
+
+This is why a microcontroller may contain **much more Flash than SRAM**.
+
+Flash provides inexpensive, dense storage for the program, while SRAM provides the fast working memory required while that program is running.
+
+When designing an embedded application, two basic questions should always be considered:
+
+- **Will the firmware fit in Flash?**
+- **Will the program's runtime data fit in SRAM?**
+
+And whenever non-volatile memory is written during normal operation:
+
+- **How frequently will it be written?**
+- **Will its endurance be sufficient for the expected lifetime of the system?**
+
+---
+
+## Memory models
+
+Embedded systems store two main types of information:
+
+- **Instructions**: the operations the CPU must perform, stored in program memory.
+- **Data**: the information the CPU operates on, stored in data memory.
+
+The way instructions and data are organized gives rise to different memory models.
+
+1. **Von Neumann memory model**: instructions and data share the same memory and the same access path. In the strict model, the CPU cannot fetch an instruction and access data at the same time through that path.
+
+    ![Von Neumann Memory Model](../images/vonneumann.png){width=60%}
+
+2. **Harvard memory model**: instructions and data use separate memories and separate access paths. This allows the CPU to access instructions and data simultaneously.
+
+    ![Harvard Memory Model](../images/harvard.png){width=60%}
+
+3. **Modified Harvard architecture**: many modern microcontrollers combine characteristics of both models. They may provide separate internal paths for instructions and data while still exposing a unified address space to the programmer.
+
+!!! note
+    Von Neumann and Harvard are useful **ideal models**. Real processors may introduce caches, multiple buses, or other mechanisms that modify their practical behavior.
+
+---
+
+## Architecture size
+
+When we say that a processor is **8-bit, 16-bit, 32-bit, or 64-bit**, we usually refer to the natural width of its CPU registers and arithmetic logic unit (**ALU**).
+
+For example, a 32-bit processor is designed to operate efficiently on 32-bit values.
+
+However, several different widths can exist inside the same processor.
+
+| Concept | Meaning |
+|---|---|
+| **CPU / word width** | Natural size of arithmetic and register operations |
+| **Address width** | Number of bits used to identify memory locations |
+| **Data bus width** | Number of bits that can be transferred in parallel |
+| **Pointer size** | Number of bits used by a program to represent an address |
+
+These values are related, but they do not have to be identical.
+
+### Example: ATmega328P
+
+The ATmega328P is called an **8-bit microcontroller**, but several different sizes exist inside it.
+
+| Characteristic | ATmega328P |
+|---|---:|
+| **CPU / ALU** | 8 bit |
+| **General-purpose registers** | 32 × 8 bit |
+| **Data bus** | 8 bit |
+| **Address pointers (X, Y, Z)** | 16 bit |
+| **Program counter** | 14 bit |
+| **Flash** | 32 KiB |
+| **SRAM** | 2 KiB |
+| **EEPROM** | 1 KiB |
+
+The AVR CPU performs its normal operations using **8-bit registers** and an **8-bit data bus**. However, six of these registers can be combined in pairs to create the 16-bit `X`, `Y`, and `Z` pointers used to address data memory.
+
+```text
+              ATmega328P
+
+CPU / ALU ─────────────── 8 bit
+Data bus ──────────────── 8 bit
+
+X, Y, Z pointers ─────── 16 bit
+Program Counter ───────── 14 bit
+
+Flash ────────────────── 32 KiB
+SRAM ──────────────────── 2 KiB
+EEPROM ────────────────── 1 KiB
+```
+
+Its program memory provides another example. The ATmega328P contains **32 KiB of Flash**, organized as **16K × 16-bit words**. Because there are 16K program locations, the program counter requires **14 bits** to select one of them.
+
+
+### Physical memory vs address space
+
+An **address space** represents the locations that the processor is capable of identifying. It does not mean that every possible address corresponds to physical RAM.
+
+For example, the ATmega328P data-memory map contains not only SRAM but also CPU registers and peripheral registers. Its internal SRAM occupies only part of that data address space.
+
+A simplified memory map can look like:
+
+```text
+Memory address space
+│
+├── CPU registers
+├── Peripheral registers
+├── SRAM
+├── Reserved addresses
+└── Other memory or peripherals
+```
+
+This is common in microcontrollers: memory and hardware peripherals are assigned particular addresses so that the CPU can access them using memory operations.
+
+---
+
+## ISA and microarchitecture: RISC vs CISC
+
+A processor can be described at different levels.
+
+### Instruction Set Architecture (ISA)
+
+The **Instruction Set Architecture (ISA)** defines the interface between software and the processor.
+
+It specifies things such as:
+
+- available instructions;
+- registers;
+- supported data types;
+- addressing modes;
+- interrupt and exception behavior.
+
+Examples of ISAs include:
+
+- **AVR**;
+- **Arm**;
+- **RISC-V**;
+- **x86**.
+
+The ISA defines **what the processor can do**, but not exactly how it does it internally.
+
+### Microarchitecture
+
+The **microarchitecture** is the internal implementation of an ISA.
+
+It includes elements such as:
+
+- pipelines;
+- execution units;
+- caches;
+- instruction decoding;
+- branch handling.
+
+Two processors can implement the same ISA but use different microarchitectures.
+
+!!! tip "Key idea"
+    **ISA = what instructions the processor understands.**
+
+    **Microarchitecture = how the processor executes those instructions.**
+
+### RISC
+
+**RISC (Reduced Instruction Set Computer)** refers to an ISA design philosophy based on relatively simple and regular instructions.
+
+A common characteristic is the **load/store model**:
+
+- data is loaded from memory into registers;
+- operations are performed mainly on registers;
+- results are stored back into memory when necessary.
+
+For example:
+
+```text
+LOAD  R1, A
+LOAD  R2, B
+ADD   R3, R1, R2
+STORE C, R3
+```
+
+Typical RISC characteristics include:
+
+- relatively simple and regular instructions;
+- many operations performed on registers;
+- explicit load and store instructions for memory access;
+- relatively simple addressing modes;
+- instruction formats that are generally easier to decode and pipeline.
+
+Common embedded RISC architectures include:
+
+- **AVR** — used by the ATmega328P;
+- **Arm** — used by many Cortex-M microcontrollers;
+- **RISC-V** — used by devices such as the ESP32-C3 and ESP32-C6;
+- **Xtensa** — used by several ESP32 families.
+
+### CISC
+
+**CISC (Complex Instruction Set Computer)** refers to an ISA design philosophy that provides richer instructions and addressing modes.
+
+A single instruction may perform more work or combine operations that would require several instructions in a simpler ISA.
+
+Typical characteristics include:
+
+- more expressive instructions;
+- instructions that may operate directly on memory;
+- more addressing modes;
+- more complex instruction decoding;
+- instruction lengths that may vary.
+
+Examples include:
+
+- **x86 / x86-64**;
+- **8051**;
+- **Renesas RX**.
+
+### Conceptual comparison
+
+A complex task can be represented either as several simpler instructions or as fewer, more expressive instructions.
+
+```text
+RISC-style approach
+
+LOAD
+LOAD
+OPERATE
+STORE
+```
+
+```text
+CISC-style approach
+
+COMPLEX OPERATION
+```
+
+In both cases, the processor must still perform the required physical work.
+
+The difference is mainly in **how that work is represented in the instruction set**.
+
+!!! important
+    RISC does **not** automatically mean faster, cheaper, or lower power.
+
+    CISC does **not** automatically mean slower or higher power.
+
+    Actual performance depends on the processor's microarchitecture, clock frequency, memory system, compiler, and application.
+
+!!! tip "Key ideas"
+    - The **ISA** defines the instructions visible to software.
+    - The **microarchitecture** defines how those instructions are implemented.
+    - **RISC** favors simpler and more regular instructions.
+    - **CISC** favors richer and more expressive instructions.
+    - RISC and CISC alone do not determine processor performance.
+
+---
 
 ## Checklist for choosing an MCU
 
 **Quick MCU selection checklist**
 
-- Real-time requirements (hard/soft) and I/O latency
-- Power/energy budget and sleep modes
-- Key peripherals (ADC, PWM, DMA, comms)
-- Required memory (Flash/SRAM) + safety (WDT, MPUs)
-- Ecosystem (HAL, RTOS, toolchain, community)
-- Cost and availability (product lifetime)
+- Real-time requirements (hard/soft) and I/O latency.
+- Power/energy budget and sleep modes.
+- Key peripherals (ADC, PWM, DMA, communications).
+- Required memory (Flash/SRAM) and protection/recovery features (watchdog, brownout, memory protection).
+- Ecosystem (HAL, RTOS, toolchain, community).
+- Cost and availability over the expected product lifetime.
