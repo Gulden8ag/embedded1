@@ -1,0 +1,2328 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Course notes for Embedded Systems I — RP2350 / Raspberry Pi Pico 2">
+      
+      
+        <meta name="author" content="Oliver Ochoa Garcia">
+      
+      
+      
+        <link rel="prev" href="../../Bloque0-Introduccion/Tema_A/">
+      
+      
+        <link rel="next" href="../Tema_C/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Environment and toolchain - Embedded Systems I (LIIE1214)</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="red">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#environment-and-toolchain" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Embedded Systems I (LIIE1214)" class="md-header__button md-logo" aria-label="Embedded Systems I (LIIE1214)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Embedded Systems I (LIIE1214)
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Environment and toolchain
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Gulden8ag/embedded1" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Gulden8ag/embedded1
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Embedded Systems I (LIIE1214)" class="md-nav__button md-logo" aria-label="Embedded Systems I (LIIE1214)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Embedded Systems I (LIIE1214)
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Gulden8ag/embedded1" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Gulden8ag/embedded1
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 0 — Introduction
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 0 — Introduction
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque0-Introduccion/T1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Syllabus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque0-Introduccion/T0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab log template
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--draft"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque0-Introduccion/T2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab log Example
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--complete"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque0-Introduccion/Tema_A/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is an embedded system?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 1 — GPIO
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 1 — GPIO
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Environment and toolchain
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Environment and toolchain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#from-source-code-to-firmware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        From source code to firmware
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="From source code to firmware">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#programming-language-levels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Programming-language levels
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compiled-vs-interpreted-languages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compiled vs interpreted languages
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cross-compilation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-compilation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cross-compilation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#our-target-raspberry-pi-pico-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Our target: Raspberry Pi Pico 2
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-our-first-firmware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building our first firmware
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Building our first firmware">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-prepare-the-development-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1 — Prepare the development tools
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 1 — Prepare the development tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#install-visual-studio-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install Visual Studio Code
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-the-raspberry-pi-pico-extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install the Raspberry Pi Pico extension
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-create-the-blink-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2 — Create the Blink project
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-look-at-the-build-instructions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3 — Look at the build instructions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-look-at-the-source-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4 — Look at the source code
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 4 — Look at the source code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-does-the-program-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What does the program do?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-compile-the-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5 — Compile the project
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-just-happened" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What just happened?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-inspect-what-the-build-produced" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6 — Inspect what the build produced
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 6 — Inspect what the build produced">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dis-from-c-to-isa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        .dis — from C to ISA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#map-from-program-to-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        .map — from program to memory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uf2-from-executable-to-device" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        .uf2 — from executable to device
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-modify-and-rebuild" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7 — Modify and rebuild
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-8-load-the-firmware-onto-the-pico-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8 — Load the firmware onto the Pico 2
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 8 — Load the firmware onto the Pico 2">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bootsel-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BOOTSEL method
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Summary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-terms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key terms
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tema_C/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPIO control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tema_D/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Digital inputs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tema_E/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interrupts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 2 — Timing and serial
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 2 — Timing and serial
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque2-Temporizador/Tema_F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque2-Temporizador/Tema_G/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PWM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque2-Temporizador/Tema_H/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UART
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 3 — Analog and buses
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 3 — Analog and buses
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque3/Tema_I/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque3/Tema_J/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I2C
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Proyecto/Instrucciones/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capstone Project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#from-source-code-to-firmware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        From source code to firmware
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="From source code to firmware">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#programming-language-levels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Programming-language levels
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compiled-vs-interpreted-languages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compiled vs interpreted languages
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cross-compilation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-compilation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cross-compilation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#our-target-raspberry-pi-pico-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Our target: Raspberry Pi Pico 2
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-our-first-firmware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building our first firmware
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Building our first firmware">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-prepare-the-development-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1 — Prepare the development tools
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 1 — Prepare the development tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#install-visual-studio-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install Visual Studio Code
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-the-raspberry-pi-pico-extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install the Raspberry Pi Pico extension
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-create-the-blink-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2 — Create the Blink project
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-look-at-the-build-instructions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3 — Look at the build instructions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-look-at-the-source-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4 — Look at the source code
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 4 — Look at the source code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-does-the-program-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What does the program do?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-compile-the-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5 — Compile the project
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-just-happened" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What just happened?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-inspect-what-the-build-produced" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6 — Inspect what the build produced
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 6 — Inspect what the build produced">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dis-from-c-to-isa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        .dis — from C to ISA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#map-from-program-to-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        .map — from program to memory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uf2-from-executable-to-device" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        .uf2 — from executable to device
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-modify-and-rebuild" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7 — Modify and rebuild
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-8-load-the-firmware-onto-the-pico-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8 — Load the firmware onto the Pico 2
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 8 — Load the firmware onto the Pico 2">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bootsel-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BOOTSEL method
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Summary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-terms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key terms
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="environment-and-toolchain">Environment and Toolchain</h1>
+<h2 id="learning-objectives">Learning objectives</h2>
+<p>By the end of this session, you should be able to:</p>
+<ul>
+<li>distinguish <strong>source code</strong> from the machine instructions executed by a microcontroller;</li>
+<li>explain <strong>cross-compilation</strong> using a host computer and a target MCU;</li>
+<li>identify the main tools involved in building embedded firmware;</li>
+<li>understand, at a high level, the role of <strong>CMake</strong> and the Pico SDK;</li>
+<li>compile a C program for the Raspberry Pi Pico 2;</li>
+<li>identify common build outputs such as <code>.elf</code> and <code>.uf2</code>;</li>
+<li>if hardware is available, load the firmware and verify that it runs.</li>
+</ul>
+<hr />
+<h2 id="from-source-code-to-firmware">From source code to firmware</h2>
+<p>A microcontroller does not directly understand C code.</p>
+<p>The CPU executes <strong>machine instructions defined by its ISA</strong>. A development toolchain converts the source code written by the programmer into those instructions.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Human-readable code
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>        ↓
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>     Toolchain
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        ↓
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>Machine instructions
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        ↓
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>       MCU
+</span></code></pre></div>
+<h3 id="programming-language-levels">Programming-language levels</h3>
+<p>Programming languages provide different levels of abstraction from the hardware.</p>
+<ul>
+<li>
+<p><strong>Low-level languages</strong> are closely related to the processor architecture.<br />
+  Example: <strong>Assembly</strong>.</p>
+</li>
+<li>
+<p><strong>High-level languages</strong> provide more abstraction from hardware details.<br />
+  Examples: <strong>Python, Java, C#</strong>.</p>
+</li>
+<li>
+<p><strong>C</strong> is often described as a <strong>middle-level language</strong> because it combines structured programming with direct access to memory, registers, and hardware.</p>
+</li>
+</ul>
+<p>For embedded systems, C remains especially useful because it gives the programmer significant hardware control while still providing higher-level structures such as functions, loops, and data types.</p>
+<hr />
+<h2 id="compiled-vs-interpreted-languages">Compiled vs interpreted languages</h2>
+<p>Programs can be executed in different ways.</p>
+<table>
+<thead>
+<tr>
+<th>Compiled</th>
+<th>Interpreted</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Source code is translated before execution</td>
+<td>Code is processed by a runtime during execution</td>
+</tr>
+<tr>
+<td>Produces machine code for a target platform</td>
+<td>Requires an interpreter/runtime on the target</td>
+</tr>
+<tr>
+<td>Example: <strong>C / C++</strong></td>
+<td>Example: <strong>Python</strong></td>
+</tr>
+</tbody>
+</table>
+<p>In this course we will focus primarily on <strong>compiled C/C++ firmware</strong>.</p>
+<hr />
+<h2 id="cross-compilation">Cross-compilation</h2>
+<p>On a desktop computer, the processor running the development tools is usually different from the processor inside the microcontroller.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>HOST COMPUTER                         TARGET
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>PC                                    Raspberry Pi Pico 2
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>x86-64 processor                      RP2350
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>        │                             Arm Cortex-M33
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>        │
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        │  C source code
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>        ▼
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a> Cross-compiler
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>        │
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>        │  Arm machine code
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>        └───────────────────────────► MCU
+</span></code></pre></div>
+<p>The computer where we compile the program is called the <strong>host</strong>.</p>
+<p>The processor where the final program will run is called the <strong>target</strong>.</p>
+<p>This is why the compiler must know our target: instructions generated for an x86-64 computer cannot be directly executed by an Arm Cortex-M33.</p>
+<hr />
+<h3 id="our-target-raspberry-pi-pico-2">Our target: Raspberry Pi Pico 2</h3>
+<p>The Raspberry Pi Pico 2 uses the <strong>RP2350</strong> microcontroller.</p>
+<p>The RP2350 contains two possible processor architectures:</p>
+<pre class="mermaid"><code>flowchart TD
+    RP["RP2350"] --&gt; ARM["Dual Arm Cortex-M33"]
+    RP --&gt; RISCV["Dual Hazard3 RISC-V"]</code></pre>
+<p>In this course we will compile for the <strong>Arm Cortex-M33</strong> so that everyone uses the same target architecture.</p>
+<hr />
+<h2 id="building-our-first-firmware">Building our first firmware</h2>
+<p>Our objective is:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>blink.c
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>   ↓
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>Build tools
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>   ↓
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>Firmware for the RP2350
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>   ↓
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>blink.uf2
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>   ↓ (If you have a Pico 2)
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>Load onto the Pico 2
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    ↓
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>Pico 2 executes it
+</span></code></pre></div>
+<hr />
+<h3 id="step-1-prepare-the-development-tools">Step 1 — Prepare the development tools</h3>
+<p>We will use:</p>
+<ul>
+<li><strong>Visual Studio Code</strong> as the development environment;</li>
+<li>the <strong>Raspberry Pi Pico</strong> VS Code extension;</li>
+<li>the <strong>Pico C/C++ SDK</strong>;</li>
+<li>the Arm cross-compilation <strong>toolchain</strong>;</li>
+<li><strong>CMake</strong> as part of the build system.</li>
+</ul>
+<h4 id="install-visual-studio-code">Install Visual Studio Code</h4>
+<p>Install <a href="https://code.visualstudio.com/">Visual Studio Code</a>.</p>
+<h4 id="install-the-raspberry-pi-pico-extension">Install the Raspberry Pi Pico extension</h4>
+<p>Open VS Code:</p>
+<ol>
+<li>Select <strong>Extensions</strong>.</li>
+<li>Search for <strong>Raspberry Pi Pico</strong>.</li>
+<li>Install the official extension.</li>
+</ol>
+<p><img alt="Pi Pico Extension" loading="lazy" src="../../images/picoextension.png" /></p>
+<div class="admonition info">
+<p class="admonition-title">What did we just install?</p>
+<p>The extension helps configure several tools that work together:</p>
+<ul>
+<li>the <strong>compiler</strong> translates C/C++ for the target CPU;</li>
+<li>the <strong>assembler</strong> converts assembly into machine code;</li>
+<li>the <strong>linker</strong> combines compiled code and libraries;</li>
+<li>the <strong>Pico SDK</strong> provides libraries, headers, and board support;</li>
+<li><strong>CMake</strong> describes how the project should be built.</li>
+</ul>
+<p>Together, the compiler, assembler, linker, and related programs are commonly called a <strong>toolchain</strong>.</p>
+</div>
+<hr />
+<h3 id="step-2-create-the-blink-project">Step 2 — Create the Blink project</h3>
+<p>In the VS Code sidebar:</p>
+<ol>
+<li>Select the <strong>Raspberry Pi Pico Project</strong> icon.</li>
+<li>Select <strong>New Project from Examples</strong>.</li>
+<li>Search for the <code>blink</code> example.</li>
+<li>Select <strong>Pico 2</strong> as the board.</li>
+<li>Select the destination folder.</li>
+<li>Click <strong>Create</strong>.</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The first project may require the extension to download and configure the SDK and cross-compilation toolchain.</p>
+</div>
+<p><img alt="Create Project" loading="lazy" src="../../images/vscodesteps.png" /></p>
+<p>Before compiling anything, look at the project files.</p>
+<p>Two files are especially important for us:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Project
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>│
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>├── blink.c
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>│      └── What should the MCU do?
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>│
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>└── CMakeLists.txt
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>       └── How should this project be built?
+</span></code></pre></div>
+<hr />
+<h3 id="step-3-look-at-the-build-instructions">Step 3 — Look at the build instructions</h3>
+<p>The Pico SDK uses <strong>CMake</strong> to describe how a project should be built.</p>
+<p>You do <strong>not</strong> need to learn CMake in detail yet.</p>
+<p>For now, think of <code>CMakeLists.txt</code> as the file that connects our source code to the build tools.</p>
+<p>A simplified part of the project looks like:</p>
+<div class="language-cmake highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">add_executable</span><span class="p">(</span><span class="s">blink</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="s">blink.c</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="p">)</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">blink</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="s">pico_stdlib</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="p">)</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="nb">pico_add_extra_outputs</span><span class="p">(</span><span class="s">blink</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Read it as:</p>
+<ul>
+<li><code>add_executable(...)</code> Use blink.c to build this program</li>
+<li><code>target_link_libraries(...)</code> Use the Pico standard library</li>
+<li><code>pico_add_extra_outputs(...)</code> Generate firmware files such as UF2</li>
+</ul>
+<hr />
+<h3 id="step-4-look-at-the-source-code">Step 4 — Look at the source code</h3>
+<p>Open <code>blink.c</code>.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/stdlib.h"</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">uint</span><span class="w"> </span><span class="n">led</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PICO_DEFAULT_LED_PIN</span><span class="p">;</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="n">gpio_init</span><span class="p">(</span><span class="n">led</span><span class="p">);</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="n">gpio_set_dir</span><span class="p">(</span><span class="n">led</span><span class="p">,</span><span class="w"> </span><span class="n">GPIO_OUT</span><span class="p">);</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">        </span><span class="n">gpio_put</span><span class="p">(</span><span class="n">led</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">        </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">250</span><span class="p">);</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">        </span><span class="n">gpio_put</span><span class="p">(</span><span class="n">led</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">        </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">250</span><span class="p">);</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>At this moment we have <strong>C source code</strong>, not firmware that the CPU can execute directly.</p>
+<h4 id="what-does-the-program-do">What does the program do?</h4>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/stdlib.h"</span>
+</span></code></pre></div>
+<p>Makes common Pico SDK functions and definitions available to the program.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Defines the main entry point of our application after the startup code has prepared the system.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">const</span><span class="w"> </span><span class="n">uint</span><span class="w"> </span><span class="n">led</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PICO_DEFAULT_LED_PIN</span><span class="p">;</span>
+</span></code></pre></div>
+<p>Selects the GPIO connected to the default LED for the selected board.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">gpio_init</span><span class="p">(</span><span class="n">led</span><span class="p">);</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">gpio_set_dir</span><span class="p">(</span><span class="n">led</span><span class="p">,</span><span class="w"> </span><span class="n">GPIO_OUT</span><span class="p">);</span>
+</span></code></pre></div>
+<p>Initializes the pin and configures it as a <strong>digital output</strong>.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Creates a loop that runs continuously while the system is powered.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">gpio_put</span><span class="p">(</span><span class="n">led</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">gpio_put</span><span class="p">(</span><span class="n">led</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</span></code></pre></div>
+<p>Changes the digital output between HIGH and LOW.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">250</span><span class="p">);</span>
+</span></code></pre></div>
+<p>Pauses execution for approximately 250 milliseconds.</p>
+<p>Equivalent in AVR</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;avr/io.h&gt;</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="n">DDRB</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">DDB5</span><span class="p">);</span><span class="w"> </span><span class="c1">// Set pin 13 as output</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">        </span><span class="n">PORTB</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">PORTB5</span><span class="p">);</span><span class="w"> </span><span class="c1">// Turn on LED</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">        </span><span class="n">_delay_ms</span><span class="p">(</span><span class="mi">250</span><span class="p">);</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="w">        </span><span class="n">PORTB</span><span class="w"> </span><span class="o">&amp;=</span><span class="w"> </span><span class="o">~</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">PORTB5</span><span class="p">);</span><span class="w"> </span><span class="c1">// Turn off LED</span>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="w">        </span><span class="n">_delay_ms</span><span class="p">(</span><span class="mi">250</span><span class="p">);</span>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="p">}</span>
+</span></code></pre></div>
+<hr />
+<h3 id="step-5-compile-the-project">Step 5 — Compile the project</h3>
+<p>Select <strong>Compile</strong> in the Pico extension.</p>
+<p>Several stages occur automatically:</p>
+<pre class="mermaid"><code>flowchart LR
+    SRC["blink.c&lt;br/&gt;Source code"] --&gt; PRE["Preprocessor"]
+    PRE --&gt; COMP["Compiler"]
+    COMP --&gt; ASM["Assembler"]
+    ASM --&gt; OBJ["Object files&lt;br/&gt;.o"]
+    OBJ --&gt; LINK["Linker"]
+    SDK["Pico SDK&lt;br/&gt;libraries"] --&gt; LINK
+    LINK --&gt; ELF["blink.elf"]
+    ELF --&gt; UF2["blink.uf2"]</code></pre>
+<h3 id="what-just-happened">What just happened?</h3>
+<ol>
+<li><strong>Preprocessor</strong>, Processes directives such as <code>#include "pico/stdlib.h"</code> and prepares the source code for compilation.</li>
+<li><strong>Compiler</strong>, Translates our C code into instructions for the selected <strong>Arm Cortex-M33 target</strong>. This is the <strong>cross-compilation</strong> step.</li>
+<li><strong>Assembler</strong>, Converts assembly instructions into machine-code <strong>object files</strong> such as <code>.o</code> files.</li>
+<li><strong>Linker</strong>, Combines: <code>compiled code + Pico SDK libraries</code> into a single executable file. It also assigns the final locations of code and data in the MCU's memory map.</li>
+<li><strong>Firmware outputs</strong>, The executable is converted into formats that can be inspected, debugged, or loaded onto the board.</li>
+</ol>
+<hr />
+<h3 id="step-6-inspect-what-the-build-produced">Step 6 — Inspect what the build produced</h3>
+<p>After a successful build, locate the build directory.</p>
+<p>You should find several generated files.</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it tells us</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.elf</code></td>
+<td>The linked executable containing the program and debugging information</td>
+</tr>
+<tr>
+<td><code>.uf2</code></td>
+<td>The firmware file we can load onto the Pico over USB</td>
+</tr>
+<tr>
+<td><code>.bin</code> / <code>.hex</code></td>
+<td>Other representations of the firmware</td>
+</tr>
+<tr>
+<td><code>.map</code></td>
+<td>Where code, data, and symbols were placed in memory</td>
+</tr>
+<tr>
+<td><code>.dis</code></td>
+<td>The generated processor instructions in disassembled form</td>
+</tr>
+</tbody>
+</table>
+<p>These files connect several concepts from the previous class.</p>
+<h4 id="dis-from-c-to-isa"><code>.dis</code> — from C to ISA</h4>
+<p>Open the generated <code>.dis</code> file.</p>
+<p>Our original program contained C:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/stdlib.h"</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">uint</span><span class="w"> </span><span class="n">led</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PICO_DEFAULT_LED_PIN</span><span class="p">;</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">    </span><span class="n">gpio_init</span><span class="p">(</span><span class="n">led</span><span class="p">);</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">    </span><span class="n">gpio_set_dir</span><span class="p">(</span><span class="n">led</span><span class="p">,</span><span class="w"> </span><span class="n">GPIO_OUT</span><span class="p">);</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">        </span><span class="n">gpio_put</span><span class="p">(</span><span class="n">led</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="w">        </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">250</span><span class="p">);</span>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="w">        </span><span class="n">gpio_put</span><span class="p">(</span><span class="n">led</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="w">        </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">250</span><span class="p">);</span>
+</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The disassembly shows instructions intended for the processor.</p>
+<div class="language-asm highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="err">100001</span><span class="nf">e0</span><span class="w"> </span><span class="err">&lt;</span><span class="no">main</span><span class="err">&gt;</span><span class="p">:</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="err">100001</span><span class="nl">e0:</span><span class="w">   </span><span class="nf">b570</span><span class="w">        </span><span class="no">push</span><span class="w">    </span><span class="p">{</span><span class="no">r4</span><span class="p">,</span><span class="w"> </span><span class="no">r5</span><span class="p">,</span><span class="w"> </span><span class="no">r6</span><span class="p">,</span><span class="w"> </span><span class="no">lr</span><span class="p">}</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="err">100001</span><span class="nl">e2:</span><span class="w">   </span><span class="err">2019</span><span class="w">        </span><span class="nf">movs</span><span class="w">    </span><span class="no">r0</span><span class="p">,</span><span class="w"> </span><span class="mi">#25</span><span class="w">          </span><span class="c1">; r0 = 25  (PICO_DEFAULT_LED_PIN)</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="err">100001</span><span class="nl">e4:</span><span class="w">   </span><span class="nf">f000</span><span class="w"> </span><span class="no">f814</span><span class="w">   </span><span class="no">bl</span><span class="w">  </span><span class="mh">10000210</span> <span class="p">&lt;</span><span class="no">gpio_init</span><span class="p">&gt;</span><span class="w">   </span><span class="c1">; gpio_init(led)</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="err">100001</span><span class="nl">e8:</span><span class="w">   </span><span class="nf">f04f</span><span class="w"> </span><span class="mi">0501</span><span class="w">   </span><span class="no">mov.w</span><span class="w">   </span><span class="no">r5</span><span class="p">,</span><span class="w"> </span><span class="mi">#1</span><span class="w">            </span><span class="c1">; r5 = 1  (constant "true"/high)</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="err">100001</span><span class="nl">ec:</span><span class="w">   </span><span class="err">2319</span><span class="w">        </span><span class="nf">movs</span><span class="w">    </span><span class="no">r3</span><span class="p">,</span><span class="w"> </span><span class="mi">#25</span><span class="w">           </span><span class="c1">; r3 = 25 (pin number again)</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="err">100001</span><span class="nl">ee:</span><span class="w">   </span><span class="nf">ec45</span><span class="w"> </span><span class="mi">3044</span><span class="w">   </span><span class="no">gpioc_bit_oe_put</span><span class="w"> </span><span class="no">r3</span><span class="p">,</span><span class="w"> </span><span class="no">r5</span><span class="w">   </span><span class="c1">; gpio_set_dir(led, GPIO_OUT)</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="err">100001</span><span class="nl">f2:</span><span class="w">   </span><span class="nf">f04f</span><span class="w"> </span><span class="mi">0600</span><span class="w">   </span><span class="no">mov.w</span><span class="w">   </span><span class="no">r6</span><span class="p">,</span><span class="w"> </span><span class="mi">#0</span><span class="w">            </span><span class="c1">; r6 = 0  (constant "false"/low)</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="err">100001</span><span class="nl">f6:</span><span class="w">   </span><span class="err">2419</span><span class="w">        </span><span class="nf">movs</span><span class="w">    </span><span class="no">r4</span><span class="p">,</span><span class="w"> </span><span class="mi">#25</span><span class="w">           </span><span class="c1">; r4 = 25 (pin number, loop-invariant)</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="c1">; ---- top of while(true) loop ----</span>
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="err">100001</span><span class="nl">f8:</span><span class="w">   </span><span class="nf">ec45</span><span class="w"> </span><span class="mi">4040</span><span class="w">   </span><span class="no">gpioc_bit_out_put</span><span class="w"> </span><span class="no">r4</span><span class="p">,</span><span class="w"> </span><span class="no">r5</span><span class="w">  </span><span class="c1">; gpio_put(led, 1)</span>
+</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="err">100001</span><span class="nl">fc:</span><span class="w">   </span><span class="err">20</span><span class="nf">fa</span><span class="w">        </span><span class="no">movs</span><span class="w">    </span><span class="no">r0</span><span class="p">,</span><span class="w"> </span><span class="mi">#250</span><span class="w">          </span><span class="c1">; r0 = 250</span>
+</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="err">100001</span><span class="nl">fe:</span><span class="w">   </span><span class="nf">f000</span><span class="w"> </span><span class="no">fbeb</span><span class="w">   </span><span class="no">bl</span><span class="w">  </span><span class="mh">100009d8</span> <span class="p">&lt;</span><span class="no">sleep_ms</span><span class="p">&gt;</span><span class="w">   </span><span class="c1">; sleep_ms(250)</span>
+</span><span id="__span-15-17"><a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a>
+</span><span id="__span-15-18"><a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a><span class="err">10000202:</span><span class="w">   </span><span class="nf">ec46</span><span class="w"> </span><span class="mi">4040</span><span class="w">   </span><span class="no">gpioc_bit_out_put</span><span class="w"> </span><span class="no">r4</span><span class="p">,</span><span class="w"> </span><span class="no">r6</span><span class="w">  </span><span class="c1">; gpio_put(led, 0)</span>
+</span><span id="__span-15-19"><a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a><span class="err">10000206:</span><span class="w">   </span><span class="err">20</span><span class="nf">fa</span><span class="w">        </span><span class="no">movs</span><span class="w">    </span><span class="no">r0</span><span class="p">,</span><span class="w"> </span><span class="mi">#250</span><span class="w">          </span><span class="c1">; r0 = 250</span>
+</span><span id="__span-15-20"><a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a><span class="err">10000208:</span><span class="w">   </span><span class="nf">f000</span><span class="w"> </span><span class="no">fbe6</span><span class="w">   </span><span class="no">bl</span><span class="w">  </span><span class="mh">100009d8</span> <span class="p">&lt;</span><span class="no">sleep_ms</span><span class="p">&gt;</span><span class="w">   </span><span class="c1">; sleep_ms(250)</span>
+</span><span id="__span-15-21"><a id="__codelineno-15-21" name="__codelineno-15-21" href="#__codelineno-15-21"></a>
+</span><span id="__span-15-22"><a id="__codelineno-15-22" name="__codelineno-15-22" href="#__codelineno-15-22"></a><span class="err">1000020</span><span class="nl">c:</span><span class="w">   </span><span class="nf">e7f3</span><span class="w">        </span><span class="no">b.n</span><span class="w"> </span><span class="mh">100001f6</span> <span class="p">&lt;</span><span class="no">main</span><span class="p">+</span><span class="mi">0x16</span><span class="p">&gt;</span><span class="w">  </span><span class="c1">; jump back to top of loop</span>
+</span></code></pre></div>
+<p>This is the connection between the <strong>ISA</strong> discussed previously and the compiler we are using today.</p>
+<h4 id="map-from-program-to-memory"><code>.map</code> — from program to memory</h4>
+<p>The <code>.map</code> file shows where the linker placed different parts of the program.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">Name</span><span class="w">             </span><span class="n">Origin</span><span class="w">             </span><span class="n">Length</span><span class="w">             </span><span class="n">Attributes</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="n">FLASH</span><span class="w">            </span><span class="mh">0x10000000</span><span class="w">         </span><span class="mh">0x00400000</span><span class="w">         </span><span class="n">xr</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="n">RAM</span><span class="w">              </span><span class="mh">0x20000000</span><span class="w">         </span><span class="mh">0x00080000</span><span class="w">         </span><span class="n">xrw</span>
+</span></code></pre></div>
+<p>This connects to the memory concepts discussed previously:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>Program
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>├── Code
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>├── Constants
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>├── Variables
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>└── Other sections
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>        ↓
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>Assigned to regions in the MCU memory map
+</span></code></pre></div>
+<p>You do not need to understand the complete <code>.map</code> file yet. For now, recognize that the <strong>linker decides where the program will live in memory</strong>.</p>
+<h4 id="uf2-from-executable-to-device"><code>.uf2</code> — from executable to device</h4>
+<p>The <code>.uf2</code> file is the firmware image we will use to load the program onto the Pico.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>blink.c
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>   ↓
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>Toolchain
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>   ↓
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>blink.elf
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>   ↓
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>blink.uf2
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>   ↓
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>Pico 2
+</span></code></pre></div>
+<hr />
+<h3 id="step-7-modify-and-rebuild">Step 7 — Modify and rebuild</h3>
+<p>Change:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">250</span><span class="p">);</span>
+</span></code></pre></div>
+<p>to:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+</span></code></pre></div>
+<p>Compile the project again.</p>
+<p>You have now repeated the development cycle:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>Edit
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a> ↓
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>Build
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a> ↓
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>Inspect
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a> ↓
+</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>Repeat
+</span></code></pre></div>
+<hr />
+<h3 id="step-8-load-the-firmware-onto-the-pico-2">Step 8 — Load the firmware onto the Pico 2</h3>
+<p>If you already have your Pico 2, you can now test the firmware.</p>
+<h4 id="bootsel-method">BOOTSEL method</h4>
+<ol>
+<li>Disconnect the Pico 2.</li>
+<li>Hold the <strong>BOOTSEL</strong> button.</li>
+<li>Connect the board through USB.</li>
+<li>Release <strong>BOOTSEL</strong>.</li>
+<li>The Pico 2 should appear as a USB mass-storage device named <strong>RP2350</strong>.</li>
+<li>Compile and load the program onto the board.<ol>
+<li>In the left sidebar, select the main file blink.c.</li>
+<li>Click the "Compile" button.</li>
+<li>Wait for the compilation to finish without errors, and verify that a UF2 target file was created.</li>
+<li>To program it, drag the UF2 onto the corresponding drive or click the "Run" button.</li>
+</ol>
+</li>
+</ol>
+<p>The board will reboot and begin executing the firmware.</p>
+<p><img alt="Compile and program" loading="lazy" src="../../images/programcompile.png" /></p>
+<details class="warning">
+<summary>Windows upload problem</summary>
+<p>If Windows detects a Pico in BOOTSEL mode but the development tools cannot access it, a USB-driver configuration issue may be present.</p>
+<p>If you encounter:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>No accessible RP2040/RP2350 devices in BOOTSEL mode were found.
+</span></code></pre></div>
+<p>ask the instructor before changing USB drivers. If required, the driver can be inspected or changed using <a href="https://zadig.akeo.ie/">Zadig</a>.</p>
+</details>
+<hr />
+<h2 id="summary">Summary</h2>
+<p>We start with a C file:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>blink.c
+</span></code></pre></div>
+<p>and ended with firmware that can run on another processor:</p>
+<pre class="mermaid"><code>flowchart LR
+    C["C source&lt;br/&gt;blink.c"]
+    CM["CMake&lt;br/&gt;build description"]
+    SDK["Pico SDK&lt;br/&gt;libraries"]
+    TC["Cross-toolchain&lt;br/&gt;compiler + assembler + linker"]
+    ELF["blink.elf"]
+    UF2["blink.uf2"]
+    MCU["RP2350&lt;br/&gt;Cortex-M33"]
+
+    C --&gt; TC
+    CM --&gt; TC
+    SDK --&gt; TC
+    TC --&gt; ELF
+    ELF --&gt; UF2
+    UF2 --&gt; MCU</code></pre>
+<h3 id="key-terms">Key terms</h3>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning in today's project</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Host</strong></td>
+<td>The computer where we build the project</td>
+</tr>
+<tr>
+<td><strong>Target</strong></td>
+<td>The RP2350 where the firmware will run</td>
+</tr>
+<tr>
+<td><strong>Cross-compiler</strong></td>
+<td>Compiler running on the host but generating code for the target</td>
+</tr>
+<tr>
+<td><strong>Toolchain</strong></td>
+<td>Compiler, assembler, linker, and related build tools</td>
+</tr>
+<tr>
+<td><strong>SDK</strong></td>
+<td>Libraries and support code for the Pico platform</td>
+</tr>
+<tr>
+<td><strong>CMake</strong></td>
+<td>Describes what should be built and which libraries are required</td>
+</tr>
+<tr>
+<td><strong>ELF</strong></td>
+<td>Linked executable produced by the build</td>
+</tr>
+<tr>
+<td><strong>UF2</strong></td>
+<td>Firmware image that can be loaded onto the Pico</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Main idea</p>
+<p>Clicking <strong>Compile</strong> is not a mysterious operation.</p>
+<p>It is a sequence of tools that transforms:</p>
+<p><strong>our source code → target machine instructions → a linked executable → firmware that the microcontroller can run.</strong></p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../Bloque0-Introduccion/Tema_A/" class="md-footer__link md-footer__link--prev" aria-label="Previous: What is an embedded system?">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                What is an embedded system?
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../Tema_C/" class="md-footer__link md-footer__link--next" aria-label="Next: GPIO control">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                GPIO control
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "search.highlight", "search.suggest", "content.code.copy", "content.code.annotate", "content.tooltips", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,2573 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Course notes for Embedded Systems I — RP2350 / Raspberry Pi Pico 2">
+      
+      
+        <meta name="author" content="Oliver Ochoa Garcia">
+      
+      
+      
+        <link rel="prev" href="../T2/">
+      
+      
+        <link rel="next" href="../../Bloque1-GPIO/Tema_B/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>What is an embedded system? - Embedded Systems I (LIIE1214)</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="red">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#what-is-an-embedded-system" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Embedded Systems I (LIIE1214)" class="md-header__button md-logo" aria-label="Embedded Systems I (LIIE1214)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Embedded Systems I (LIIE1214)
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              What is an embedded system?
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Gulden8ag/embedded1" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Gulden8ag/embedded1
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Embedded Systems I (LIIE1214)" class="md-nav__button md-logo" aria-label="Embedded Systems I (LIIE1214)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Embedded Systems I (LIIE1214)
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Gulden8ag/embedded1" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Gulden8ag/embedded1
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 0 — Introduction
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 0 — Introduction
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../T1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Syllabus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../T0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab log template
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--draft"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../T2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab log Example
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--complete"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is an embedded system?
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is an embedded system?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definition
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Definition">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#defining-traits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Defining traits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pc-vs-embedded-system-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PC vs Embedded System comparison
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-is-not-an-embedded-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is not an embedded system?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use cases
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#typical-structure-of-an-embedded-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Typical structure of an embedded system
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Typical structure of an embedded system">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interconnect-buses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interconnect buses
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memories-types-and-uses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Memories: types and uses
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Memories: types and uses">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#main-memory-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Main memory types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SRAM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flash-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flash memory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eeprom-and-persistent-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EEPROM and persistent data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#internal-and-external-ram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Internal and external RAM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-fundamental-tradeoff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The fundamental tradeoff
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memory-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Memory models
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture size
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture size">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-atmega328p" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: ATmega328P
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#physical-memory-vs-address-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Physical memory vs address space
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#isa-and-microarchitecture-risc-vs-cisc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ISA and microarchitecture: RISC vs CISC
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ISA and microarchitecture: RISC vs CISC">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#instruction-set-architecture-isa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instruction Set Architecture (ISA)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#microarchitecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Microarchitecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#risc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RISC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cisc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CISC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conceptual-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conceptual comparison
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checklist-for-choosing-an-mcu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checklist for choosing an MCU
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 1 — GPIO
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 1 — GPIO
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque1-GPIO/Tema_B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Environment and toolchain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque1-GPIO/Tema_C/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPIO control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque1-GPIO/Tema_D/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Digital inputs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque1-GPIO/Tema_E/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interrupts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 2 — Timing and serial
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 2 — Timing and serial
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque2-Temporizador/Tema_F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque2-Temporizador/Tema_G/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PWM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque2-Temporizador/Tema_H/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UART
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 3 — Analog and buses
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 3 — Analog and buses
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque3/Tema_I/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque3/Tema_J/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I2C
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Proyecto/Instrucciones/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capstone Project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definition
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Definition">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#defining-traits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Defining traits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pc-vs-embedded-system-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PC vs Embedded System comparison
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-is-not-an-embedded-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is not an embedded system?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use cases
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#typical-structure-of-an-embedded-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Typical structure of an embedded system
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Typical structure of an embedded system">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interconnect-buses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interconnect buses
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memories-types-and-uses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Memories: types and uses
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Memories: types and uses">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#main-memory-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Main memory types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SRAM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flash-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flash memory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eeprom-and-persistent-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EEPROM and persistent data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#internal-and-external-ram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Internal and external RAM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-fundamental-tradeoff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The fundamental tradeoff
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memory-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Memory models
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture size
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture size">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-atmega328p" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: ATmega328P
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#physical-memory-vs-address-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Physical memory vs address space
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#isa-and-microarchitecture-risc-vs-cisc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ISA and microarchitecture: RISC vs CISC
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ISA and microarchitecture: RISC vs CISC">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#instruction-set-architecture-isa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instruction Set Architecture (ISA)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#microarchitecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Microarchitecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#risc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RISC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cisc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CISC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conceptual-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conceptual comparison
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checklist-for-choosing-an-mcu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checklist for choosing an MCU
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="what-is-an-embedded-system">What is an embedded system?</h1>
+<h2 id="definition">Definition</h2>
+<p>An <strong>embedded system</strong> is a computing system <strong>designed to fulfill a specific final purpose within a product or larger system</strong>, usually interacting with the physical world through sensors and actuators.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>An embedded system is intended to become part of the final product or system, rather than remain a general-purpose computer used only as a development tool.</p>
+</div>
+<h3 id="defining-traits">Defining traits</h3>
+<ul>
+<li><strong>Specific purpose</strong>: performs one task or a bounded set of tasks.</li>
+<li><strong>Physical-digital interaction</strong>: acquires variables through sensors and acts on the world through actuators.</li>
+<li><strong>Hard constraints</strong>: power consumption, memory, processing capability, cost, and size.</li>
+<li><strong>Reliability and availability</strong>: designed for dependable operation, often over long life cycles.</li>
+<li><strong>Real time (often)</strong>: responses may need to occur within defined time limits.</li>
+<li><strong>HW/SW co-design</strong>: electronics, firmware, and software are designed together.</li>
+<li><strong>Safety and cybersecurity</strong>: protection of the user, the system, and its information.</li>
+</ul>
+<h3 id="pc-vs-embedded-system-comparison">PC vs Embedded System comparison</h3>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>General-purpose PC</th>
+<th>Embedded system</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Functional scope</td>
+<td>Broad, multitasking</td>
+<td>Application-specific</td>
+</tr>
+<tr>
+<td>User interface</td>
+<td>Keyboard, mouse, display</td>
+<td>May lack a UI; LEDs, buttons, dedicated HMI</td>
+</tr>
+<tr>
+<td>Resources (CPU/RAM/storage)</td>
+<td>Abundant</td>
+<td>Limited by cost, power, and space</td>
+</tr>
+<tr>
+<td>OS</td>
+<td>Desktop Windows/macOS/Linux</td>
+<td>Bare-metal, RTOS, or embedded Linux</td>
+</tr>
+<tr>
+<td>Real time</td>
+<td>Usually non-deterministic</td>
+<td>Frequently deterministic</td>
+</tr>
+<tr>
+<td>Power</td>
+<td>Commonly mains powered</td>
+<td>Frequently power-constrained or battery powered</td>
+</tr>
+<tr>
+<td>Robustness/environmental</td>
+<td>Moderate</td>
+<td>May require tolerance to temperature, vibration, EMI, etc.</td>
+</tr>
+<tr>
+<td>Life cycle</td>
+<td>Short/medium</td>
+<td>Can remain in service for years or decades</td>
+</tr>
+<tr>
+<td>Functional cybersecurity</td>
+<td>Important</td>
+<td>Can be critical because software may affect physical behavior</td>
+</tr>
+</tbody>
+</table>
+<h3 id="what-is-not-an-embedded-system">What is <em>not</em> an embedded system?</h3>
+<ul>
+<li>A desktop PC used as-is and not integrated into a product.</li>
+<li>A generic general-purpose server.</li>
+<li>A laptop script reading a USB sensor, unless the laptop itself is part of the final system.</li>
+</ul>
+<h3 id="use-cases">Use cases</h3>
+<table>
+<thead>
+<tr>
+<th>Domain</th>
+<th>Product / Function</th>
+<th>Key requirement</th>
+<th>Real time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Automotive</td>
+<td>Brake ECU (ABS/ESP)</td>
+<td>Latency and functional safety</td>
+<td>Hard</td>
+</tr>
+<tr>
+<td>Medical</td>
+<td>Pacemaker</td>
+<td>Reliability and biocompatibility</td>
+<td>Hard</td>
+</tr>
+<tr>
+<td>Industrial</td>
+<td>Inline motor control</td>
+<td>Determinism and robustness</td>
+<td>Hard</td>
+</tr>
+<tr>
+<td>Consumer</td>
+<td>Smart thermostat</td>
+<td>Connectivity and efficiency</td>
+<td>Soft</td>
+</tr>
+<tr>
+<td>Wearable IoT</td>
+<td>Smartwatch</td>
+<td>Low power and UX</td>
+<td>Soft</td>
+</tr>
+<tr>
+<td>Home automation</td>
+<td>Smart lock</td>
+<td>Security/encryption</td>
+<td>Variable</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Hard real time</strong>: missing a deadline means system failure, for example an ABS braking controller.</p>
+<p><strong>Soft real time</strong>: delays degrade quality or performance but do not necessarily mean system failure, for example audio playback.</p>
+<hr />
+<h2 id="typical-structure-of-an-embedded-system">Typical structure of an embedded system</h2>
+<ul>
+<li><strong>MCU (Microcontroller)</strong>: CPU + memory + peripherals integrated on a single chip, optimized for direct control of hardware and I/O.</li>
+<li><strong>MPU (Microprocessor)</strong>: a processor intended for higher-complexity systems, typically relying on external RAM/storage and often capable of running a full operating system. It may still integrate many peripherals.</li>
+<li><strong>SoC (System on Chip)</strong>: a broader term for a highly integrated device that may combine CPU cores, memory controllers, accelerators, GPUs, radios, and peripherals.</li>
+</ul>
+<h3 id="key-components">Key components</h3>
+<p><strong>Diagram 1 — High-level view</strong></p>
+<pre class="mermaid"><code>flowchart LR
+    %% ---------- External signals ----------
+    CLK["Clock / PLL"]
+    RST["Reset"]
+    PWR["Power management&lt;br/&gt;(LDO / DCDC / Sleep)"]
+    EXT_IO["External sensors / actuators"]
+
+    %% ---------- MCU boundary ----------
+    subgraph MCU["Microcontroller"]
+        direction LR
+
+        BUS[["Internal interconnect / bus"]]
+
+        subgraph CPU["CPU"]
+            direction TB
+            CORE["Core / Control Unit"]
+            INTCTRL["Interrupt control"]
+            REGFILE["Registers"]
+            ALU["ALU + optional FPU / DSP"]
+            CORE --- INTCTRL
+            CORE --- REGFILE
+            CORE --- ALU
+        end
+
+        subgraph MEM["Memory"]
+            direction TB
+            FLASH[(Flash - Code)]
+            SRAM[(SRAM - Data)]
+            EEPROM[(EEPROM / persistent data)]
+        end
+
+        subgraph PER["Peripherals"]
+            direction TB
+            GPIO[[GPIO / digital I/O]]
+            TIM[[Timers / PWM / RTC]]
+            ANA[[ADC / DAC / Comparator]]
+            COM[[UART · SPI · I2C · CAN · USB · ETH]]
+            WDT[[Watchdog]]
+            DMA[[DMA]]
+        end
+    end
+
+    CPU --- BUS
+    MEM --- BUS
+    PER --- BUS
+    DMA --- BUS
+
+    EXT_IO --- GPIO
+
+    CLK --&gt; CPU
+    CLK --&gt; PER
+    RST --&gt; CPU
+    RST --&gt; PER
+    PWR --&gt; CPU
+    PWR --&gt; MEM</code></pre>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Main function</th>
+<th>Design points / typical risks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ALU / FPU / DSP</td>
+<td>Integer, floating-point, signal computation</td>
+<td>Latency, precision, power</td>
+</tr>
+<tr>
+<td>Control Unit</td>
+<td>Sequencing and decoding instructions</td>
+<td>ISA support, timing</td>
+</tr>
+<tr>
+<td>Registers / PC / SP</td>
+<td>Internal CPU state and program flow</td>
+<td>Register availability, nested calls/ISRs</td>
+</tr>
+<tr>
+<td>Interrupt control</td>
+<td>Interrupt management</td>
+<td>Priorities, latency, determinism</td>
+</tr>
+<tr>
+<td>DMA</td>
+<td>Transfers data without continuous CPU intervention</td>
+<td>Correct configuration, buffer ownership</td>
+</tr>
+<tr>
+<td>Flash</td>
+<td>Firmware storage</td>
+<td>Capacity, endurance, program/read timing</td>
+</tr>
+<tr>
+<td>SRAM</td>
+<td>Runtime data</td>
+<td>Capacity, cost, stack/heap usage</td>
+</tr>
+<tr>
+<td>EEPROM</td>
+<td>Persistent parameters</td>
+<td>Write endurance, update frequency</td>
+</tr>
+<tr>
+<td>GPIO</td>
+<td>Digital I/O</td>
+<td>Pull-ups, debounce, ESD protection</td>
+</tr>
+<tr>
+<td>Timers / PWM / RTC</td>
+<td>Time, capture/compare, control</td>
+<td>Resolution, jitter, synchronization</td>
+</tr>
+<tr>
+<td>ADC / DAC / Comparator</td>
+<td>Analog interfaces</td>
+<td>Noise, reference, sample rate, linearity</td>
+</tr>
+<tr>
+<td>UART / SPI / I²C / CAN…</td>
+<td>Communications</td>
+<td>Speed, errors, EMC, higher-level protocols</td>
+</tr>
+<tr>
+<td>Clock / PLL</td>
+<td>Time base</td>
+<td>Stability, startup, power</td>
+</tr>
+<tr>
+<td>Reset / Watchdog</td>
+<td>Startup and fault recovery</td>
+<td>False triggers, fault coverage</td>
+</tr>
+<tr>
+<td>Power management</td>
+<td>Sleep/standby modes</td>
+<td>Wake-up latency, state retention</td>
+</tr>
+</tbody>
+</table>
+<h3 id="interconnect-buses">Interconnect buses</h3>
+<p>Inside an embedded system, functional blocks communicate through <strong>interconnect buses</strong>. These carry information, addresses, and control signals between the different parts of the system.</p>
+<ol>
+<li><strong>Data bus</strong>: carries the information being transferred.</li>
+<li><strong>Address bus</strong>: identifies the memory or peripheral location being accessed.</li>
+<li><strong>Control bus</strong>: carries signals that coordinate the transfer and system operation.</li>
+</ol>
+<p>We can also distinguish between:</p>
+<ul>
+<li><strong>Masters / Initiators</strong>: devices that initiate transfers, such as a CPU or DMA controller.</li>
+<li><strong>Slaves / Targets</strong>: devices that respond to transfers, such as memories and peripherals.</li>
+</ul>
+<pre class="mermaid"><code>flowchart LR
+    subgraph Fabric["Fabric / Internal bus"]
+        CPU2["CPU (Initiator)"]
+        DMA2["DMA (Initiator)"]
+        MEM2["Flash / SRAM (Targets)"]
+        P1["Peripherals (Targets)"]
+        P2["Fast peripherals (Targets)"]
+    end
+
+    CPU2 --&gt;|Address / Control| MEM2
+    MEM2 --&gt;|Data| CPU2
+    CPU2 &lt;--&gt; P1
+    CPU2 &lt;--&gt; P2
+    DMA2 &lt;--&gt; MEM2
+    DMA2 &lt;--&gt; P2</code></pre>
+<hr />
+<h2 id="memories-types-and-uses">Memories: types and uses</h2>
+<p>Microcontrollers use different types of memory because no single technology is ideal for every purpose.</p>
+<p>When selecting memory, some of the most important characteristics are:</p>
+<ul>
+<li><strong>Volatility</strong>: Is the information lost when power is removed?</li>
+<li><strong>Speed</strong>: How quickly can the processor read or write the memory?</li>
+<li><strong>Endurance</strong>: How many times can the memory be written or erased before it begins to wear out?</li>
+<li><strong>Capacity and cost</strong>: How much memory can economically fit in the system?</li>
+</ul>
+<p>For now, we will focus on <strong>SRAM</strong>, <strong>Flash</strong>, and memories used for persistent data.</p>
+<h3 id="main-memory-types">Main memory types</h3>
+<table>
+<thead>
+<tr>
+<th>Memory</th>
+<th style="text-align: center;">Volatile?</th>
+<th>Speed</th>
+<th>Endurance</th>
+<th>Relative cost / density</th>
+<th>Typical use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SRAM</strong></td>
+<td style="text-align: center;">Yes</td>
+<td>Very fast</td>
+<td>Practically unlimited writes</td>
+<td>Expensive / low density</td>
+<td>Variables, stack, heap, buffers</td>
+</tr>
+<tr>
+<td><strong>Flash</strong></td>
+<td style="text-align: center;">No</td>
+<td>Fast reads, slower writes</td>
+<td>Limited write/erase cycles</td>
+<td>Cheap / high density</td>
+<td>Firmware and constants</td>
+</tr>
+<tr>
+<td><strong>EEPROM</strong></td>
+<td style="text-align: center;">No</td>
+<td>Slower writes</td>
+<td>Limited, usually higher than Flash</td>
+<td>Higher cost / lower density</td>
+<td>Configuration and calibration</td>
+</tr>
+<tr>
+<td><strong>External RAM</strong></td>
+<td style="text-align: center;">Yes</td>
+<td>Usually slower than internal SRAM</td>
+<td>Practically unlimited writes</td>
+<td>Lower cost/bit than internal SRAM; high density</td>
+<td>Large buffers, images, complex applications</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sram">SRAM</h3>
+<p><strong>SRAM (Static Random-Access Memory)</strong> is the main working memory of a microcontroller.</p>
+<p>It is <strong>volatile</strong>, meaning that its contents are lost when power is removed.</p>
+<p>During program execution, SRAM typically stores:</p>
+<ul>
+<li>global and local variables;</li>
+<li>the <strong>stack</strong>, used for function calls and local variables;</li>
+<li>the <strong>heap</strong>, used for dynamic memory allocation;</li>
+<li>communication and sensor buffers.</li>
+</ul>
+<p>For example:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kt">uint8_t</span><span class="w"> </span><span class="n">buffer</span><span class="p">[</span><span class="mi">1024</span><span class="p">];</span>
+</span></code></pre></div>
+<p>This array requires approximately <strong>1 KiB of SRAM</strong> while the program is running.</p>
+<h3 id="flash-memory">Flash memory</h3>
+<p><strong>Flash memory</strong> is <strong>non-volatile</strong>, meaning that its contents remain stored when the system is powered off.</p>
+<p>Its main purpose in a microcontroller system is to store the <strong>firmware</strong>.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Flash
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>├── Program instructions
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>└── Constant data
+</span></code></pre></div>
+<p>Flash is much denser than SRAM, allowing manufacturers to provide significantly more storage at a lower cost per bit.</p>
+<p>However, there is an important tradeoff:</p>
+<blockquote>
+<p><strong>Flash memory wears out when it is repeatedly erased and rewritten.</strong></p>
+</blockquote>
+<p>Flash cannot normally overwrite individual bytes directly. Before new data can be written, an area of memory must first be <strong>erased</strong>, typically in blocks or sectors.</p>
+<h3 id="eeprom-and-persistent-data">EEPROM and persistent data</h3>
+<p>Embedded systems often need to preserve small amounts of information even after power is removed, such as:</p>
+<ul>
+<li>calibration parameters;</li>
+<li>user settings;</li>
+<li>counters;</li>
+<li>device configuration.</li>
+</ul>
+<p>Traditionally, this information can be stored in <strong>EEPROM (Electrically Erasable Programmable Read-Only Memory)</strong>.</p>
+<p>Some modern microcontrollers do not contain dedicated EEPROM. Instead, they use Flash together with software techniques such as <strong>NVS (Non-Volatile Storage)</strong>.</p>
+<p>EEPROM and Flash both have <strong>limited write endurance</strong>, although EEPROM is generally designed to tolerate more frequent updates.</p>
+<p>This means that a program should avoid writing persistent memory unnecessarily.</p>
+<h3 id="internal-and-external-ram">Internal and external RAM</h3>
+<p>Most microcontrollers contain SRAM directly inside the chip.</p>
+<p>Some systems also include <strong>external RAM</strong> when more memory is required.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Microcontroller
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>│
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>├── Internal SRAM
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>│   └── Fast, limited capacity
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>│
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>└── External RAM
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    └── Larger capacity, usually slower
+</span></code></pre></div>
+<p>External RAM may use technologies such as <strong>PSRAM</strong> or <strong>SDRAM</strong>.</p>
+<p>It can be useful for applications requiring large amounts of temporary data, such as:</p>
+<ul>
+<li>image frame buffers;</li>
+<li>graphical interfaces;</li>
+<li>audio processing;</li>
+<li>networking buffers;</li>
+<li>machine-learning applications.</li>
+</ul>
+<p>For many basic microcontroller applications, however, internal SRAM is sufficient.</p>
+<div class="admonition tip">
+<p class="admonition-title">Quick rules</p>
+<ul>
+<li><strong>Program code</strong> → Flash</li>
+<li><strong>Variables and temporary data</strong> → SRAM</li>
+<li><strong>Configuration that must survive power-off</strong> → EEPROM / NVS</li>
+<li><strong>Frequently changing data</strong> → avoid Flash when possible</li>
+<li><strong>Very large temporary data</strong> → external RAM, when available</li>
+</ul>
+</div>
+<h3 id="the-fundamental-tradeoff">The fundamental tradeoff</h3>
+<p>A simplified way to think about MCU memory is:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>                    SRAM              Flash
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>                    ────              ─────
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>Fast                  ✓                 —
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>Keeps data off        ✗                 ✓
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>Many writes           ✓                 ✗
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>High density          ✗                 ✓
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>Cheap per bit         ✗                 ✓
+</span></code></pre></div>
+<p>This is why a microcontroller may contain <strong>much more Flash than SRAM</strong>.</p>
+<p>Flash provides inexpensive, dense storage for the program, while SRAM provides the fast working memory required while that program is running.</p>
+<p>When designing an embedded application, two basic questions should always be considered:</p>
+<ul>
+<li><strong>Will the firmware fit in Flash?</strong></li>
+<li><strong>Will the program's runtime data fit in SRAM?</strong></li>
+</ul>
+<p>And whenever non-volatile memory is written during normal operation:</p>
+<ul>
+<li><strong>How frequently will it be written?</strong></li>
+<li><strong>Will its endurance be sufficient for the expected lifetime of the system?</strong></li>
+</ul>
+<h3 id="code-example">Code Example</h3>
+<div class="language-C highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdint.h&gt;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdlib.h&gt;</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">const</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">LOOKUP</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="mi">40</span><span class="p">};</span><span class="w">   </span><span class="c1">// 1</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="n">sample_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">                     </span><span class="c1">// 2</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="kt">uint8_t</span><span class="w"> </span><span class="n">rx_buffer</span><span class="p">[</span><span class="mi">512</span><span class="p">];</span><span class="w">                        </span><span class="c1">// 3</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="kt">float</span><span class="w"> </span><span class="nf">apply_gain</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">raw</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">                  </span><span class="c1">// 4 (the function itself)</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">raw</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1.25f</span><span class="p">;</span><span class="w">                </span><span class="c1">// 5</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="p">}</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="kt">void</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="o">*</span><span class="n">frame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="mi">256</span><span class="p">);</span><span class="w">              </span><span class="c1">// 6 (the 256 bytes)</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="n">frame</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rx_buffer</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">    </span><span class="n">free</span><span class="p">(</span><span class="n">frame</span><span class="p">);</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="p">}</span>
+</span></code></pre></div>
+<hr />
+<h2 id="memory-models">Memory models</h2>
+<p>Embedded systems store two main types of information:</p>
+<ul>
+<li><strong>Instructions</strong>: the operations the CPU must perform, stored in program memory.</li>
+<li><strong>Data</strong>: the information the CPU operates on, stored in data memory.</li>
+</ul>
+<p>The way instructions and data are organized gives rise to different memory models.</p>
+<ol>
+<li>
+<p><strong>Von Neumann memory model</strong>: instructions and data share the same memory and the same access path. In the strict model, the CPU cannot fetch an instruction and access data at the same time through that path.</p>
+<p><img alt="Von Neumann Memory Model" src="../../images/vonneumann.png" width="60%" /></p>
+</li>
+<li>
+<p><strong>Harvard memory model</strong>: instructions and data use separate memories and separate access paths. This allows the CPU to access instructions and data simultaneously.</p>
+<p><img alt="Harvard Memory Model" src="../../images/harvard.png" width="60%" /></p>
+</li>
+<li>
+<p><strong>Modified Harvard architecture</strong>: many modern microcontrollers combine characteristics of both models. They may provide separate internal paths for instructions and data while still exposing a unified address space to the programmer.</p>
+</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Von Neumann and Harvard are useful <strong>ideal models</strong>. Real processors may introduce caches, multiple buses, or other mechanisms that modify their practical behavior.</p>
+</div>
+<hr />
+<h2 id="architecture-size">Architecture size</h2>
+<p>When we say that a processor is <strong>8-bit, 16-bit, 32-bit, or 64-bit</strong>, we usually refer to the natural width of its CPU registers and arithmetic logic unit (<strong>ALU</strong>).</p>
+<p>For example, a 32-bit processor is designed to operate efficiently on 32-bit values.</p>
+<p>However, several different widths can exist inside the same processor.</p>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CPU / word width</strong></td>
+<td>Natural size of arithmetic and register operations</td>
+</tr>
+<tr>
+<td><strong>Address width</strong></td>
+<td>Number of bits used to identify memory locations</td>
+</tr>
+<tr>
+<td><strong>Data bus width</strong></td>
+<td>Number of bits that can be transferred in parallel</td>
+</tr>
+<tr>
+<td><strong>Pointer size</strong></td>
+<td>Number of bits used by a program to represent an address</td>
+</tr>
+</tbody>
+</table>
+<p>These values are related, but they do not have to be identical.</p>
+<h3 id="example-atmega328p">Example: ATmega328P</h3>
+<p>The ATmega328P is called an <strong>8-bit microcontroller</strong>, but several different sizes exist inside it.</p>
+<table>
+<thead>
+<tr>
+<th>Characteristic</th>
+<th style="text-align: right;">ATmega328P</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CPU / ALU</strong></td>
+<td style="text-align: right;">8 bit</td>
+</tr>
+<tr>
+<td><strong>General-purpose registers</strong></td>
+<td style="text-align: right;">32 × 8 bit</td>
+</tr>
+<tr>
+<td><strong>Data bus</strong></td>
+<td style="text-align: right;">8 bit</td>
+</tr>
+<tr>
+<td><strong>Address pointers (X, Y, Z)</strong></td>
+<td style="text-align: right;">16 bit</td>
+</tr>
+<tr>
+<td><strong>Program counter</strong></td>
+<td style="text-align: right;">14 bit</td>
+</tr>
+<tr>
+<td><strong>Flash</strong></td>
+<td style="text-align: right;">32 KiB</td>
+</tr>
+<tr>
+<td><strong>SRAM</strong></td>
+<td style="text-align: right;">2 KiB</td>
+</tr>
+<tr>
+<td><strong>EEPROM</strong></td>
+<td style="text-align: right;">1 KiB</td>
+</tr>
+</tbody>
+</table>
+<p>The AVR CPU performs its normal operations using <strong>8-bit registers</strong> and an <strong>8-bit data bus</strong>. However, six of these registers can be combined in pairs to create the 16-bit <code>X</code>, <code>Y</code>, and <code>Z</code> pointers used to address data memory.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>              ATmega328P
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>CPU / ALU ─────────────── 8 bit
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>Data bus ──────────────── 8 bit
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>X, Y, Z pointers ─────── 16 bit
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>Program Counter ───────── 14 bit
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>Flash ────────────────── 32 KiB
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>SRAM ──────────────────── 2 KiB
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>EEPROM ────────────────── 1 KiB
+</span></code></pre></div>
+<p>Its program memory provides another example. The ATmega328P contains <strong>32 KiB of Flash</strong>, organized as <strong>16K × 16-bit words</strong>. Because there are 16K program locations, the program counter requires <strong>14 bits</strong> to select one of them.</p>
+<h3 id="physical-memory-vs-address-space">Physical memory vs address space</h3>
+<p>An <strong>address space</strong> represents the locations that the processor is capable of identifying. It does not mean that every possible address corresponds to physical RAM.</p>
+<p>For example, the ATmega328P data-memory map contains not only SRAM but also CPU registers and peripheral registers. Its internal SRAM occupies only part of that data address space.</p>
+<p>A simplified memory map can look like:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Memory address space
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>│
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>├── CPU registers
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>├── Peripheral registers
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>├── SRAM
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>├── Reserved addresses
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>└── Other memory or peripherals
+</span></code></pre></div>
+<p>This is common in microcontrollers: memory and hardware peripherals are assigned particular addresses so that the CPU can access them using memory operations.</p>
+<hr />
+<h2 id="isa-and-microarchitecture-risc-vs-cisc">ISA and microarchitecture: RISC vs CISC</h2>
+<p>A processor can be described at different levels.</p>
+<h3 id="instruction-set-architecture-isa">Instruction Set Architecture (ISA)</h3>
+<p>The <strong>Instruction Set Architecture (ISA)</strong> defines the interface between software and the processor.</p>
+<p>It specifies things such as:</p>
+<ul>
+<li>available instructions;</li>
+<li>registers;</li>
+<li>supported data types;</li>
+<li>addressing modes;</li>
+<li>interrupt and exception behavior.</li>
+</ul>
+<p>Examples of ISAs include:</p>
+<ul>
+<li><strong>AVR</strong>;</li>
+<li><strong>Arm</strong>;</li>
+<li><strong>RISC-V</strong>;</li>
+<li><strong>x86</strong>.</li>
+</ul>
+<p>The ISA defines <strong>what the processor can do</strong>, but not exactly how it does it internally.</p>
+<h3 id="microarchitecture">Microarchitecture</h3>
+<p>The <strong>microarchitecture</strong> is the internal implementation of an ISA.</p>
+<p>It includes elements such as:</p>
+<ul>
+<li>pipelines;</li>
+<li>execution units;</li>
+<li>caches;</li>
+<li>instruction decoding;</li>
+<li>branch handling.</li>
+</ul>
+<p>Two processors can implement the same ISA but use different microarchitectures.</p>
+<div class="admonition tip">
+<p class="admonition-title">Key idea</p>
+<p><strong>ISA = what instructions the processor understands.</strong></p>
+<p><strong>Microarchitecture = how the processor executes those instructions.</strong></p>
+</div>
+<h3 id="risc">RISC</h3>
+<p><strong>RISC (Reduced Instruction Set Computer)</strong> refers to an ISA design philosophy based on relatively simple and regular instructions.</p>
+<p>A common characteristic is the <strong>load/store model</strong>:</p>
+<ul>
+<li>data is loaded from memory into registers;</li>
+<li>operations are performed mainly on registers;</li>
+<li>results are stored back into memory when necessary.</li>
+</ul>
+<p>For example:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>LOAD  R1, A
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>LOAD  R2, B
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>ADD   R3, R1, R2
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>STORE C, R3
+</span></code></pre></div>
+<p>Typical RISC characteristics include:</p>
+<ul>
+<li>relatively simple and regular instructions;</li>
+<li>many operations performed on registers;</li>
+<li>explicit load and store instructions for memory access;</li>
+<li>relatively simple addressing modes;</li>
+<li>instruction formats that are generally easier to decode and pipeline.</li>
+</ul>
+<p>Common embedded RISC architectures include:</p>
+<ul>
+<li><strong>AVR</strong> — used by the ATmega328P;</li>
+<li><strong>Arm</strong> — used by many Cortex-M microcontrollers;</li>
+<li><strong>RISC-V</strong> — used by devices such as the ESP32-C3 and ESP32-C6;</li>
+<li><strong>Xtensa</strong> — used by several ESP32 families.</li>
+</ul>
+<h3 id="cisc">CISC</h3>
+<p><strong>CISC (Complex Instruction Set Computer)</strong> refers to an ISA design philosophy that provides richer instructions and addressing modes.</p>
+<p>A single instruction may perform more work or combine operations that would require several instructions in a simpler ISA.</p>
+<p>Typical characteristics include:</p>
+<ul>
+<li>more expressive instructions;</li>
+<li>instructions that may operate directly on memory;</li>
+<li>more addressing modes;</li>
+<li>more complex instruction decoding;</li>
+<li>instruction lengths that may vary.</li>
+</ul>
+<p>Examples include:</p>
+<ul>
+<li><strong>x86 / x86-64</strong>;</li>
+<li><strong>8051</strong>;</li>
+<li><strong>Renesas RX</strong>.</li>
+</ul>
+<h3 id="conceptual-comparison">Conceptual comparison</h3>
+<p>A complex task can be represented either as several simpler instructions or as fewer, more expressive instructions.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>RISC-style approach
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>LOAD
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>LOAD
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>OPERATE
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>STORE
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>CISC-style approach
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>COMPLEX OPERATION
+</span></code></pre></div>
+<p>In both cases, the processor must still perform the required physical work.</p>
+<p>The difference is mainly in <strong>how that work is represented in the instruction set</strong>.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>RISC does <strong>not</strong> automatically mean faster, cheaper, or lower power.</p>
+<p>CISC does <strong>not</strong> automatically mean slower or higher power.</p>
+<p>Actual performance depends on the processor's microarchitecture, clock frequency, memory system, compiler, and application.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Key ideas</p>
+<ul>
+<li>The <strong>ISA</strong> defines the instructions visible to software.</li>
+<li>The <strong>microarchitecture</strong> defines how those instructions are implemented.</li>
+<li><strong>RISC</strong> favors simpler and more regular instructions.</li>
+<li><strong>CISC</strong> favors richer and more expressive instructions.</li>
+<li>RISC and CISC alone do not determine processor performance.</li>
+</ul>
+</div>
+<hr />
+<h2 id="checklist-for-choosing-an-mcu">Checklist for choosing an MCU</h2>
+<p><strong>Quick MCU selection checklist</strong></p>
+<ul>
+<li>Real-time requirements (hard/soft) and I/O latency.</li>
+<li>Power/energy budget and sleep modes.</li>
+<li>Key peripherals (ADC, PWM, DMA, communications).</li>
+<li>Required memory (Flash/SRAM) and protection/recovery features (watchdog, brownout, memory protection).</li>
+<li>Ecosystem (HAL, RTOS, toolchain, community).</li>
+<li>Cost and availability over the expected product lifetime.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../T2/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Lab log Example">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Lab log Example
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../Bloque1-GPIO/Tema_B/" class="md-footer__link md-footer__link--next" aria-label="Next: Environment and toolchain">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Environment and toolchain
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "search.highlight", "search.suggest", "content.code.copy", "content.code.annotate", "content.tooltips", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
