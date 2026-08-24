@@ -13,7 +13,7 @@ nav:
       - What is an embedded system?: Bloque0-Introduccion/Tema_A.md
   - Block 1 — GPIO:
       - Environment and toolchain: Bloque1-GPIO/Tema_B.md
-      - GPIO control: Bloque1-GPIO/Tema_C.md
+      - GPIO control: Bloque1-GPIO/Tema_C_GPIO_Control_revised.md
       - Digital inputs: Bloque1-GPIO/Tema_D.md
       - Interrupts: Bloque1-GPIO/Tema_E.md
   - Block 2 — Timing and serial:
