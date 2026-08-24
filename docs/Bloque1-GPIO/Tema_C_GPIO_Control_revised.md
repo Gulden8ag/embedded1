@@ -721,54 +721,37 @@ Create a light that moves across the four LEDs and then returns:
 ```
 ---
 
-## Exercise 3 — LED pattern player
+## Exercise 3 — Fill and empty animation
 
-Create a repeating light sequence using the four LEDs.
+Create an animation that progressively fills all four LEDs and then progressively empties them.
 
 For example:
 
 ```text
-1001
-0110
-1111
-0000
-1010
-0101
+○ ○ ○ ○
+○ ○ ○ ●
+○ ○ ● ●
+○ ● ● ●
+● ● ● ●
+● ● ● ○
+● ● ○ ○
+● ○ ○ ○
+○ ○ ○ ○
 ...
 ```
 
-### Requirements
+## Exercise 4 — Fill from the outside inward
 
-Your sequence must include at least:
+Create an animation that progressively fills all four LEDs and then progressively empties them.
 
-- one pattern created using `|` (OR);
-- one operation using `^` (XOR) to toggle selected LEDs;
-- one operation using `&` and `~` to clear selected LEDs;
-- one mask that prevents the program from affecting GPIOs outside the LED group.
-
-You may store patterns in an array:
-
-```c
-const uint32_t patterns[] = {
-    0b0001,
-    0b0010,
-    0b0100,
-    0b1000
-};
+```text
+○ ○ ○ ○
+● ○ ○ ●
+● ● ● ●
+○ ● ● ○
+○ ○ ○ ○
+...
 ```
-
-or generate them using bitwise operations.
-
-### Extra challenge
-
-Create your own recognizable animation, for example:
-
-- outside → inside → outside;
-- alternating pairs;
-- fill from left to right, then empty;
-- a custom repeating sequence.
-
-Explain which **masks and bitwise operations** your program uses.
 
 ---
 
