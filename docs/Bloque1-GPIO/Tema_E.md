@@ -7,6 +7,7 @@
 An **interrupt** is an asynchronous event that **preempts** the normal flow of execution to run a short, high-priority routine called an **ISR**. Interrupts are used to react **immediately** to hardware or software events (timer, UART RX, DMA done, PIO, GPIO, etc.) without *busy-waiting*.
 
 **Acronyms and concepts:**
+
 - **ISR** — *Interrupt Service Routine*.
 - **IRQ** — *Interrupt ReQuest* (the line/event).
 - **NVIC** — *Nested Vectored Interrupt Controller* (priorities, dispatch, nesting).
