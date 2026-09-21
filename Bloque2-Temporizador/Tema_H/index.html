@@ -1,0 +1,2196 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Course notes for Embedded Systems I — RP2350 / Raspberry Pi Pico 2">
+      
+      
+        <meta name="author" content="Oliver Ochoa Garcia">
+      
+      
+      
+        <link rel="prev" href="../Tema_G/">
+      
+      
+        <link rel="next" href="../../Bloque3/Tema_I/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>UART - Embedded Systems I (LIIE1214)</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="red">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#uart-serial-communication" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Embedded Systems I (LIIE1214)" class="md-header__button md-logo" aria-label="Embedded Systems I (LIIE1214)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Embedded Systems I (LIIE1214)
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              UART
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Gulden8ag/embedded1" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Gulden8ag/embedded1
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Embedded Systems I (LIIE1214)" class="md-nav__button md-logo" aria-label="Embedded Systems I (LIIE1214)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Embedded Systems I (LIIE1214)
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Gulden8ag/embedded1" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Gulden8ag/embedded1
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 0 — Introduction
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 0 — Introduction
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque0-Introduccion/T1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Syllabus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque0-Introduccion/T0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab log template
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--draft"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque0-Introduccion/T2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab log Example
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--complete"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque0-Introduccion/Tema_A/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is an embedded system?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 1 — GPIO
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 1 — GPIO
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque1-GPIO/Tema_B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Environment and toolchain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque1-GPIO/Tema_C_GPIO_Control_revised/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPIO control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque1-GPIO/Tema_D/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Digital inputs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque1-GPIO/Tema_E/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interrupts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 2 — Timing and serial
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 2 — Timing and serial
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tema_F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tema_G/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PWM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UART
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UART
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#2-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) Concepts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2) Concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-what-is-uart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 What is UART?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-bps-vs-baud" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 bps vs baud
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-uart-vs-usart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 UART vs USART
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-pi-pico-2-uart-hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 Pi Pico 2 UART hardware
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-ascii-american-standard-code-for-information-interchange" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 ASCII (American Standard Code for Information Interchange)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-fifo-first-in-first-out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 FIFO (First In First Out)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-usb-cdc-serial-monitor-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) USB CDC Serial Monitor examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3) USB CDC Serial Monitor examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-configuring-usb-cdc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Configuring USB-CDC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-echo-example-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Echo example code
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-testing-with-the-serial-monitor-in-vs-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Testing with the Serial Monitor in VS Code
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-communication-between-two-picos-mainsupport-uart0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) Communication between two Picos (main/support) — UART0
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4) Communication between two Picos (main/support) — UART0">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-uart-wiring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 UART wiring
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-function-glossary-pico-sdk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Function glossary (Pico SDK)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-sending" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Sending
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-receiving" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Receiving
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) Errors
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5) Errors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-common-application-problems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Common application problems
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-uart-communication-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 UART communication errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-error-handling-in-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Error handling in code
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 3 — Analog and buses
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 3 — Analog and buses
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque3/Tema_I/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque3/Tema_J/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I2C
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Proyecto/Instrucciones/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capstone Project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#2-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) Concepts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2) Concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-what-is-uart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 What is UART?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-bps-vs-baud" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 bps vs baud
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-uart-vs-usart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 UART vs USART
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-pi-pico-2-uart-hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 Pi Pico 2 UART hardware
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-ascii-american-standard-code-for-information-interchange" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 ASCII (American Standard Code for Information Interchange)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-fifo-first-in-first-out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 FIFO (First In First Out)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-usb-cdc-serial-monitor-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) USB CDC Serial Monitor examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3) USB CDC Serial Monitor examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-configuring-usb-cdc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Configuring USB-CDC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-echo-example-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Echo example code
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-testing-with-the-serial-monitor-in-vs-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Testing with the Serial Monitor in VS Code
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-communication-between-two-picos-mainsupport-uart0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) Communication between two Picos (main/support) — UART0
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4) Communication between two Picos (main/support) — UART0">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-uart-wiring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 UART wiring
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-function-glossary-pico-sdk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Function glossary (Pico SDK)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-sending" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Sending
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-receiving" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Receiving
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) Errors
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5) Errors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-common-application-problems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Common application problems
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-uart-communication-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 UART communication errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-error-handling-in-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Error handling in code
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="uart-serial-communication">UART — Serial communication</h1>
+<hr />
+<h2 id="2-concepts">2) Concepts</h2>
+<h3 id="21-what-is-uart">2.1 What is UART?</h3>
+<p><strong>UART (Universal Asynchronous Receiver/Transmitter)</strong> transmits data bit by bit without a shared clock. Each end configures <strong>baud rate</strong>, <strong>data bits</strong>, <strong>parity</strong>, and <strong>stop bits</strong>. Signals: <strong>TX</strong> (transmit) and <strong>RX</strong> (receive).</p>
+<p><strong>Typical frame:</strong></p>
+<p><img alt="UART frame" src="../../images/uart_frame.png" /></p>
+<ul>
+<li><strong>Start bit:</strong> 0 → marks the beginning of the byte.</li>
+<li><strong>Data bits:</strong> 5–9 (normally 8).</li>
+<li><strong>Parity:</strong> None/Even/Odd for simple error detection.</li>
+<li><strong>Stop bits:</strong> 1 or 2 (high level).</li>
+</ul>
+<blockquote>
+<p>In 8N1, a byte takes <strong>10 bits</strong> (1 start + 8 data + 1 stop).</p>
+</blockquote>
+<h3 id="22-bps-vs-baud">2.2 bps vs baud</h3>
+<ul>
+<li><strong>bps (bits per second):</strong> actual bit rate (includes start/stop/parity).</li>
+<li><strong>Baud (symbols/s):</strong> in UART each symbol = 1 bit ⇒ <strong>baud = bps</strong>.</li>
+<li>In modulated systems one symbol can carry several bits (there <strong>baud ≠ bps</strong>).</li>
+</ul>
+<p><strong>Example at 115200 baud:</strong>
+<code>T_bit ≈ 1/115200 ≈ 8.68 µs</code>. An 8N1 character (10 bits) takes ~<strong>86.8 µs</strong> ⇒ ~<strong>11.5 kB/s</strong>.</p>
+<p><strong>Theoretical maximum speed</strong></p>
+<p>According to the datasheet, it can reach up to <strong>~1.5 Mbaud</strong> without noticeable errors with a short cable and stable hardware.
+In practice, the typically stable values are:</p>
+<ul>
+<li>9600 / 19200 / 38400 / 57600 / 115200 bps (PC standards).</li>
+<li>1,000,000 bps (sometimes used for MCU-to-MCU communication).</li>
+</ul>
+<p>The higher the speed, the greater the error margin and noise; the longer the cable, the higher the probability of errors.</p>
+<p>UART can work correctly as long as the error between transmitter and receiver stays below ±3%.</p>
+<h3 id="23-uart-vs-usart">2.3 UART vs USART</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>UART</th>
+<th>USART</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock</td>
+<td>No (asynchronous)</td>
+<td>Can be yes (synchronous) or no (asynchronous)</td>
+</tr>
+<tr>
+<td>Lines</td>
+<td>TX, RX</td>
+<td>TX, RX, <strong>CLK</strong> (synchronous mode)</td>
+</tr>
+<tr>
+<td>Complexity</td>
+<td>Lower</td>
+<td>Higher, more flexible</td>
+</tr>
+<tr>
+<td>Typical use</td>
+<td>Consoles, simple modules</td>
+<td>Modems/links requiring a clock</td>
+</tr>
+</tbody>
+</table>
+<h3 id="24-pi-pico-2-uart-hardware">2.4 Pi Pico 2 UART hardware</h3>
+<p><strong>Hardware UARTs:</strong> <strong>UART0</strong> and <strong>UART1</strong> (can be used simultaneously).</p>
+<p><strong>Default pins:</strong></p>
+<ul>
+<li>UART0 → TX <strong>GP0</strong>, RX <strong>GP1</strong></li>
+<li>UART1 → TX <strong>GP8</strong>, RX <strong>GP9</strong></li>
+</ul>
+<p><strong>Compatible alternative pins:</strong></p>
+<table>
+<thead>
+<tr>
+<th>UART</th>
+<th>Possible TX</th>
+<th>Possible RX</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UART0</td>
+<td>GP0, GP12, GP16, GP28</td>
+<td>GP1, GP13, GP17, GP29</td>
+</tr>
+<tr>
+<td>UART1</td>
+<td>GP4, GP8, GP20</td>
+<td>GP5, GP9, GP21</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="UART wiring" src="../../images/wiring_uart.png" /></p>
+<h3 id="25-ascii-american-standard-code-for-information-interchange">2.5 ASCII (American Standard Code for Information Interchange)</h3>
+<p>The ASCII standard defines 128 symbols (0–127) including:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Example</th>
+<th>Decimal range</th>
+<th>Binary example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Control</strong></td>
+<td><code>\n</code>, <code>\r</code>, <code>\t</code></td>
+<td>0–31</td>
+<td><code>00001010</code> (LF)</td>
+</tr>
+<tr>
+<td><strong>Digits</strong></td>
+<td><code>0</code>–<code>9</code></td>
+<td>48–57</td>
+<td><code>00110000</code>–<code>00111001</code></td>
+</tr>
+<tr>
+<td><strong>Uppercase letters</strong></td>
+<td><code>A</code>–<code>Z</code></td>
+<td>65–90</td>
+<td><code>01000001</code>–<code>01011010</code></td>
+</tr>
+<tr>
+<td><strong>Lowercase letters</strong></td>
+<td><code>a</code>–<code>z</code></td>
+<td>97–122</td>
+<td><code>01100001</code>–<code>01111010</code></td>
+</tr>
+<tr>
+<td><strong>Common symbols</strong></td>
+<td><code>, . ; ? !</code> etc.</td>
+<td>33–47 and others</td>
+<td><code>00100001</code> (!)</td>
+</tr>
+</tbody>
+</table>
+<p>Each character (char) is an 8-bit integer (0–255).</p>
+<p>When you do <code>uart_putc(UART_ID, 'A');</code>, the value 65 decimal (0x41) is sent.</p>
+<p>When you receive a byte (<code>uart_getc()</code> returns a char), you can interpret it as a number or a letter:</p>
+<div class="language-makefile highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">Value</span><span class="o">:</span><span class="w"> </span>65<span class="p">,</span> <span class="n">Character</span>: <span class="n">A</span>
+</span></code></pre></div>
+<h3 id="26-fifo-first-in-first-out">2.6 FIFO (First In First Out)</h3>
+<p>A FIFO (First In, First Out) is a small storage queue inside the UART peripheral.
+On the RP2350, each UART has a 16-byte FIFO for both RX and TX.</p>
+<p><strong>Operation:</strong></p>
+<ul>
+<li>Each received byte enters the RX FIFO.</li>
+<li>The CPU (or DMA) extracts them with uart_getc().</li>
+<li>If the CPU falls behind and the FIFO fills up → new bytes are lost (overrun).</li>
+</ul>
+<p><strong>Why it matters:</strong></p>
+<ul>
+<li>In polling mode, the FIFO acts as a small "shock absorber" between hardware and software.</li>
+<li>In interrupt mode, the handler must drain the FIFO quickly (reading all available bytes) to avoid saturating it.</li>
+<li>In fast streams, an external circular buffer and/or DMA becomes essential.</li>
+</ul>
+<hr />
+<h2 id="3-usb-cdc-serial-monitor-examples">3) USB CDC Serial Monitor examples</h2>
+<h3 id="31-configuring-usb-cdc">3.1 Configuring USB-CDC</h3>
+<p><strong>USB-CDC</strong> makes the Pico appear as a <strong>COM/ttyACM port</strong>.</p>
+<p>Usual format: <strong>115200 8N1</strong>.
+<strong>Line endings:</strong> use <code>\r\n</code> or configure the terminal (CR/LF).</p>
+<p>Before using UART or USB-CDC, first modify the <code>CMakeLists.txt</code>:</p>
+<div class="language-cmake highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c"># Look for the line:</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">pico_enable_stdio_usb</span><span class="p">(</span><span class="s">timer</span><span class="w"> </span><span class="s">1</span><span class="p">)</span><span class="w"> </span><span class="c"># Default is 0; change it to 1 to enable</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c"># Also add hardware_uart in the libraries section:</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">timer</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">        </span><span class="s">pico_stdlib</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">        </span><span class="s">hardware_uart</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">        </span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="32-echo-example-code">3.2 Echo example code</h3>
+<div class="language-c highlight"><span class="filename">Console echo</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/stdlib.h"</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="n">stdio_init_all</span><span class="p">();</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">2000</span><span class="p">);</span><span class="w"> </span><span class="c1">// time for USB enumeration</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">[Pico USB] Connection ready. Type something and press Enter.</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">ch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getchar_timeout_us</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ch</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">PICO_ERROR_TIMEOUT</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">"Echo: %c</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="p">)</span><span class="n">ch</span><span class="p">);</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">        </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="33-testing-with-the-serial-monitor-in-vs-code">3.3 Testing with the Serial Monitor in VS Code</h3>
+<ol>
+<li>Open <strong>Extensions</strong> (<code>Ctrl+Shift+X</code>) and search for <strong>Serial Monitor</strong> (Microsoft). Install it.</li>
+<li>Connect the Pico; wait for the <strong>USB Serial Device COMn</strong> port to appear.</li>
+<li><strong>Command Palette</strong> (<code>Ctrl+Shift+P</code>) → <code>Serial Monitor: Select Serial Port</code> → choose the port.</li>
+<li><code>Serial Monitor: Start Monitoring</code> → select <strong>115200</strong>.</li>
+<li>Configure <strong>CR/LF</strong> as needed; for <code>printf("\r\n")</code> use CR+LF.</li>
+</ol>
+<hr />
+<h2 id="4-communication-between-two-picos-mainsupport-uart0">4) Communication between two Picos (main/support) — UART0</h2>
+<h3 id="41-uart-wiring">4.1 UART wiring</h3>
+<p><strong>Connection:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Pico Main</th>
+<th>Pico Support</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GP0 (TX)</td>
+<td>GP1 (RX)</td>
+</tr>
+<tr>
+<td>GP1 (RX)</td>
+<td>GP0 (TX)</td>
+</tr>
+<tr>
+<td>GND</td>
+<td>GND</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-function-glossary-pico-sdk">4.2 Function glossary (Pico SDK)</h3>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>stdio_init_all()</code></td>
+<td>Enables stdio (USB/UART) per CMake</td>
+<td><code>stdio_init_all();</code></td>
+</tr>
+<tr>
+<td><code>printf()</code></td>
+<td>Prints to stdio</td>
+<td><code>printf("Hello\n");</code></td>
+</tr>
+<tr>
+<td><code>getchar_timeout_us(us)</code></td>
+<td>Reads a char with a timeout</td>
+<td><code>getchar_timeout_us(0);</code></td>
+</tr>
+<tr>
+<td><code>uart_init(uart, baud)</code></td>
+<td>Initializes the UART at a baud rate</td>
+<td><code>uart_init(uart0,115200);</code></td>
+</tr>
+<tr>
+<td><code>uart_set_format(uart, db, sb, par)</code></td>
+<td>Configures 8N1/E/O</td>
+<td><code>uart_set_format(uart0,8,1,UART_PARITY_NONE);</code></td>
+</tr>
+<tr>
+<td><code>uart_puts/putc()</code></td>
+<td>Sends a string/character</td>
+<td><code>uart_puts(uart0,"Hi\r\n");</code></td>
+</tr>
+<tr>
+<td><code>uart_is_readable()</code></td>
+<td>Any RX data?</td>
+<td><code>if(uart_is_readable(u0))</code></td>
+</tr>
+<tr>
+<td><code>uart_getc()</code></td>
+<td>Reads 1 RX byte</td>
+<td><code>char c=uart_getc(u0);</code></td>
+</tr>
+<tr>
+<td><code>gpio_set_function(pin, GPIO_FUNC_UART)</code></td>
+<td>Assigns a pin to the UART</td>
+<td><code>gpio_set_function(0,GPIO_FUNC_UART);</code></td>
+</tr>
+<tr>
+<td><code>irq_set_exclusive_handler(irq,h)</code></td>
+<td>Registers an ISR</td>
+<td><code>irq_set_exclusive_handler(UART0_IRQ,h);</code></td>
+</tr>
+<tr>
+<td><code>uart_set_irq_enables(u,rx,tx)</code></td>
+<td>Turns RX/TX IRQs on</td>
+<td><code>uart_set_irq_enables(u0,true,false);</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="43-sending">4.3 Sending</h3>
+<div class="language-c highlight"><span class="filename">Sender code</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/stdlib.h"</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"hardware/uart.h"</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="cp">#define UART_ID uart0</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="cp">#define BAUD_RATE 115200</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="cp">#define TX_PIN 0</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="cp">#define RX_PIN 1</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="n">stdio_init_all</span><span class="p">();</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">    </span><span class="n">gpio_set_function</span><span class="p">(</span><span class="n">TX_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">GPIO_FUNC_UART</span><span class="p">);</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">    </span><span class="n">gpio_set_function</span><span class="p">(</span><span class="n">RX_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">GPIO_FUNC_UART</span><span class="p">);</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">    </span><span class="n">uart_init</span><span class="p">(</span><span class="n">UART_ID</span><span class="p">,</span><span class="w"> </span><span class="n">BAUD_RATE</span><span class="p">);</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">    </span><span class="n">uart_set_format</span><span class="p">(</span><span class="n">UART_ID</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">UART_PARITY_NONE</span><span class="p">);</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">"[MAIN] Sending messages every second...</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">counter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="w">        </span><span class="kt">char</span><span class="w"> </span><span class="n">msg</span><span class="p">[</span><span class="mi">64</span><span class="p">];</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">        </span><span class="n">sprintf</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="s">"Message %d from MAIN</span><span class="se">\r\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">);</span>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="w">        </span><span class="n">uart_puts</span><span class="p">(</span><span class="n">UART_ID</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">);</span>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">        </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Polling:</strong> <code>main()</code> checks whether data is available (<code>uart_is_readable()</code>). Simple, but it consumes CPU and can lose data if the CPU stays busy too long (UART FIFO ≈ 16 bytes).</p>
+<h3 id="44-receiving">4.4 Receiving</h3>
+<div class="language-c highlight"><span class="filename">Receiver code</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/stdlib.h"</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"hardware/uart.h"</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="cp">#define BAUD_RATE 115200</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="cp">#define TX_PIN 0</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="cp">#define RX_PIN 1</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="n">stdio_init_all</span><span class="p">();</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span><span class="n">gpio_set_function</span><span class="p">(</span><span class="n">TX_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">GPIO_FUNC_UART</span><span class="p">);</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">    </span><span class="n">gpio_set_function</span><span class="p">(</span><span class="n">RX_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">GPIO_FUNC_UART</span><span class="p">);</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="n">uart_init</span><span class="p">(</span><span class="n">uart0</span><span class="p">,</span><span class="w"> </span><span class="n">BAUD_RATE</span><span class="p">);</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">    </span><span class="n">uart_set_format</span><span class="p">(</span><span class="n">UART_ID</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">UART_PARITY_NONE</span><span class="p">);</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">"[SUPPORT] Waiting for messages (polling)...</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">uart_is_readable</span><span class="p">(</span><span class="n">uart0</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="w">            </span><span class="kt">char</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uart_getc</span><span class="p">(</span><span class="n">uart0</span><span class="p">);</span>
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">"%c"</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">);</span>
+</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-4-26"><a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Interrupts:</strong> the hardware calls a <strong>handler</strong> when a byte arrives; the ISR must be <strong>fast</strong> and dump the data into a <strong>circular buffer</strong> in RAM for later processing. Efficient and robust at high baud rates.</p>
+<div class="language-c highlight"><span class="filename">IRQ receiver code</span><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/stdlib.h"</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"hardware/uart.h"</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"hardware/irq.h"</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="cp">#define UART_ID uart0</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="cp">#define BAUD_RATE 115200</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="cp">#define TX_PIN 0</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="cp">#define RX_PIN 1</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="c1">// Simple circular buffer</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="cp">#define BUF_SIZE 256</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="k">volatile</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">buffer</span><span class="p">[</span><span class="n">BUF_SIZE</span><span class="p">];</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="k">volatile</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">tail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">on_uart_rx</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">uart_is_readable</span><span class="p">(</span><span class="n">uart0</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">        </span><span class="kt">char</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uart_getc</span><span class="p">(</span><span class="n">uart0</span><span class="p">);</span>
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">        </span><span class="n">buffer</span><span class="p">[</span><span class="n">head</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="p">;</span>
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="w">        </span><span class="n">head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">head</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">BUF_SIZE</span><span class="p">;</span><span class="w"> </span><span class="c1">// no overflow handling, for simplicity</span>
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="p">}</span>
+</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>
+</span><span id="__span-5-24"><a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-25"><a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="w">    </span><span class="n">stdio_init_all</span><span class="p">();</span>
+</span><span id="__span-5-26"><a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>
+</span><span id="__span-5-27"><a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a><span class="w">    </span><span class="n">gpio_set_function</span><span class="p">(</span><span class="n">TX_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">GPIO_FUNC_UART</span><span class="p">);</span>
+</span><span id="__span-5-28"><a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a><span class="w">    </span><span class="n">gpio_set_function</span><span class="p">(</span><span class="n">RX_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">GPIO_FUNC_UART</span><span class="p">);</span>
+</span><span id="__span-5-29"><a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>
+</span><span id="__span-5-30"><a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a><span class="w">    </span><span class="n">uart_init</span><span class="p">(</span><span class="n">uart0</span><span class="p">,</span><span class="w"> </span><span class="n">BAUD_RATE</span><span class="p">);</span>
+</span><span id="__span-5-31"><a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a><span class="w">    </span><span class="n">uart_set_format</span><span class="p">(</span><span class="n">uart0</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">UART_PARITY_NONE</span><span class="p">);</span>
+</span><span id="__span-5-32"><a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a>
+</span><span id="__span-5-33"><a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a><span class="w">    </span><span class="c1">// Configure the UART0 IRQ</span>
+</span><span id="__span-5-34"><a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a><span class="w">    </span><span class="n">irq_set_exclusive_handler</span><span class="p">(</span><span class="n">UART0_IRQ</span><span class="p">,</span><span class="w"> </span><span class="n">on_uart_rx</span><span class="p">);</span>
+</span><span id="__span-5-35"><a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a><span class="w">    </span><span class="n">irq_set_enabled</span><span class="p">(</span><span class="n">UART0_IRQ</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+</span><span id="__span-5-36"><a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a><span class="w">    </span><span class="n">uart_set_irq_enables</span><span class="p">(</span><span class="n">uart0</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span><span class="w"> </span><span class="c1">// RX interrupt ON</span>
+</span><span id="__span-5-37"><a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a>
+</span><span id="__span-5-38"><a id="__codelineno-5-38" name="__codelineno-5-38" href="#__codelineno-5-38"></a><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">"[SUPPORT IRQ] Waiting for data with interrupts...</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+</span><span id="__span-5-39"><a id="__codelineno-5-39" name="__codelineno-5-39" href="#__codelineno-5-39"></a>
+</span><span id="__span-5-40"><a id="__codelineno-5-40" name="__codelineno-5-40" href="#__codelineno-5-40"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-41"><a id="__codelineno-5-41" name="__codelineno-5-41" href="#__codelineno-5-41"></a><span class="w">        </span><span class="c1">// Drain the buffer to the USB console</span>
+</span><span id="__span-5-42"><a id="__codelineno-5-42" name="__codelineno-5-42" href="#__codelineno-5-42"></a><span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">tail</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">head</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-43"><a id="__codelineno-5-43" name="__codelineno-5-43" href="#__codelineno-5-43"></a><span class="w">            </span><span class="kt">char</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">buffer</span><span class="p">[</span><span class="n">tail</span><span class="p">];</span>
+</span><span id="__span-5-44"><a id="__codelineno-5-44" name="__codelineno-5-44" href="#__codelineno-5-44"></a><span class="w">            </span><span class="n">tail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">tail</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">BUF_SIZE</span><span class="p">;</span>
+</span><span id="__span-5-45"><a id="__codelineno-5-45" name="__codelineno-5-45" href="#__codelineno-5-45"></a><span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">"%c"</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">);</span>
+</span><span id="__span-5-46"><a id="__codelineno-5-46" name="__codelineno-5-46" href="#__codelineno-5-46"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-5-47"><a id="__codelineno-5-47" name="__codelineno-5-47" href="#__codelineno-5-47"></a><span class="w">        </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+</span><span id="__span-5-48"><a id="__codelineno-5-48" name="__codelineno-5-48" href="#__codelineno-5-48"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-5-49"><a id="__codelineno-5-49" name="__codelineno-5-49" href="#__codelineno-5-49"></a><span class="p">}</span>
+</span></code></pre></div>
+<hr />
+<h2 id="5-errors">5) Errors</h2>
+<h3 id="51-common-application-problems">5.1 Common application problems</h3>
+<ul>
+<li><strong>USB port doesn't show up:</strong> charge-only cable; enable <code>pico_enable_stdio_usb(... 1)</code> and wait ~2 s after <code>stdio_init_all()</code>.</li>
+<li><strong>Garbled text:</strong> baud rate/format mismatch; use <strong>115200 8N1</strong>.</li>
+<li><strong>No echo over UART:</strong> cross <strong>TX↔RX</strong>, share <strong>GND</strong>, set <code>GPIO_FUNC_UART</code>.</li>
+<li><strong>Data loss at high baud rates:</strong> use <strong>IRQ + circular buffer</strong> or <strong>DMA</strong>; increase <code>BUF_SIZE</code>.</li>
+<li><strong>Odd CR/LF behavior:</strong> use <code>\r\n</code> or set the terminal to <strong>CR+LF</strong>.</li>
+</ul>
+<h3 id="52-uart-communication-errors">5.2 UART communication errors</h3>
+<table>
+<thead>
+<tr>
+<th>Error type</th>
+<th>Cause</th>
+<th>How to detect it</th>
+<th>Typical effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Framing Error</strong></td>
+<td>The receiver fails to detect the <em>Stop</em> bit correctly (noise or baud rate mismatch).</td>
+<td><code>FRAMING_ERR</code> bit in the status register (<code>UARTx_FRSR</code>).</td>
+<td>Received data is discarded or misinterpreted.</td>
+</tr>
+<tr>
+<td><strong>Parity Error</strong></td>
+<td>When a parity bit (even/odd) is used and it doesn't match the expected value.</td>
+<td><code>PARITY_ERR</code> bit.</td>
+<td>Detection of single-bit corruption.</td>
+</tr>
+<tr>
+<td><strong>Overrun Error</strong></td>
+<td>The receiver got a new byte before the software read the previous one from the FIFO.</td>
+<td><code>OVERRUN_ERR</code> bit.</td>
+<td>The oldest byte in the buffer is lost.</td>
+</tr>
+<tr>
+<td><strong>Break Condition</strong></td>
+<td>The <code>TX</code> line stays low for longer than one byte time.</td>
+<td><code>BREAK_DETECT</code> bit.</td>
+<td>May indicate a disconnection or serious hardware fault.</td>
+</tr>
+<tr>
+<td><strong>Noise / Glitches</strong></td>
+<td>Electrical noise or interference between wires.</td>
+<td>Oscilloscope / logic analyzer.</td>
+<td>Spurious bytes, random framing errors.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="53-error-handling-in-code">5.3 Error handling in code</h3>
+<table>
+<thead>
+<tr>
+<th>Register</th>
+<th>Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>UARTx_FR</code></strong> (Flag Register)</td>
+<td>Shows FIFO and line status (busy, empty, etc.)</td>
+</tr>
+<tr>
+<td><strong><code>UARTx_RSR</code> / <code>UARTx_ECR</code></strong> (Receive Status / Error Clear)</td>
+<td>Contains error flags: <code>FE</code>, <code>PE</code>, <code>BE</code>, <code>OE</code></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Bit</th>
+<th>Name</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td><strong>FE</strong></td>
+<td><em>Framing Error</em> — No valid stop bit detected</td>
+</tr>
+<tr>
+<td>1</td>
+<td><strong>PE</strong></td>
+<td><em>Parity Error</em> — Incorrect parity</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>BE</strong></td>
+<td><em>Break Error</em> — RX line held low for too long</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>OE</strong></td>
+<td><em>Overrun Error</em> — A byte was lost because the FIFO was full</td>
+</tr>
+</tbody>
+</table>
+<div class="language-c highlight"><span class="filename">Reading UART errors</span><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"hardware/uart.h"</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">uart_is_readable</span><span class="p">(</span><span class="n">uart0</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uart_getc</span><span class="p">(</span><span class="n">uart0</span><span class="p">);</span><span class="w"> </span><span class="c1">// Read a character</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">uart_get_hw</span><span class="p">(</span><span class="n">uart0</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">rsr</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">UART_UARTDR_FE_BITS</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">UART_UARTDR_PE_BITS</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">UART_UARTDR_OE_BITS</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">"⚠️ Error detected on UART</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">        </span><span class="n">uart_get_hw</span><span class="p">(</span><span class="n">uart0</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">rsr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="c1">// Clear errors</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="p">}</span>
+</span></code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../Tema_G/" class="md-footer__link md-footer__link--prev" aria-label="Previous: PWM">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                PWM
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../Bloque3/Tema_I/" class="md-footer__link md-footer__link--next" aria-label="Next: ADC">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                ADC
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "search.highlight", "search.suggest", "content.code.copy", "content.code.annotate", "content.tooltips", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

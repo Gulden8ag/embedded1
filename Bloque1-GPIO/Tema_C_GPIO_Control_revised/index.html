@@ -1,0 +1,2682 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Course notes for Embedded Systems I — RP2350 / Raspberry Pi Pico 2">
+      
+      
+        <meta name="author" content="Oliver Ochoa Garcia">
+      
+      
+      
+        <link rel="prev" href="../Tema_B/">
+      
+      
+        <link rel="next" href="../Tema_D/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>GPIO control - Embedded Systems I (LIIE1214)</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="red">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#gpio-control-from-sdk-functions-to-hardware-registers" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Embedded Systems I (LIIE1214)" class="md-header__button md-logo" aria-label="Embedded Systems I (LIIE1214)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Embedded Systems I (LIIE1214)
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              GPIO control
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Gulden8ag/embedded1" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Gulden8ag/embedded1
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Embedded Systems I (LIIE1214)" class="md-nav__button md-logo" aria-label="Embedded Systems I (LIIE1214)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Embedded Systems I (LIIE1214)
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Gulden8ag/embedded1" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Gulden8ag/embedded1
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 0 — Introduction
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 0 — Introduction
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque0-Introduccion/T1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Syllabus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque0-Introduccion/T0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab log template
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--draft"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque0-Introduccion/T2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab log Example
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--complete"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque0-Introduccion/Tema_A/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is an embedded system?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 1 — GPIO
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 1 — GPIO
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tema_B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Environment and toolchain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPIO control
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPIO control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-from-software-to-hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. From software to hardware
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. From software to hardware">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#memory-mapped-io" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Memory-mapped I/O
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples-across-mcu-families" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples across MCU families
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-gpio-from-the-inside" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. GPIO from the inside
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-bits-and-numeric-representation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Bits and numeric representation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-masks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Masks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Masks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#building-masks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building masks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-bitwise-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Bitwise operations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Bitwise operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-four-patterns-to-remember" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The four patterns to remember
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#or-set-bits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OR | — set bits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#and-keep-selected-bits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AND &amp; — keep selected bits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#and-not-clear-selected-bits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AND + NOT — clear selected bits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xor-toggle-bits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        XOR ^ — toggle bits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shifts-and" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shifts &lt;&lt; and &gt;&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-the-rp2350-sio-block" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. The RP2350 SIO block
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. The RP2350 SIO block">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#main-sio-registers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Main SIO registers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-opening-up-the-blink-program" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Opening up the Blink program
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Opening up the Blink program">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#starting-point-sdk-blink" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Starting point: SDK Blink
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-1-create-the-bit-mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1 — Create the bit mask
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-replace-the-output-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2 — Replace the output operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#register-level-blink" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Register-level Blink
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-sdk-vs-register-level-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. SDK vs register-level operations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-comparing-abstraction-layers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Comparing abstraction layers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Comparing abstraction layers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pico-sdk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pico SDK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arduino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Arduino
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#micropython-circuitpython-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MicroPython / CircuitPython style
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-controlling-several-gpios-with-one-mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Controlling several GPIOs with one mask
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Controlling several GPIOs with one mask">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tema_D/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Digital inputs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tema_E/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interrupts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 2 — Timing and serial
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 2 — Timing and serial
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque2-Temporizador/Tema_F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque2-Temporizador/Tema_G/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PWM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque2-Temporizador/Tema_H/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UART
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 3 — Analog and buses
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 3 — Analog and buses
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque3/Tema_I/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque3/Tema_J/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I2C
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Proyecto/Instrucciones/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capstone Project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-from-software-to-hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. From software to hardware
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. From software to hardware">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#memory-mapped-io" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Memory-mapped I/O
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples-across-mcu-families" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples across MCU families
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-gpio-from-the-inside" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. GPIO from the inside
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-bits-and-numeric-representation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Bits and numeric representation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-masks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Masks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Masks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#building-masks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building masks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-bitwise-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Bitwise operations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Bitwise operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-four-patterns-to-remember" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The four patterns to remember
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#or-set-bits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OR | — set bits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#and-keep-selected-bits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AND &amp; — keep selected bits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#and-not-clear-selected-bits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AND + NOT — clear selected bits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xor-toggle-bits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        XOR ^ — toggle bits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shifts-and" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shifts &lt;&lt; and &gt;&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-the-rp2350-sio-block" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. The RP2350 SIO block
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. The RP2350 SIO block">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#main-sio-registers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Main SIO registers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-opening-up-the-blink-program" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Opening up the Blink program
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Opening up the Blink program">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#starting-point-sdk-blink" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Starting point: SDK Blink
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-1-create-the-bit-mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1 — Create the bit mask
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-replace-the-output-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2 — Replace the output operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#register-level-blink" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Register-level Blink
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-sdk-vs-register-level-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. SDK vs register-level operations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-comparing-abstraction-layers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Comparing abstraction layers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Comparing abstraction layers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pico-sdk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pico SDK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arduino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Arduino
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#micropython-circuitpython-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MicroPython / CircuitPython style
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-controlling-several-gpios-with-one-mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Controlling several GPIOs with one mask
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Controlling several GPIOs with one mask">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="gpio-control-from-sdk-functions-to-hardware-registers">GPIO Control: From SDK Functions to Hardware Registers</h1>
+<p>In the previous lesson, we used functions such as:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">gpio_put</span><span class="p">(</span><span class="n">LED</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span></code></pre></div>
+<p>to control a GPIO pin.</p>
+<p>In this lesson we will open that abstraction and answer a simple question:</p>
+<blockquote>
+<p><strong>What does <code>gpio_put()</code> actually do to the hardware?</strong></p>
+</blockquote>
+<p>The goal is not to stop using the SDK. The goal is to understand what the SDK is doing for us.</p>
+<h2 id="learning-objectives">Learning objectives</h2>
+<p>By the end of this lesson, you should be able to:</p>
+<ul>
+<li>explain how GPIO peripherals are controlled through <strong>memory-mapped registers</strong>;</li>
+<li>represent GPIO states using binary, hexadecimal, and decimal values;</li>
+<li>create and use <strong>bit masks</strong>;</li>
+<li>use <code>AND</code>, <code>OR</code>, <code>XOR</code>, <code>NOT</code>, and shifts to manipulate selected bits;</li>
+<li>identify the main RP2350 <strong>SIO</strong> GPIO registers;</li>
+<li>relate Pico SDK GPIO functions to lower-level register operations;</li>
+<li>control several GPIO pins with a single mask.</li>
+</ul>
+<hr />
+<h2 id="1-from-software-to-hardware">1. From software to hardware</h2>
+<h3 id="memory-mapped-io">Memory-mapped I/O</h3>
+<p>Microcontroller peripherals contain <strong>registers</strong>: small hardware storage locations used to configure or inspect hardware.</p>
+<p>Peripheral registers are normally assigned addresses in the processor's <strong>memory map</strong>.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>CPU address space
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├── Flash
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>├── RAM
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>└── Peripheral registers
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>      ├── GPIO
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>      ├── Timers
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>      ├── UART
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>      └── ...
+</span></code></pre></div>
+<p>Reading or writing one of these addresses communicates with the corresponding hardware peripheral.</p>
+<p>A register is commonly 8, 16, or 32 bits wide. Individual <strong>bits or bit fields</strong> can represent hardware states such as:</p>
+<ul>
+<li>input or output direction;</li>
+<li>output HIGH or LOW;</li>
+<li>pull-up / pull-down configuration;</li>
+<li>interrupt flags;</li>
+<li>peripheral modes.</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Key idea</p>
+<p>At register level, controlling hardware means <strong>reading and writing particular bits at particular addresses</strong>.</p>
+</div>
+<h3 id="examples-across-mcu-families">Examples across MCU families</h3>
+<p>The names change between microcontrollers, but the idea is similar.</p>
+<p><strong>ATmega328P (Arduino Uno)</strong></p>
+<ul>
+<li><code>DDRB</code> → data direction</li>
+<li><code>PORTB</code> → output values</li>
+<li><code>PINB</code> → input values</li>
+</ul>
+<p><strong>RP2350 (Pico 2)</strong></p>
+<ul>
+<li><code>sio_hw-&gt;gpio_oe_set</code> → enable selected outputs</li>
+<li><code>sio_hw-&gt;gpio_set</code> → set selected outputs HIGH</li>
+<li><code>sio_hw-&gt;gpio_clr</code> → set selected outputs LOW</li>
+<li><code>sio_hw-&gt;gpio_in</code> → read GPIO states</li>
+</ul>
+<hr />
+<h2 id="2-gpio-from-the-inside">2. GPIO from the inside</h2>
+<p><img alt="GPIO internal structure" loading="lazy" src="../../images/GPIO.png" /></p>
+<p>A GPIO pin usually contains several hardware blocks.</p>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>IOMUX / Function Select</strong></td>
+<td>Chooses whether the pin acts as GPIO, UART, SPI, etc.</td>
+</tr>
+<tr>
+<td><strong>DIR / OE</strong></td>
+<td>Enables or disables the output driver</td>
+</tr>
+<tr>
+<td><strong>OUT / DATA</strong></td>
+<td>Selects the output logic level</td>
+</tr>
+<tr>
+<td><strong>IN</strong></td>
+<td>Reads the logic level present at the pin</td>
+</tr>
+<tr>
+<td><strong>PULL-UP / PULL-DOWN</strong></td>
+<td>Provides a default input level when nothing else drives the pin</td>
+</tr>
+</tbody>
+</table>
+<p>For a pin to behave as a normal digital output, we normally need to:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Select GPIO/SIO function
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>        ↓
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>Enable output
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        ↓
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>Write HIGH or LOW
+</span></code></pre></div>
+<p>The Pico SDK hides many of these details behind functions such as:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">gpio_init</span><span class="p">(</span><span class="n">pin</span><span class="p">);</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">gpio_set_dir</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span><span class="w"> </span><span class="n">GPIO_OUT</span><span class="p">);</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">gpio_put</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span></code></pre></div>
+<hr />
+<h2 id="3-bits-and-numeric-representation">3. Bits and numeric representation</h2>
+<p>GPIO registers contain many bits. A convenient way to select bit <code>n</code> is:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">n</span>
+</span></code></pre></div>
+<p>For example:</p>
+<table>
+<thead>
+<tr>
+<th>Expression</th>
+<th style="text-align: right;">Binary</th>
+<th style="text-align: right;">Hex</th>
+<th style="text-align: right;">Decimal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>1u &lt;&lt; 0</code></td>
+<td style="text-align: right;"><code>0b00000001</code></td>
+<td style="text-align: right;"><code>0x01</code></td>
+<td style="text-align: right;"><code>1</code></td>
+</tr>
+<tr>
+<td><code>1u &lt;&lt; 2</code></td>
+<td style="text-align: right;"><code>0b00000100</code></td>
+<td style="text-align: right;"><code>0x04</code></td>
+<td style="text-align: right;"><code>4</code></td>
+</tr>
+<tr>
+<td><code>1u &lt;&lt; 5</code></td>
+<td style="text-align: right;"><code>0b00100000</code></td>
+<td style="text-align: right;"><code>0x20</code></td>
+<td style="text-align: right;"><code>32</code></td>
+</tr>
+<tr>
+<td><code>1u &lt;&lt; 7</code></td>
+<td style="text-align: right;"><code>0b10000000</code></td>
+<td style="text-align: right;"><code>0x80</code></td>
+<td style="text-align: right;"><code>128</code></td>
+</tr>
+</tbody>
+</table>
+<p>All three representations describe the <strong>same numeric value</strong>.</p>
+<p>For example:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="mi">10</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="mh">0x0A</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="mb">0b1010</span>
+</span></code></pre></div>
+<p>represent the same value.</p>
+<div class="admonition note">
+<p class="admonition-title">Why use shifts?</p>
+<p><code>1u &lt;&lt; n</code> clearly expresses the intention:</p>
+<blockquote>
+<p><strong>Create a value where bit <code>n</code> is 1.</strong></p>
+</blockquote>
+<p>This is usually easier to understand than manually writing a long binary or hexadecimal constant.</p>
+</div>
+<hr />
+<h2 id="4-masks">4. Masks</h2>
+<p>A <strong>mask</strong> is a bit pattern used to select particular bits.</p>
+<p>For example, suppose we want to select GPIO2, GPIO4, and GPIO6:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Bit:    7 6 5 4 3 2 1 0
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>        ───────────────
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>Mask:   0 1 0 1 0 1 0 0
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>          ↑   ↑   ↑
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>         GP6 GP4 GP2
+</span></code></pre></div>
+<p>The mask can be created with:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">const</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">MASK</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="p">(</span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">|</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="p">(</span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">|</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="p">(</span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">6</span><span class="p">);</span>
+</span></code></pre></div>
+<p>The same mask can be written as:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="mb">0b01010100</span>
+</span></code></pre></div>
+<p>or:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="mh">0x54</span>
+</span></code></pre></div>
+<p>or:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="mi">84</span>
+</span></code></pre></div>
+<p>Again, the processor does not care which notation we used. They represent the same value.</p>
+<h3 id="building-masks">Building masks</h3>
+<p><strong>One pin</strong></p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="n">mask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">PIN</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Several pins</strong></p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="n">mask</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">    </span><span class="p">(</span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">PIN_A</span><span class="p">)</span><span class="w"> </span><span class="o">|</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">    </span><span class="p">(</span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">PIN_B</span><span class="p">)</span><span class="w"> </span><span class="o">|</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span><span class="p">(</span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">PIN_C</span><span class="p">);</span>
+</span></code></pre></div>
+<div class="admonition exercise">
+<p class="admonition-title">Quick check</p>
+<p>Create a mask for <strong>GPIO2, GPIO4, and GPIO6</strong>.</p>
+<p>Write the result in:</p>
+<ol>
+<li>binary;</li>
+<li>hexadecimal;</li>
+<li>decimal.</li>
+</ol>
+</div>
+<hr />
+<h2 id="5-bitwise-operations">5. Bitwise operations</h2>
+<p>Bitwise operators allow us to modify only selected bits of a register.</p>
+<h3 id="the-four-patterns-to-remember">The four patterns to remember</h3>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">reg</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">mask</span><span class="p">;</span><span class="w">       </span><span class="c1">// SET selected bits</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">reg</span><span class="w"> </span><span class="o">&amp;=</span><span class="w"> </span><span class="o">~</span><span class="n">mask</span><span class="p">;</span><span class="w">      </span><span class="c1">// CLEAR selected bits</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="n">reg</span><span class="w"> </span><span class="o">^=</span><span class="w"> </span><span class="n">mask</span><span class="p">;</span><span class="w">       </span><span class="c1">// TOGGLE selected bits</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reg</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">mask</span><span class="p">;</span><span class="w"> </span><span class="c1">// TEST / EXTRACT selected bits</span>
+</span></code></pre></div>
+<h3 id="or-set-bits">OR <code>|</code> — set bits</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>Register:  00100000
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>Mask:      00000100
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>           --------
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>Result:    00100100
+</span></code></pre></div>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">reg</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="p">(</span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+</span></code></pre></div>
+<p>The selected bit becomes <code>1</code> while the other bits are preserved.</p>
+<h3 id="and-keep-selected-bits">AND <code>&amp;</code> — keep selected bits</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>Register:  11001010
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>Mask:      11110000
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>           --------
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>Result:    11000000
+</span></code></pre></div>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reg</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">mask</span><span class="p">;</span>
+</span></code></pre></div>
+<p>Bits where the mask contains <code>0</code> are cleared in the result.</p>
+<h3 id="and-not-clear-selected-bits">AND + NOT — clear selected bits</h3>
+<p>To clear a particular bit, first create a mask containing <code>1</code> at that position and invert it:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">reg</span><span class="w"> </span><span class="o">&amp;=</span><span class="w"> </span><span class="o">~</span><span class="p">(</span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+</span></code></pre></div>
+<p>Conceptually, assuming an 8-bit value:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>Mask:      00000100
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>NOT mask:  11111011
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>Register:  00100100
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>AND:       11111011
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>           --------
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>Result:    00100000
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>~</code> inverts all bits of the C integer type being used. The 8-bit diagram above is only a simplified visualization.</p>
+</div>
+<h3 id="xor-toggle-bits">XOR <code>^</code> — toggle bits</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>Register:  00001111
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>Mask:      00000101
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>           --------
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>Result:    00001010
+</span></code></pre></div>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="n">reg</span><span class="w"> </span><span class="o">^=</span><span class="w"> </span><span class="n">mask</span><span class="p">;</span>
+</span></code></pre></div>
+<p>Selected bits switch:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>0 → 1
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>1 → 0
+</span></code></pre></div>
+<h3 id="shifts-and">Shifts <code>&lt;&lt;</code> and <code>&gt;&gt;</code></h3>
+<p>Shifts move a bit pattern left or right.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">2</span>
+</span></code></pre></div>
+<p>produces:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>00000001
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>   &lt;&lt; 2
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>--------
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a>00000100
+</span></code></pre></div>
+<p>This is especially useful when creating masks and moving patterns between GPIO pins.</p>
+<div class="admonition exercise">
+<p class="admonition-title">Predict the result</p>
+<p>Assume an 8-bit register begins as:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>reg = 00101000
+</span></code></pre></div>
+<p>Determine the result of:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="n">reg</span><span class="w"> </span><span class="o">|=</span><span class="w">  </span><span class="mb">0b00000101</span><span class="p">;</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="n">reg</span><span class="w"> </span><span class="o">&amp;=</span><span class="w"> </span><span class="o">~</span><span class="mb">0b00001000</span><span class="p">;</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="n">reg</span><span class="w"> </span><span class="o">^=</span><span class="w">  </span><span class="mb">0b00100001</span><span class="p">;</span>
+</span></code></pre></div>
+</div>
+<hr />
+<h2 id="6-the-rp2350-sio-block">6. The RP2350 SIO block</h2>
+<p>The RP2350 provides <strong>SIO (Single-Cycle I/O)</strong> registers for direct GPIO access.</p>
+<p>For the GPIO pins used in this lesson, each bit in the register corresponds to a GPIO number:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>bit 2 → GPIO2
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>bit 4 → GPIO4
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>bit 6 → GPIO6
+</span></code></pre></div>
+<h3 id="main-sio-registers">Main SIO registers</h3>
+<table>
+<thead>
+<tr>
+<th>Register</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sio_hw-&gt;gpio_in</code></td>
+<td>Read GPIO states</td>
+</tr>
+<tr>
+<td><code>sio_hw-&gt;gpio_set</code></td>
+<td>Set selected outputs HIGH</td>
+</tr>
+<tr>
+<td><code>sio_hw-&gt;gpio_clr</code></td>
+<td>Set selected outputs LOW</td>
+</tr>
+<tr>
+<td><code>sio_hw-&gt;gpio_togl</code></td>
+<td>Toggle selected outputs</td>
+</tr>
+<tr>
+<td><code>sio_hw-&gt;gpio_oe_set</code></td>
+<td>Configure selected GPIOs as outputs</td>
+</tr>
+<tr>
+<td><code>sio_hw-&gt;gpio_oe_clr</code></td>
+<td>Configure selected GPIOs as inputs</td>
+</tr>
+</tbody>
+</table>
+<p>The SET, CLEAR, and TOGGLE registers allow selected bits to be changed without overwriting the state of unrelated GPIO pins.</p>
+<hr />
+<h2 id="7-opening-up-the-blink-program">7. Opening up the Blink program</h2>
+<p>Last class we used the Pico SDK to blink an LED.</p>
+<h3 id="starting-point-sdk-blink">Starting point: SDK Blink</h3>
+<div class="language-c highlight"><span class="filename">sdk_blink.c</span><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/stdlib.h"</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">uint</span><span class="w"> </span><span class="n">LED</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PICO_DEFAULT_LED_PIN</span><span class="p">;</span>
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a>
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="w">    </span><span class="n">gpio_init</span><span class="p">(</span><span class="n">LED</span><span class="p">);</span>
+</span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="w">    </span><span class="n">gpio_set_dir</span><span class="p">(</span><span class="n">LED</span><span class="p">,</span><span class="w"> </span><span class="n">GPIO_OUT</span><span class="p">);</span>
+</span><span id="__span-28-8"><a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a>
+</span><span id="__span-28-9"><a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-28-10"><a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a><span class="w">        </span><span class="n">gpio_put</span><span class="p">(</span><span class="n">LED</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-28-11"><a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a><span class="w">        </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
+</span><span id="__span-28-12"><a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a>
+</span><span id="__span-28-13"><a id="__codelineno-28-13" name="__codelineno-28-13" href="#__codelineno-28-13"></a><span class="w">        </span><span class="n">gpio_put</span><span class="p">(</span><span class="n">LED</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</span><span id="__span-28-14"><a id="__codelineno-28-14" name="__codelineno-28-14" href="#__codelineno-28-14"></a><span class="w">        </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
+</span><span id="__span-28-15"><a id="__codelineno-28-15" name="__codelineno-28-15" href="#__codelineno-28-15"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-28-16"><a id="__codelineno-28-16" name="__codelineno-28-16" href="#__codelineno-28-16"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The important question is:</p>
+<blockquote>
+<p><strong>What is <code>gpio_put()</code> changing underneath?</strong></p>
+</blockquote>
+<h3 id="step-1-create-the-bit-mask">Step 1 — Create the bit mask</h3>
+<p>If the LED is connected to GPIO <code>LED</code>, its bit can be selected with:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="k">const</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">LED_MASK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">LED</span><span class="p">;</span>
+</span></code></pre></div>
+<h3 id="step-2-replace-the-output-operations">Step 2 — Replace the output operations</h3>
+<p>The SDK instruction:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="n">gpio_put</span><span class="p">(</span><span class="n">LED</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span></code></pre></div>
+<p>can be represented at a lower level as:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="n">sio_hw</span><span class="o">-&gt;</span><span class="n">gpio_set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LED_MASK</span><span class="p">;</span>
+</span></code></pre></div>
+<p>and:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="n">gpio_put</span><span class="p">(</span><span class="n">LED</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</span></code></pre></div>
+<p>as:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="n">sio_hw</span><span class="o">-&gt;</span><span class="n">gpio_clr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LED_MASK</span><span class="p">;</span>
+</span></code></pre></div>
+<h3 id="register-level-blink">Register-level Blink</h3>
+<div class="language-c highlight"><span class="filename">sio_blink.c</span><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/stdlib.h"</span>
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"hardware/structs/sio.h"</span>
+</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>
+</span><span id="__span-34-4"><a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-34-5"><a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">uint</span><span class="w"> </span><span class="n">LED</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PICO_DEFAULT_LED_PIN</span><span class="p">;</span>
+</span><span id="__span-34-6"><a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">LED_MASK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">LED</span><span class="p">;</span>
+</span><span id="__span-34-7"><a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a>
+</span><span id="__span-34-8"><a id="__codelineno-34-8" name="__codelineno-34-8" href="#__codelineno-34-8"></a><span class="w">    </span><span class="n">gpio_init</span><span class="p">(</span><span class="n">LED</span><span class="p">);</span>
+</span><span id="__span-34-9"><a id="__codelineno-34-9" name="__codelineno-34-9" href="#__codelineno-34-9"></a>
+</span><span id="__span-34-10"><a id="__codelineno-34-10" name="__codelineno-34-10" href="#__codelineno-34-10"></a><span class="w">    </span><span class="c1">// OE = Output Enable</span>
+</span><span id="__span-34-11"><a id="__codelineno-34-11" name="__codelineno-34-11" href="#__codelineno-34-11"></a><span class="w">    </span><span class="n">sio_hw</span><span class="o">-&gt;</span><span class="n">gpio_oe_set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LED_MASK</span><span class="p">;</span>
+</span><span id="__span-34-12"><a id="__codelineno-34-12" name="__codelineno-34-12" href="#__codelineno-34-12"></a>
+</span><span id="__span-34-13"><a id="__codelineno-34-13" name="__codelineno-34-13" href="#__codelineno-34-13"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-34-14"><a id="__codelineno-34-14" name="__codelineno-34-14" href="#__codelineno-34-14"></a><span class="w">        </span><span class="n">sio_hw</span><span class="o">-&gt;</span><span class="n">gpio_set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LED_MASK</span><span class="p">;</span>
+</span><span id="__span-34-15"><a id="__codelineno-34-15" name="__codelineno-34-15" href="#__codelineno-34-15"></a><span class="w">        </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
+</span><span id="__span-34-16"><a id="__codelineno-34-16" name="__codelineno-34-16" href="#__codelineno-34-16"></a>
+</span><span id="__span-34-17"><a id="__codelineno-34-17" name="__codelineno-34-17" href="#__codelineno-34-17"></a><span class="w">        </span><span class="n">sio_hw</span><span class="o">-&gt;</span><span class="n">gpio_clr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LED_MASK</span><span class="p">;</span>
+</span><span id="__span-34-18"><a id="__codelineno-34-18" name="__codelineno-34-18" href="#__codelineno-34-18"></a><span class="w">        </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
+</span><span id="__span-34-19"><a id="__codelineno-34-19" name="__codelineno-34-19" href="#__codelineno-34-19"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-34-20"><a id="__codelineno-34-20" name="__codelineno-34-20" href="#__codelineno-34-20"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Both programs produce the same visible behavior.</p>
+<p>The difference is the abstraction level:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>Pico SDK
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>gpio_put(LED, 1)
+</span><span id="__span-35-4"><a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a>        ↓
+</span><span id="__span-35-5"><a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a>      SDK
+</span><span id="__span-35-6"><a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a>        ↓
+</span><span id="__span-35-7"><a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a>SIO register operation
+</span><span id="__span-35-8"><a id="__codelineno-35-8" name="__codelineno-35-8" href="#__codelineno-35-8"></a>        ↓
+</span><span id="__span-35-9"><a id="__codelineno-35-9" name="__codelineno-35-9" href="#__codelineno-35-9"></a>GPIO hardware
+</span></code></pre></div>
+<div class="admonition exercise">
+<p class="admonition-title">Open the abstraction</p>
+<p>Starting from the SDK Blink from the previous lesson:</p>
+<ol>
+<li>keep <code>gpio_init()</code>;</li>
+<li>replace <code>gpio_set_dir()</code> with <code>sio_hw-&gt;gpio_oe_set</code>;</li>
+<li>replace each <code>gpio_put()</code> with the corresponding SIO SET/CLEAR operation;</li>
+<li>compile and test if hardware is available.</li>
+</ol>
+</div>
+<hr />
+<h2 id="8-sdk-vs-register-level-operations">8. SDK vs register-level operations</h2>
+<table>
+<thead>
+<tr>
+<th>Intent</th>
+<th>Pico SDK</th>
+<th>SIO register</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Configure output</td>
+<td><code>gpio_set_dir(pin, GPIO_OUT)</code></td>
+<td><code>sio_hw-&gt;gpio_oe_set = mask</code></td>
+</tr>
+<tr>
+<td>Configure input</td>
+<td><code>gpio_set_dir(pin, GPIO_IN)</code></td>
+<td><code>sio_hw-&gt;gpio_oe_clr = mask</code></td>
+</tr>
+<tr>
+<td>Set HIGH</td>
+<td><code>gpio_put(pin, 1)</code></td>
+<td><code>sio_hw-&gt;gpio_set = mask</code></td>
+</tr>
+<tr>
+<td>Set LOW</td>
+<td><code>gpio_put(pin, 0)</code></td>
+<td><code>sio_hw-&gt;gpio_clr = mask</code></td>
+</tr>
+<tr>
+<td>Toggle selected pins</td>
+<td><code>gpio_xor_mask(mask)</code></td>
+<td><code>sio_hw-&gt;gpio_togl = mask</code></td>
+</tr>
+<tr>
+<td>Read a pin</td>
+<td><code>gpio_get(pin)</code></td>
+<td><code>sio_hw-&gt;gpio_in &amp; mask</code></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Why use an SDK?</p>
+<p>Register-level access helps us understand the hardware.</p>
+<p>The SDK usually gives us:</p>
+<ul>
+<li>clearer code;</li>
+<li>easier portability;</li>
+<li>less dependence on register details;</li>
+<li>useful safety and convenience functions.</li>
+</ul>
+<p><strong>The SDK is not magic; it is an abstraction over the hardware.</strong></p>
+</div>
+<hr />
+<h2 id="9-comparing-abstraction-layers">9. Comparing abstraction layers</h2>
+<p>The same GPIO concept appears in many embedded environments.</p>
+<h3 id="pico-sdk">Pico SDK</h3>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="n">gpio_init</span><span class="p">(</span><span class="n">pin</span><span class="p">);</span>
+</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a><span class="n">gpio_set_dir</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span><span class="w"> </span><span class="n">GPIO_OUT</span><span class="p">);</span>
+</span><span id="__span-36-3"><a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a><span class="n">gpio_put</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-36-4"><a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a><span class="n">gpio_put</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</span></code></pre></div>
+<p>For several GPIO pins:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="n">gpio_set_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">);</span>
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a><span class="n">gpio_clr_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">);</span>
+</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a><span class="n">gpio_xor_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">);</span>
+</span><span id="__span-37-4"><a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a><span class="n">gpio_put_masked</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">);</span>
+</span></code></pre></div>
+<h3 id="arduino">Arduino</h3>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="n">pinMode</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span>
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a><span class="n">digitalWrite</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span><span class="w"> </span><span class="n">HIGH</span><span class="p">);</span>
+</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a><span class="n">digitalWrite</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span><span class="w"> </span><span class="n">LOW</span><span class="p">);</span>
+</span></code></pre></div>
+<h3 id="micropython-circuitpython-style">MicroPython / CircuitPython style</h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">machine</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pin</span>
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>
+</span><span id="__span-39-3"><a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a><span class="n">p</span> <span class="o">=</span> <span class="n">Pin</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span> <span class="n">Pin</span><span class="o">.</span><span class="n">OUT</span><span class="p">)</span>
+</span><span id="__span-39-4"><a id="__codelineno-39-4" name="__codelineno-39-4" href="#__codelineno-39-4"></a><span class="n">p</span><span class="o">.</span><span class="n">on</span><span class="p">()</span>
+</span><span id="__span-39-5"><a id="__codelineno-39-5" name="__codelineno-39-5" href="#__codelineno-39-5"></a><span class="n">p</span><span class="o">.</span><span class="n">off</span><span class="p">()</span>
+</span></code></pre></div>
+<p>Although the syntax and abstraction level change, all of them eventually configure and manipulate the MCU's GPIO hardware.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>Application code
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>      ↓
+</span><span id="__span-40-3"><a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a>SDK / HAL / Runtime
+</span><span id="__span-40-4"><a id="__codelineno-40-4" name="__codelineno-40-4" href="#__codelineno-40-4"></a>      ↓
+</span><span id="__span-40-5"><a id="__codelineno-40-5" name="__codelineno-40-5" href="#__codelineno-40-5"></a>Peripheral registers
+</span><span id="__span-40-6"><a id="__codelineno-40-6" name="__codelineno-40-6" href="#__codelineno-40-6"></a>      ↓
+</span><span id="__span-40-7"><a id="__codelineno-40-7" name="__codelineno-40-7" href="#__codelineno-40-7"></a>GPIO hardware
+</span></code></pre></div>
+<hr />
+<h2 id="10-controlling-several-gpios-with-one-mask">10. Controlling several GPIOs with one mask</h2>
+<p>Suppose three LEDs are connected to GPIO2, GPIO4, and GPIO6.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a><span class="cp">#define PIN_A 2</span>
+</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a><span class="cp">#define PIN_B 4</span>
+</span><span id="__span-41-3"><a id="__codelineno-41-3" name="__codelineno-41-3" href="#__codelineno-41-3"></a><span class="cp">#define PIN_C 6</span>
+</span><span id="__span-41-4"><a id="__codelineno-41-4" name="__codelineno-41-4" href="#__codelineno-41-4"></a>
+</span><span id="__span-41-5"><a id="__codelineno-41-5" name="__codelineno-41-5" href="#__codelineno-41-5"></a><span class="k">const</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">MASK</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-41-6"><a id="__codelineno-41-6" name="__codelineno-41-6" href="#__codelineno-41-6"></a><span class="w">    </span><span class="p">(</span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">PIN_A</span><span class="p">)</span><span class="w"> </span><span class="o">|</span>
+</span><span id="__span-41-7"><a id="__codelineno-41-7" name="__codelineno-41-7" href="#__codelineno-41-7"></a><span class="w">    </span><span class="p">(</span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">PIN_B</span><span class="p">)</span><span class="w"> </span><span class="o">|</span>
+</span><span id="__span-41-8"><a id="__codelineno-41-8" name="__codelineno-41-8" href="#__codelineno-41-8"></a><span class="w">    </span><span class="p">(</span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">PIN_C</span><span class="p">);</span>
+</span></code></pre></div>
+<p>Initialize them:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a><span class="n">gpio_init</span><span class="p">(</span><span class="n">PIN_A</span><span class="p">);</span>
+</span><span id="__span-42-2"><a id="__codelineno-42-2" name="__codelineno-42-2" href="#__codelineno-42-2"></a><span class="n">gpio_init</span><span class="p">(</span><span class="n">PIN_B</span><span class="p">);</span>
+</span><span id="__span-42-3"><a id="__codelineno-42-3" name="__codelineno-42-3" href="#__codelineno-42-3"></a><span class="n">gpio_init</span><span class="p">(</span><span class="n">PIN_C</span><span class="p">);</span>
+</span></code></pre></div>
+<p>Configure all three as outputs with one operation:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a><span class="n">sio_hw</span><span class="o">-&gt;</span><span class="n">gpio_oe_set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MASK</span><span class="p">;</span>
+</span></code></pre></div>
+<p>Then:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a><span class="n">sio_hw</span><span class="o">-&gt;</span><span class="n">gpio_set</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">MASK</span><span class="p">;</span><span class="w">   </span><span class="c1">// all HIGH</span>
+</span><span id="__span-44-2"><a id="__codelineno-44-2" name="__codelineno-44-2" href="#__codelineno-44-2"></a><span class="n">sio_hw</span><span class="o">-&gt;</span><span class="n">gpio_clr</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">MASK</span><span class="p">;</span><span class="w">   </span><span class="c1">// all LOW</span>
+</span><span id="__span-44-3"><a id="__codelineno-44-3" name="__codelineno-44-3" href="#__codelineno-44-3"></a><span class="n">sio_hw</span><span class="o">-&gt;</span><span class="n">gpio_togl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MASK</span><span class="p">;</span><span class="w">   </span><span class="c1">// toggle all</span>
+</span></code></pre></div>
+<p>The SDK provides equivalent operations:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-45-1"><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a><span class="n">gpio_set_mask</span><span class="p">(</span><span class="n">MASK</span><span class="p">);</span>
+</span><span id="__span-45-2"><a id="__codelineno-45-2" name="__codelineno-45-2" href="#__codelineno-45-2"></a><span class="n">gpio_clr_mask</span><span class="p">(</span><span class="n">MASK</span><span class="p">);</span>
+</span><span id="__span-45-3"><a id="__codelineno-45-3" name="__codelineno-45-3" href="#__codelineno-45-3"></a><span class="n">gpio_xor_mask</span><span class="p">(</span><span class="n">MASK</span><span class="p">);</span>
+</span></code></pre></div>
+<h3 id="example">Example</h3>
+<div class="language-c highlight"><span class="filename">multi_gpio.c</span><pre><span></span><code><span id="__span-46-1"><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/stdlib.h"</span>
+</span><span id="__span-46-2"><a id="__codelineno-46-2" name="__codelineno-46-2" href="#__codelineno-46-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"hardware/structs/sio.h"</span>
+</span><span id="__span-46-3"><a id="__codelineno-46-3" name="__codelineno-46-3" href="#__codelineno-46-3"></a>
+</span><span id="__span-46-4"><a id="__codelineno-46-4" name="__codelineno-46-4" href="#__codelineno-46-4"></a><span class="cp">#define PIN_A 2</span>
+</span><span id="__span-46-5"><a id="__codelineno-46-5" name="__codelineno-46-5" href="#__codelineno-46-5"></a><span class="cp">#define PIN_B 4</span>
+</span><span id="__span-46-6"><a id="__codelineno-46-6" name="__codelineno-46-6" href="#__codelineno-46-6"></a><span class="cp">#define PIN_C 6</span>
+</span><span id="__span-46-7"><a id="__codelineno-46-7" name="__codelineno-46-7" href="#__codelineno-46-7"></a>
+</span><span id="__span-46-8"><a id="__codelineno-46-8" name="__codelineno-46-8" href="#__codelineno-46-8"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-46-9"><a id="__codelineno-46-9" name="__codelineno-46-9" href="#__codelineno-46-9"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">MASK</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-46-10"><a id="__codelineno-46-10" name="__codelineno-46-10" href="#__codelineno-46-10"></a><span class="w">        </span><span class="p">(</span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">PIN_A</span><span class="p">)</span><span class="w"> </span><span class="o">|</span>
+</span><span id="__span-46-11"><a id="__codelineno-46-11" name="__codelineno-46-11" href="#__codelineno-46-11"></a><span class="w">        </span><span class="p">(</span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">PIN_B</span><span class="p">)</span><span class="w"> </span><span class="o">|</span>
+</span><span id="__span-46-12"><a id="__codelineno-46-12" name="__codelineno-46-12" href="#__codelineno-46-12"></a><span class="w">        </span><span class="p">(</span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">PIN_C</span><span class="p">);</span>
+</span><span id="__span-46-13"><a id="__codelineno-46-13" name="__codelineno-46-13" href="#__codelineno-46-13"></a>
+</span><span id="__span-46-14"><a id="__codelineno-46-14" name="__codelineno-46-14" href="#__codelineno-46-14"></a><span class="w">    </span><span class="n">gpio_init</span><span class="p">(</span><span class="n">PIN_A</span><span class="p">);</span>
+</span><span id="__span-46-15"><a id="__codelineno-46-15" name="__codelineno-46-15" href="#__codelineno-46-15"></a><span class="w">    </span><span class="n">gpio_init</span><span class="p">(</span><span class="n">PIN_B</span><span class="p">);</span>
+</span><span id="__span-46-16"><a id="__codelineno-46-16" name="__codelineno-46-16" href="#__codelineno-46-16"></a><span class="w">    </span><span class="n">gpio_init</span><span class="p">(</span><span class="n">PIN_C</span><span class="p">);</span>
+</span><span id="__span-46-17"><a id="__codelineno-46-17" name="__codelineno-46-17" href="#__codelineno-46-17"></a>
+</span><span id="__span-46-18"><a id="__codelineno-46-18" name="__codelineno-46-18" href="#__codelineno-46-18"></a><span class="w">    </span><span class="n">sio_hw</span><span class="o">-&gt;</span><span class="n">gpio_oe_set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MASK</span><span class="p">;</span>
+</span><span id="__span-46-19"><a id="__codelineno-46-19" name="__codelineno-46-19" href="#__codelineno-46-19"></a>
+</span><span id="__span-46-20"><a id="__codelineno-46-20" name="__codelineno-46-20" href="#__codelineno-46-20"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-46-21"><a id="__codelineno-46-21" name="__codelineno-46-21" href="#__codelineno-46-21"></a><span class="w">        </span><span class="n">sio_hw</span><span class="o">-&gt;</span><span class="n">gpio_set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MASK</span><span class="p">;</span>
+</span><span id="__span-46-22"><a id="__codelineno-46-22" name="__codelineno-46-22" href="#__codelineno-46-22"></a><span class="w">        </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">300</span><span class="p">);</span>
+</span><span id="__span-46-23"><a id="__codelineno-46-23" name="__codelineno-46-23" href="#__codelineno-46-23"></a>
+</span><span id="__span-46-24"><a id="__codelineno-46-24" name="__codelineno-46-24" href="#__codelineno-46-24"></a><span class="w">        </span><span class="n">sio_hw</span><span class="o">-&gt;</span><span class="n">gpio_clr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MASK</span><span class="p">;</span>
+</span><span id="__span-46-25"><a id="__codelineno-46-25" name="__codelineno-46-25" href="#__codelineno-46-25"></a><span class="w">        </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">300</span><span class="p">);</span>
+</span><span id="__span-46-26"><a id="__codelineno-46-26" name="__codelineno-46-26" href="#__codelineno-46-26"></a>
+</span><span id="__span-46-27"><a id="__codelineno-46-27" name="__codelineno-46-27" href="#__codelineno-46-27"></a><span class="w">        </span><span class="n">sio_hw</span><span class="o">-&gt;</span><span class="n">gpio_togl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MASK</span><span class="p">;</span>
+</span><span id="__span-46-28"><a id="__codelineno-46-28" name="__codelineno-46-28" href="#__codelineno-46-28"></a><span class="w">        </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">300</span><span class="p">);</span>
+</span><span id="__span-46-29"><a id="__codelineno-46-29" name="__codelineno-46-29" href="#__codelineno-46-29"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-46-30"><a id="__codelineno-46-30" name="__codelineno-46-30" href="#__codelineno-46-30"></a><span class="p">}</span>
+</span></code></pre></div>
+<div class="admonition exercise">
+<p class="admonition-title">Mini challenge</p>
+<p>Using GPIO2, GPIO4, and GPIO6:</p>
+<ol>
+<li>create one mask selecting all three pins;</li>
+<li>configure them as outputs with one masked operation;</li>
+<li>set all three HIGH;</li>
+<li>clear all three;</li>
+<li>toggle all three.</li>
+</ol>
+<p>Try implementing the same sequence once with <strong>SIO registers</strong> and once with the <strong>Pico SDK</strong>.</p>
+</div>
+<hr />
+<h1 id="exercises">Exercises</h1>
+<p>A practical arrangement is four LEDs connected to consecutive GPIOs:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-47-1"><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a>GPIO2 → LED0 → resistor → GND
+</span><span id="__span-47-2"><a id="__codelineno-47-2" name="__codelineno-47-2" href="#__codelineno-47-2"></a>GPIO3 → LED1 → resistor → GND
+</span><span id="__span-47-3"><a id="__codelineno-47-3" name="__codelineno-47-3" href="#__codelineno-47-3"></a>GPIO4 → LED2 → resistor → GND
+</span><span id="__span-47-4"><a id="__codelineno-47-4" name="__codelineno-47-4" href="#__codelineno-47-4"></a>GPIO5 → LED3 → resistor → GND
+</span></code></pre></div>
+<p>Use one current-limiting resistor for each LED.</p>
+<hr />
+<h2 id="exercise-1-4-bit-binary-counter">Exercise 1 — 4-bit binary counter</h2>
+<p>Use the four LEDs as a <strong>4-bit binary number</strong>.</p>
+<p>The program must count:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-48-1"><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a>0 → 1 → 2 → ... → 15 → 0
+</span></code></pre></div>
+<p>For example:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-49-1"><a id="__codelineno-49-1" name="__codelineno-49-1" href="#__codelineno-49-1"></a>Decimal   Binary   LEDs
+</span><span id="__span-49-2"><a id="__codelineno-49-2" name="__codelineno-49-2" href="#__codelineno-49-2"></a>0         0000     ○ ○ ○ ○
+</span><span id="__span-49-3"><a id="__codelineno-49-3" name="__codelineno-49-3" href="#__codelineno-49-3"></a>1         0001     ○ ○ ○ ●
+</span><span id="__span-49-4"><a id="__codelineno-49-4" name="__codelineno-49-4" href="#__codelineno-49-4"></a>2         0010     ○ ○ ● ○
+</span><span id="__span-49-5"><a id="__codelineno-49-5" name="__codelineno-49-5" href="#__codelineno-49-5"></a>...
+</span><span id="__span-49-6"><a id="__codelineno-49-6" name="__codelineno-49-6" href="#__codelineno-49-6"></a>15        1111     ● ● ● ●
+</span></code></pre></div>
+<p>produce the same LED pattern.</p>
+<div class="admonition question">
+<p class="admonition-title">Think about it</p>
+<p>Does the CPU know whether you wrote the value in decimal, hexadecimal, or binary?</p>
+</div>
+<hr />
+<h2 id="exercise-2-bouncing-light">Exercise 2 — Bouncing light</h2>
+<p>Create a light that moves across the four LEDs and then returns:</p>
+<h2 id="0001-0010-0100-1000-0100-0010-0001"><div class="language-text highlight"><pre><span></span><code><span id="__span-50-1"><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a>0001
+</span><span id="__span-50-2"><a id="__codelineno-50-2" name="__codelineno-50-2" href="#__codelineno-50-2"></a>0010
+</span><span id="__span-50-3"><a id="__codelineno-50-3" name="__codelineno-50-3" href="#__codelineno-50-3"></a>0100
+</span><span id="__span-50-4"><a id="__codelineno-50-4" name="__codelineno-50-4" href="#__codelineno-50-4"></a>1000
+</span><span id="__span-50-5"><a id="__codelineno-50-5" name="__codelineno-50-5" href="#__codelineno-50-5"></a>0100
+</span><span id="__span-50-6"><a id="__codelineno-50-6" name="__codelineno-50-6" href="#__codelineno-50-6"></a>0010
+</span><span id="__span-50-7"><a id="__codelineno-50-7" name="__codelineno-50-7" href="#__codelineno-50-7"></a>0001
+</span><span id="__span-50-8"><a id="__codelineno-50-8" name="__codelineno-50-8" href="#__codelineno-50-8"></a>...
+</span></code></pre></div></h2>
+<h2 id="exercise-3-fill-and-empty-animation">Exercise 3 — Fill and empty animation</h2>
+<p>Create an animation that progressively fills all four LEDs and then progressively empties them.</p>
+<p>For example:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-51-1"><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a>○ ○ ○ ○
+</span><span id="__span-51-2"><a id="__codelineno-51-2" name="__codelineno-51-2" href="#__codelineno-51-2"></a>○ ○ ○ ●
+</span><span id="__span-51-3"><a id="__codelineno-51-3" name="__codelineno-51-3" href="#__codelineno-51-3"></a>○ ○ ● ●
+</span><span id="__span-51-4"><a id="__codelineno-51-4" name="__codelineno-51-4" href="#__codelineno-51-4"></a>○ ● ● ●
+</span><span id="__span-51-5"><a id="__codelineno-51-5" name="__codelineno-51-5" href="#__codelineno-51-5"></a>● ● ● ●
+</span><span id="__span-51-6"><a id="__codelineno-51-6" name="__codelineno-51-6" href="#__codelineno-51-6"></a>● ● ● ○
+</span><span id="__span-51-7"><a id="__codelineno-51-7" name="__codelineno-51-7" href="#__codelineno-51-7"></a>● ● ○ ○
+</span><span id="__span-51-8"><a id="__codelineno-51-8" name="__codelineno-51-8" href="#__codelineno-51-8"></a>● ○ ○ ○
+</span><span id="__span-51-9"><a id="__codelineno-51-9" name="__codelineno-51-9" href="#__codelineno-51-9"></a>○ ○ ○ ○
+</span><span id="__span-51-10"><a id="__codelineno-51-10" name="__codelineno-51-10" href="#__codelineno-51-10"></a>...
+</span></code></pre></div>
+<h2 id="exercise-4-fill-from-the-outside-inward">Exercise 4 — Fill from the outside inward</h2>
+<p>Create an animation that progressively fills all four LEDs and then progressively empties them.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-52-1"><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a>○ ○ ○ ○
+</span><span id="__span-52-2"><a id="__codelineno-52-2" name="__codelineno-52-2" href="#__codelineno-52-2"></a>● ○ ○ ●
+</span><span id="__span-52-3"><a id="__codelineno-52-3" name="__codelineno-52-3" href="#__codelineno-52-3"></a>● ● ● ●
+</span><span id="__span-52-4"><a id="__codelineno-52-4" name="__codelineno-52-4" href="#__codelineno-52-4"></a>○ ● ● ○
+</span><span id="__span-52-5"><a id="__codelineno-52-5" name="__codelineno-52-5" href="#__codelineno-52-5"></a>○ ○ ○ ○
+</span><span id="__span-52-6"><a id="__codelineno-52-6" name="__codelineno-52-6" href="#__codelineno-52-6"></a>...
+</span></code></pre></div>
+<hr />
+<h1 id="reference">Reference</h1>
+<h2 id="pico-2-pinout">Pico 2 Pinout</h2>
+<p><img alt="Pico 2 Pinout" src="../../images/pico-2-r4-pinout.svg" /></p>
+<h2 id="reset-wiring">Reset wiring</h2>
+<p><img alt="Reset Wiring" src="../../images/pico-reset-button-1.png" /></p>
+<h2 id="sio-quick-reference">SIO quick reference</h2>
+<div class="admonition note">
+<p class="admonition-title">Required include</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-53-1"><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"hardware/structs/sio.h"</span>
+</span></code></pre></div>
+<p>Route each pin to SIO using <code>gpio_init(pin)</code> before using the examples below.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Purpose</th>
+<th>Register / Field</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Read GPIOs</td>
+<td><code>sio_hw-&gt;gpio_in</code></td>
+<td>Read current input levels</td>
+</tr>
+<tr>
+<td>SET outputs</td>
+<td><code>sio_hw-&gt;gpio_set = mask</code></td>
+<td>Selected GPIOs HIGH</td>
+</tr>
+<tr>
+<td>CLEAR outputs</td>
+<td><code>sio_hw-&gt;gpio_clr = mask</code></td>
+<td>Selected GPIOs LOW</td>
+</tr>
+<tr>
+<td>TOGGLE outputs</td>
+<td><code>sio_hw-&gt;gpio_togl = mask</code></td>
+<td>Toggle selected GPIOs</td>
+</tr>
+<tr>
+<td>Direct output write</td>
+<td><code>sio_hw-&gt;gpio_out = value</code></td>
+<td>Replace the output register value</td>
+</tr>
+<tr>
+<td>Direction OUT</td>
+<td><code>sio_hw-&gt;gpio_oe_set = mask</code></td>
+<td>Selected GPIOs become outputs</td>
+</tr>
+<tr>
+<td>Direction IN</td>
+<td><code>sio_hw-&gt;gpio_oe_clr = mask</code></td>
+<td>Selected GPIOs become inputs</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pico-sdk-gpio-quick-reference">Pico SDK GPIO quick reference</h2>
+<div class="admonition note">
+<p class="admonition-title">Required include</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-54-1"><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"hardware/gpio.h"</span>
+</span></code></pre></div>
+</div>
+<table>
+<thead>
+<tr>
+<th>Purpose</th>
+<th>Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Initialize one GPIO</td>
+<td><code>gpio_init(pin)</code></td>
+</tr>
+<tr>
+<td>Initialize several GPIOs</td>
+<td><code>gpio_init_mask(mask)</code></td>
+</tr>
+<tr>
+<td>Set direction</td>
+<td><code>gpio_set_dir(pin, out)</code></td>
+</tr>
+<tr>
+<td>Several outputs</td>
+<td><code>gpio_set_dir_out_masked(mask)</code></td>
+</tr>
+<tr>
+<td>Several inputs</td>
+<td><code>gpio_set_dir_in_masked(mask)</code></td>
+</tr>
+<tr>
+<td>Write one GPIO</td>
+<td><code>gpio_put(pin, value)</code></td>
+</tr>
+<tr>
+<td>Read one GPIO</td>
+<td><code>gpio_get(pin)</code></td>
+</tr>
+<tr>
+<td>Set several HIGH</td>
+<td><code>gpio_set_mask(mask)</code></td>
+</tr>
+<tr>
+<td>Clear several LOW</td>
+<td><code>gpio_clr_mask(mask)</code></td>
+</tr>
+<tr>
+<td>Toggle several</td>
+<td><code>gpio_xor_mask(mask)</code></td>
+</tr>
+<tr>
+<td>Write masked pattern</td>
+<td><code>gpio_put_masked(mask, value)</code></td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../Tema_B/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Environment and toolchain">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Environment and toolchain
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../Tema_D/" class="md-footer__link md-footer__link--next" aria-label="Next: Digital inputs">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Digital inputs
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "search.highlight", "search.suggest", "content.code.copy", "content.code.annotate", "content.tooltips", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

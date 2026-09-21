@@ -1,0 +1,2972 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Course notes for Embedded Systems I — RP2350 / Raspberry Pi Pico 2">
+      
+      
+        <meta name="author" content="Oliver Ochoa Garcia">
+      
+      
+      
+        <link rel="prev" href="../../Bloque1-GPIO/Tema_E/">
+      
+      
+        <link rel="next" href="../Tema_G/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Timers - Embedded Systems I (LIIE1214)</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="red">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#timers" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Embedded Systems I (LIIE1214)" class="md-header__button md-logo" aria-label="Embedded Systems I (LIIE1214)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Embedded Systems I (LIIE1214)
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Timers
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Gulden8ag/embedded1" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Gulden8ag/embedded1
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Embedded Systems I (LIIE1214)" class="md-nav__button md-logo" aria-label="Embedded Systems I (LIIE1214)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Embedded Systems I (LIIE1214)
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Gulden8ag/embedded1" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Gulden8ag/embedded1
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 0 — Introduction
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 0 — Introduction
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque0-Introduccion/T1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Syllabus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque0-Introduccion/T0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab log template
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--draft"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque0-Introduccion/T2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab log Example
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--complete"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque0-Introduccion/Tema_A/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is an embedded system?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 1 — GPIO
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 1 — GPIO
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque1-GPIO/Tema_B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Environment and toolchain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque1-GPIO/Tema_C_GPIO_Control_revised/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPIO control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque1-GPIO/Tema_D/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Digital inputs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque1-GPIO/Tema_E/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interrupts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 2 — Timing and serial
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 2 — Timing and serial
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timers
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-blocking-delays-vs-timer-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Blocking delays vs timer events
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-basic-timing-terminology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Basic timing terminology
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Basic timing terminology">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#period-and-frequency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Period and frequency
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tick-and-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tick and resolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#latency-jitter-and-drift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Latency, jitter, and drift
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overflow-wrap-around" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overflow / wrap-around
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-first-approach-pico-sdk-repeating-timers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. First approach: Pico SDK repeating timers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. First approach: Pico SDK repeating timers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-happened" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What happened?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#positive-vs-negative-repeat-delay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Positive vs negative repeat delay
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-in-class-laboratory-make-timing-visible-with-an-oscilloscope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. In-class laboratory — Make timing visible with an oscilloscope
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. In-class laboratory — Make timing visible with an oscilloscope">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#equipment-and-connections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Equipment and connections
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-a-predict-first-measure-second" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part A — Predict first, measure second
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-b-change-only-one-variable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part B — Change only one variable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-c-can-the-callback-duration-change-the-timing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part C — Can the callback duration change the timing?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-d-make-main-visibly-do-something-else" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part D — Make main() visibly do something else
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-what-hardware-is-underneath-the-sdk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. What hardware is underneath the SDK?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-64-bit-timer-32-bit-alarms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 64-bit timer, 32-bit alarms
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-from-the-sdk-to-the-registers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. From the SDK to the registers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-low-level-periodic-blink-using-a-hardware-alarm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Low-level periodic blink using a hardware alarm
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Low-level periodic blink using a hardware alarm">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#follow-the-interrupt-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Follow the interrupt path
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-why-use-cumulative-deadlines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Why use cumulative deadlines?
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Why use cumulative deadlines?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-a-schedule-from-the-end-of-the-isr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method A — schedule from the end of the ISR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-b-cumulative-deadline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method B — cumulative deadline
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-hardware-alarms-vs-software-timers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Hardware alarms vs software timers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-one-shot-vs-periodic-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. One-shot vs periodic events
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-advanced-timer-source-on-rp2350" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Advanced: timer source on RP2350
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-general-timer-architecture-in-other-microcontrollers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. General timer architecture in other microcontrollers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-measure-a-repeating-timer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1 — Measure a repeating timer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercise 1 — Measure a repeating timer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#before-measuring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before measuring
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#measure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Measure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compare" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compare
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Experiment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-should-you-conclude" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What should you conclude?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-does-callback-execution-time-matter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2 — Does callback execution time matter?
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercise 2 — Does callback execution time matter?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#observe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Observe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explain
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tema_G/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PWM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tema_H/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UART
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 3 — Analog and buses
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 3 — Analog and buses
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque3/Tema_I/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque3/Tema_J/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I2C
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Proyecto/Instrucciones/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capstone Project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-blocking-delays-vs-timer-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Blocking delays vs timer events
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-basic-timing-terminology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Basic timing terminology
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Basic timing terminology">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#period-and-frequency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Period and frequency
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tick-and-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tick and resolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#latency-jitter-and-drift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Latency, jitter, and drift
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overflow-wrap-around" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overflow / wrap-around
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-first-approach-pico-sdk-repeating-timers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. First approach: Pico SDK repeating timers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. First approach: Pico SDK repeating timers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-happened" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What happened?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#positive-vs-negative-repeat-delay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Positive vs negative repeat delay
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-in-class-laboratory-make-timing-visible-with-an-oscilloscope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. In-class laboratory — Make timing visible with an oscilloscope
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. In-class laboratory — Make timing visible with an oscilloscope">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#equipment-and-connections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Equipment and connections
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-a-predict-first-measure-second" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part A — Predict first, measure second
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-b-change-only-one-variable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part B — Change only one variable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-c-can-the-callback-duration-change-the-timing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part C — Can the callback duration change the timing?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-d-make-main-visibly-do-something-else" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part D — Make main() visibly do something else
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-what-hardware-is-underneath-the-sdk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. What hardware is underneath the SDK?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-64-bit-timer-32-bit-alarms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 64-bit timer, 32-bit alarms
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-from-the-sdk-to-the-registers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. From the SDK to the registers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-low-level-periodic-blink-using-a-hardware-alarm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Low-level periodic blink using a hardware alarm
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Low-level periodic blink using a hardware alarm">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#follow-the-interrupt-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Follow the interrupt path
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-why-use-cumulative-deadlines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Why use cumulative deadlines?
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Why use cumulative deadlines?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-a-schedule-from-the-end-of-the-isr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method A — schedule from the end of the ISR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-b-cumulative-deadline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method B — cumulative deadline
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-hardware-alarms-vs-software-timers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Hardware alarms vs software timers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-one-shot-vs-periodic-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. One-shot vs periodic events
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-advanced-timer-source-on-rp2350" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Advanced: timer source on RP2350
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-general-timer-architecture-in-other-microcontrollers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. General timer architecture in other microcontrollers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-measure-a-repeating-timer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1 — Measure a repeating timer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercise 1 — Measure a repeating timer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#before-measuring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before measuring
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#measure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Measure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compare" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compare
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Experiment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-should-you-conclude" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What should you conclude?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-does-callback-execution-time-matter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2 — Does callback execution time matter?
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercise 2 — Does callback execution time matter?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#observe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Observe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explain
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="timers">Timers</h1>
+<p>Until now, when we wanted to wait before doing something again, we could write code such as:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="n">gpio_put</span><span class="p">(</span><span class="n">LED_PIN</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">250</span><span class="p">);</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="n">gpio_put</span><span class="p">(</span><span class="n">LED_PIN</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">250</span><span class="p">);</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>This works, but the <strong>main program flow is blocked while <code>sleep_ms()</code> is waiting</strong>. Interrupts can still occur, but the statements after <code>sleep_ms()</code> cannot execute until the delay finishes.</p>
+<p>What if we want the LED to blink while the microcontroller is also reading buttons, communicating through UART, or performing calculations?</p>
+<p>That is one of the main reasons microcontrollers include <strong>hardware timers</strong>.</p>
+<hr />
+<h2 id="learning-objectives">Learning objectives</h2>
+<p>By the end of this topic you should be able to:</p>
+<ul>
+<li>Explain the difference between a blocking delay and a timer-based event.</li>
+<li>Relate <strong>period</strong>, <strong>frequency</strong>, <strong>tick</strong>, <strong>resolution</strong>, <strong>latency</strong>, <strong>jitter</strong>, and <strong>drift</strong> to measured waveforms.</li>
+<li>Use a Pico SDK repeating timer and verify its behavior with an oscilloscope.</li>
+<li>Explain the timer and hardware-alarm architecture of the RP2350.</li>
+<li>Configure a hardware alarm and its interrupt using registers.</li>
+<li>Explain why periodic events should normally be scheduled using <strong>absolute/cumulative deadlines</strong>.</li>
+<li>Recognize when a dedicated peripheral such as PWM is more appropriate than repeatedly interrupting the CPU.</li>
+</ul>
+<hr />
+<h2 id="1-blocking-delays-vs-timer-events">1. Blocking delays vs timer events</h2>
+<p>A delay and a timer can produce the same visible result, but they organize the CPU very differently.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Main program flow</th>
+<th>Periodic work</th>
+<th>Typical use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sleep_ms()</code></td>
+<td>Blocked until the delay finishes</td>
+<td>Simple</td>
+<td>Sequential waits</td>
+</tr>
+<tr>
+<td>Polling the current time</td>
+<td>Continues, but must repeatedly check</td>
+<td>Possible</td>
+<td>Simple cooperative loops</td>
+</tr>
+<tr>
+<td>Timer + interrupt</td>
+<td>Continues until an event occurs</td>
+<td>Very good</td>
+<td>Periodic tasks and deadlines</td>
+</tr>
+<tr>
+<td>Dedicated peripheral</td>
+<td>CPU involvement can be minimal</td>
+<td>Excellent</td>
+<td>PWM, communication, DMA, etc.</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="Blocking delay compared with a timer interrupt" src="../images/timer_vs_sleep.png" /></p>
+<p><em>Figure 1. <code>sleep_ms()</code> blocks the sequential flow of <code>main()</code>, while a timer can count independently and interrupt the CPU only when the event is due.</em></p>
+<hr />
+<h2 id="2-basic-timing-terminology">2. Basic timing terminology</h2>
+<h3 id="period-and-frequency">Period and frequency</h3>
+<p>The <strong>period</strong> <span class="arithmatex">\(T\)</span> is the time between repeating events.</p>
+<p>The <strong>frequency</strong> <span class="arithmatex">\(f\)</span> is the number of repetitions per second.</p>
+<div class="arithmatex">\[
+f = \frac{1}{T}
+\]</div>
+<p>For example, an event every 250 ms has:</p>
+<div class="arithmatex">\[
+T = 0.25~s
+\]</div>
+<div class="arithmatex">\[
+f = \frac{1}{0.25}=4~Hz
+\]</div>
+<p>However, be careful with a GPIO that is <strong>toggled</strong> every 250 ms:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>HIGH      LOW       HIGH      LOW
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>|---------|---------|---------|
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>   250 ms    250 ms    250 ms
+</span></code></pre></div>
+<p>The GPIO changes state every 250 ms, but one complete HIGH + LOW cycle takes:</p>
+<div class="arithmatex">\[
+T_{signal}=500~ms
+\]</div>
+<p>so the signal frequency is:</p>
+<div class="arithmatex">\[
+f_{signal}=2~Hz
+\]</div>
+<p>This distinction will become important when we study <strong>PWM</strong>.</p>
+<p><img alt="Toggle interval compared with the complete waveform period" src="../images/toggle_vs_period.png" /></p>
+<p><em>Figure 2. Toggling a GPIO every 250 ms produces a 500 ms waveform period, or 2 Hz.</em></p>
+<h3 id="tick-and-resolution">Tick and resolution</h3>
+<p>A digital timer does not represent continuous time. It advances in discrete steps called <strong>ticks</strong>.</p>
+<p>If one tick represents 1 µs:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>0 µs → 1 µs → 2 µs → 3 µs → ...
+</span></code></pre></div>
+<p>then the timer has a time resolution of approximately 1 µs.</p>
+<h3 id="latency-jitter-and-drift">Latency, jitter, and drift</h3>
+<ul>
+<li><strong>Latency:</strong> delay between the ideal event time and when the CPU actually begins servicing it.</li>
+<li><strong>Jitter:</strong> variation in that latency from one event to another.</li>
+<li><strong>Drift:</strong> accumulated timing error that causes repeated events to progressively move away from the intended schedule.</li>
+</ul>
+<p>These are different problems. A periodic system can have some jitter without accumulating long-term drift.</p>
+<h3 id="overflow-wrap-around">Overflow / wrap-around</h3>
+<p>A fixed-width counter eventually reaches its maximum value and wraps back to zero.</p>
+<p>For an unsigned 32-bit value:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>0xFFFFFFFE
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>0xFFFFFFFF
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>0x00000000
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>0x00000001
+</span></code></pre></div>
+<p>Wrap-around is normal behavior in embedded systems and does not automatically mean the timer failed.</p>
+<hr />
+<h2 id="3-first-approach-pico-sdk-repeating-timers">3. First approach: Pico SDK repeating timers</h2>
+<p>The Pico SDK provides a high-level timing API. A repeating timer executes a callback periodically without blocking the main loop.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/stdlib.h"</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/time.h"</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="cp">#define LED_PIN PICO_DEFAULT_LED_PIN</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="cp">#define TOGGLE_MS 250</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">static</span><span class="w"> </span><span class="n">repeating_timer_t</span><span class="w"> </span><span class="n">blink_timer</span><span class="p">;</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="kt">bool</span><span class="w"> </span><span class="nf">blink_callback</span><span class="p">(</span><span class="n">repeating_timer_t</span><span class="w"> </span><span class="o">*</span><span class="n">rt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">led_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span><span class="n">led_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="n">led_state</span><span class="p">;</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">    </span><span class="n">gpio_put</span><span class="p">(</span><span class="n">LED_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">led_state</span><span class="p">);</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w">    </span><span class="c1">// true = continue repeating</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="p">}</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">    </span><span class="n">stdio_init_all</span><span class="p">();</span>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">    </span><span class="n">gpio_init</span><span class="p">(</span><span class="n">LED_PIN</span><span class="p">);</span>
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="w">    </span><span class="n">gpio_set_dir</span><span class="p">(</span><span class="n">LED_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">GPIO_OUT</span><span class="p">);</span>
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>
+</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w">    </span><span class="c1">// A negative delay schedules the callbacks relative to their start times.</span>
+</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="w">    </span><span class="n">add_repeating_timer_ms</span><span class="p">(</span><span class="o">-</span><span class="n">TOGGLE_MS</span><span class="p">,</span><span class="w"> </span><span class="n">blink_callback</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">blink_timer</span><span class="p">);</span>
+</span><span id="__span-4-26"><a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>
+</span><span id="__span-4-27"><a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-28"><a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="w">        </span><span class="c1">// The main program is free to perform other work here.</span>
+</span><span id="__span-4-29"><a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="w">        </span><span class="n">tight_loop_contents</span><span class="p">();</span>
+</span><span id="__span-4-30"><a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-4-31"><a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="what-happened">What happened?</h3>
+<p>The important parts are:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">add_repeating_timer_ms</span><span class="p">(</span><span class="o">-</span><span class="n">TOGGLE_MS</span><span class="p">,</span><span class="w"> </span><span class="n">blink_callback</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">blink_timer</span><span class="p">);</span>
+</span></code></pre></div>
+<p>which schedules the event, and:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kt">bool</span><span class="w"> </span><span class="n">blink_callback</span><span class="p">(</span><span class="n">repeating_timer_t</span><span class="w"> </span><span class="o">*</span><span class="n">rt</span><span class="p">)</span>
+</span></code></pre></div>
+<p>which contains the code executed each time the timer expires.</p>
+<p>The callback should normally be <strong>short</strong>. Avoid long calculations, blocking delays, or unnecessary printing inside timing callbacks and ISRs.</p>
+<h3 id="positive-vs-negative-repeat-delay">Positive vs negative repeat delay</h3>
+<p>The SDK gives the sign of the delay a useful meaning:</p>
+<ul>
+<li><code>+250 ms</code>: wait 250 ms <strong>after one callback finishes</strong> before starting the next one.</li>
+<li><code>-250 ms</code>: aim for 250 ms <strong>between callback start times</strong>.</li>
+</ul>
+<p>For periodic events, the negative form is often closer to the timing behavior we want.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>Positive delay
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>callback      callback      callback
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>|---work---|----250 ms----|---work---|----250 ms----&gt;
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>Negative delay
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>callback             callback             callback
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>|----------------250 ms-------------------|
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>          |----------------250 ms-------------------|
+</span></code></pre></div>
+<p>The high-level call is convenient because several layers are working underneath it:</p>
+<p><img alt="Software timer layers in the Pico SDK" src="../images/software_timer_layers.png" /></p>
+<p><em>Figure 3. A repeating timer is a software abstraction. The SDK manages alarm pools and ultimately uses a hardware alarm backed by the 64-bit timer.</em></p>
+<hr />
+<h2 id="4-in-class-laboratory-make-timing-visible-with-an-oscilloscope">4. In-class laboratory — Make timing visible with an oscilloscope</h2>
+<p>The goal of this activity is to connect the code you write with a <strong>physical waveform that you can measure</strong>. Instead of only seeing an LED blink, you will predict the timing, measure it with the oscilloscope, change one variable at a time, and explain what changed.</p>
+<h3 id="equipment-and-connections">Equipment and connections</h3>
+<p>Use two GPIO pins so that the oscilloscope can observe both the timed output and, later, how long the callback is executing.</p>
+<table>
+<thead>
+<tr>
+<th>Pico 2 signal</th>
+<th>Oscilloscope</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GP15</code></td>
+<td>CH1</td>
+<td>Timed output</td>
+</tr>
+<tr>
+<td><code>GP14</code></td>
+<td>CH2</td>
+<td>Callback execution marker</td>
+</tr>
+<tr>
+<td><code>GND</code></td>
+<td>Probe ground</td>
+<td>Common reference</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Do not connect the oscilloscope ground clip to a GPIO pin.</strong> Connect it only to a Pico GND pin.</p>
+</blockquote>
+<h3 id="part-a-predict-first-measure-second">Part A — Predict first, measure second</h3>
+<p>Start with the following program. The timer toggles <code>GP15</code> every 250 ms.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/stdlib.h"</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/time.h"</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="cp">#define TEST_PIN   15</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="cp">#define TOGGLE_MS  250</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="k">static</span><span class="w"> </span><span class="n">repeating_timer_t</span><span class="w"> </span><span class="n">timer</span><span class="p">;</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="k">static</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">timer_callback</span><span class="p">(</span><span class="n">repeating_timer_t</span><span class="w"> </span><span class="o">*</span><span class="n">rt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="w">    </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="n">state</span><span class="p">;</span>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">    </span><span class="n">gpio_put</span><span class="p">(</span><span class="n">TEST_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">state</span><span class="p">);</span>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="p">}</span>
+</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>
+</span><span id="__span-8-18"><a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-8-19"><a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="w">    </span><span class="n">gpio_init</span><span class="p">(</span><span class="n">TEST_PIN</span><span class="p">);</span>
+</span><span id="__span-8-20"><a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a><span class="w">    </span><span class="n">gpio_set_dir</span><span class="p">(</span><span class="n">TEST_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">GPIO_OUT</span><span class="p">);</span>
+</span><span id="__span-8-21"><a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a><span class="w">    </span><span class="n">gpio_put</span><span class="p">(</span><span class="n">TEST_PIN</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</span><span id="__span-8-22"><a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>
+</span><span id="__span-8-23"><a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a><span class="w">    </span><span class="n">add_repeating_timer_ms</span><span class="p">(</span><span class="o">-</span><span class="n">TOGGLE_MS</span><span class="p">,</span><span class="w"> </span><span class="n">timer_callback</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">timer</span><span class="p">);</span>
+</span><span id="__span-8-24"><a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a>
+</span><span id="__span-8-25"><a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-8-26"><a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a><span class="w">        </span><span class="c1">// main() remains available for other work.</span>
+</span><span id="__span-8-27"><a id="__codelineno-8-27" name="__codelineno-8-27" href="#__codelineno-8-27"></a><span class="w">        </span><span class="n">tight_loop_contents</span><span class="p">();</span>
+</span><span id="__span-8-28"><a id="__codelineno-8-28" name="__codelineno-8-28" href="#__codelineno-8-28"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-8-29"><a id="__codelineno-8-29" name="__codelineno-8-29" href="#__codelineno-8-29"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Before connecting the oscilloscope, calculate the expected:</p>
+<ol>
+<li>time between GPIO state changes,</li>
+<li>HIGH time,</li>
+<li>LOW time,</li>
+<li>complete waveform period,</li>
+<li>frequency,</li>
+<li>duty cycle.</li>
+</ol>
+<p>Then measure CH1. A time base around <code>100 ms/div</code> is a reasonable starting point for this first signal.</p>
+<p>Record your results:</p>
+<table>
+<thead>
+<tr>
+<th>Quantity</th>
+<th style="text-align: right;">Predicted</th>
+<th style="text-align: right;">Measured</th>
+<th style="text-align: right;">Difference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Toggle interval</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td>HIGH time</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td>LOW time</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td>Period</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td>Frequency</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td>Duty cycle</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+</tbody>
+</table>
+<h3 id="part-b-change-only-one-variable">Part B — Change only one variable</h3>
+<p>Change only <code>TOGGLE_MS</code> and repeat the measurement.</p>
+<p>Suggested values:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>250 ms → 100 ms → 50 ms → 10 ms
+</span></code></pre></div>
+<p>For each value, predict the new frequency <strong>before</strong> running the code.</p>
+<p>Observation questions:</p>
+<ol>
+<li>Does <code>TOGGLE_MS</code> represent the waveform period?</li>
+<li>What mathematical relationship connects <code>TOGGLE_MS</code> and the measured signal frequency?</li>
+<li>Does changing <code>TOGGLE_MS</code> change the duty cycle? Why?</li>
+<li>At what point does observing the signal with an LED become less useful than observing it with an oscilloscope?</li>
+</ol>
+<p>You should be able to obtain:</p>
+<div class="arithmatex">\[
+f_{signal}=\frac{1}{2T_{toggle}}
+\]</div>
+<p>or, when <code>TOGGLE_MS</code> is expressed in milliseconds:</p>
+<div class="arithmatex">\[
+f_{signal}=\frac{1000}{2\,TOGGLE\_MS}
+\]</div>
+<h3 id="part-c-can-the-callback-duration-change-the-timing">Part C — Can the callback duration change the timing?</h3>
+<p>Now use CH2 to mark the time spent inside the callback. The callback raises <code>GP14</code> when it starts and lowers it immediately before returning.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/stdlib.h"</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/time.h"</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="cp">#define TEST_PIN            15</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="cp">#define CALLBACK_MARK_PIN   14</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="cp">#define TIMER_DELAY_MS      100</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="cp">#define WORK_US             20000</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="cp">#define USE_NEGATIVE_DELAY  1</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="k">static</span><span class="w"> </span><span class="n">repeating_timer_t</span><span class="w"> </span><span class="n">timer</span><span class="p">;</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="k">static</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">timer_callback</span><span class="p">(</span><span class="n">repeating_timer_t</span><span class="w"> </span><span class="o">*</span><span class="n">rt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="w">    </span><span class="n">gpio_put</span><span class="p">(</span><span class="n">CALLBACK_MARK_PIN</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>
+</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="w">    </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="n">state</span><span class="p">;</span>
+</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="w">    </span><span class="n">gpio_put</span><span class="p">(</span><span class="n">TEST_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">state</span><span class="p">);</span>
+</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>
+</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="w">    </span><span class="c1">// Intentional workload for the experiment.</span>
+</span><span id="__span-10-21"><a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a><span class="w">    </span><span class="n">busy_wait_us_32</span><span class="p">(</span><span class="n">WORK_US</span><span class="p">);</span>
+</span><span id="__span-10-22"><a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a>
+</span><span id="__span-10-23"><a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="w">    </span><span class="n">gpio_put</span><span class="p">(</span><span class="n">CALLBACK_MARK_PIN</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</span><span id="__span-10-24"><a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+</span><span id="__span-10-25"><a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a><span class="p">}</span>
+</span><span id="__span-10-26"><a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a>
+</span><span id="__span-10-27"><a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-10-28"><a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a><span class="w">    </span><span class="n">gpio_init</span><span class="p">(</span><span class="n">TEST_PIN</span><span class="p">);</span>
+</span><span id="__span-10-29"><a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a><span class="w">    </span><span class="n">gpio_set_dir</span><span class="p">(</span><span class="n">TEST_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">GPIO_OUT</span><span class="p">);</span>
+</span><span id="__span-10-30"><a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a>
+</span><span id="__span-10-31"><a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a><span class="w">    </span><span class="n">gpio_init</span><span class="p">(</span><span class="n">CALLBACK_MARK_PIN</span><span class="p">);</span>
+</span><span id="__span-10-32"><a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a><span class="w">    </span><span class="n">gpio_set_dir</span><span class="p">(</span><span class="n">CALLBACK_MARK_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">GPIO_OUT</span><span class="p">);</span>
+</span><span id="__span-10-33"><a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a>
+</span><span id="__span-10-34"><a id="__codelineno-10-34" name="__codelineno-10-34" href="#__codelineno-10-34"></a><span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">delay_ms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">USE_NEGATIVE_DELAY</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="o">-</span><span class="n">TIMER_DELAY_MS</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">TIMER_DELAY_MS</span><span class="p">;</span>
+</span><span id="__span-10-35"><a id="__codelineno-10-35" name="__codelineno-10-35" href="#__codelineno-10-35"></a><span class="w">    </span><span class="n">add_repeating_timer_ms</span><span class="p">(</span><span class="n">delay_ms</span><span class="p">,</span><span class="w"> </span><span class="n">timer_callback</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">timer</span><span class="p">);</span>
+</span><span id="__span-10-36"><a id="__codelineno-10-36" name="__codelineno-10-36" href="#__codelineno-10-36"></a>
+</span><span id="__span-10-37"><a id="__codelineno-10-37" name="__codelineno-10-37" href="#__codelineno-10-37"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-10-38"><a id="__codelineno-10-38" name="__codelineno-10-38" href="#__codelineno-10-38"></a><span class="w">        </span><span class="n">tight_loop_contents</span><span class="p">();</span>
+</span><span id="__span-10-39"><a id="__codelineno-10-39" name="__codelineno-10-39" href="#__codelineno-10-39"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-10-40"><a id="__codelineno-10-40" name="__codelineno-10-40" href="#__codelineno-10-40"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>On the oscilloscope:</p>
+<ul>
+<li>CH1 shows the timed output.</li>
+<li>CH2 shows approximately how long the callback occupies the CPU.</li>
+</ul>
+<p>Perform these experiments:</p>
+<table>
+<thead>
+<tr>
+<th>Experiment</th>
+<th style="text-align: right;"><code>USE_NEGATIVE_DELAY</code></th>
+<th style="text-align: right;"><code>WORK_US</code></th>
+<th>What to observe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C1</td>
+<td style="text-align: right;"><code>1</code></td>
+<td style="text-align: right;"><code>0</code></td>
+<td>Baseline interval</td>
+</tr>
+<tr>
+<td>C2</td>
+<td style="text-align: right;"><code>1</code></td>
+<td style="text-align: right;"><code>20000</code></td>
+<td>Callback gets longer, intended interval stays referenced to callback start</td>
+</tr>
+<tr>
+<td>C3</td>
+<td style="text-align: right;"><code>0</code></td>
+<td style="text-align: right;"><code>20000</code></td>
+<td>Callback execution time is added before the next delay begins</td>
+</tr>
+<tr>
+<td>C4</td>
+<td style="text-align: right;"><code>1</code></td>
+<td style="text-align: right;"><code>80000</code></td>
+<td>Callback occupies most of the available interval</td>
+</tr>
+</tbody>
+</table>
+<p>For C2 and C3, predict the CH1 toggle interval before measuring it.</p>
+<p>Observation questions:</p>
+<ol>
+<li>What does the width of the CH2 pulse represent?</li>
+<li>What changes when the repeating-timer delay changes from negative to positive?</li>
+<li>Why should callbacks and ISRs normally be short?</li>
+<li>What do you expect if the callback takes longer than the requested interval?</li>
+<li>Does a longer callback necessarily change the HIGH/LOW duty cycle of CH1? Explain from the measured edges rather than from the source code alone.</li>
+</ol>
+<h3 id="part-d-make-main-visibly-do-something-else">Part D — Make <code>main()</code> visibly do something else</h3>
+<p>Keep the timer on GP15, but use <code>main()</code> to monitor a push button or perform another independent task. The timer callback must not read the button.</p>
+<p>Requirements:</p>
+<ul>
+<li>GP15 must continue changing at the same measured interval.</li>
+<li><code>main()</code> must detect button presses while the timed waveform continues.</li>
+<li>Do not use <code>sleep_ms()</code> in the button-handling path.</li>
+</ul>
+<p>Use the oscilloscope to verify that interacting with the button does not significantly change the timer waveform.</p>
+<p>Think about this before moving on:</p>
+<blockquote>
+<p>If the timed waveform is being generated without stopping <code>main()</code>, what piece of hardware is actually keeping track of the time?</p>
+</blockquote>
+<hr />
+<h2 id="5-what-hardware-is-underneath-the-sdk">5. What hardware is underneath the SDK?</h2>
+<p>The RP2350 contains <strong>two 64-bit timer peripherals</strong>. Each timer has <strong>four hardware alarms</strong>.</p>
+<p>By default, the timer receives a tick generated by the RP2350 tick block, normally configured so that:</p>
+<div class="arithmatex">\[
+1~tick = 1~\mu s
+\]</div>
+<p>The counter continuously increases. It does <strong>not</strong> restart every time an alarm fires.</p>
+<p><img alt="RP2350 timer architecture" src="../images/rp2350_timer_architecture.png" /></p>
+<p><em>Figure 4. The tick block drives the free-running 64-bit timer. Each hardware alarm can raise its own IRQ toward the NVIC and CPU.</em></p>
+<p>A hardware alarm works approximately like this:</p>
+<ol>
+<li>Read the current timer value.</li>
+<li>Calculate a future deadline.</li>
+<li>Write that deadline into an alarm register.</li>
+<li>The hardware continues counting independently.</li>
+<li>When the counter matches the alarm, the hardware raises an interrupt.</li>
+<li>The ISR clears the interrupt and optionally schedules another deadline.</li>
+</ol>
+<hr />
+<h2 id="6-64-bit-timer-32-bit-alarms">6. 64-bit timer, 32-bit alarms</h2>
+<p>The timer itself is 64 bits wide:</p>
+<p><img alt="64-bit timer and 32-bit alarm comparison" src="../images/64bit_alarm_compare.png" /></p>
+<p><em>Figure 5. The timer is 64 bits wide, but each hardware alarm compares against the lower 32 bits.</em></p>
+<p>The hardware alarms compare against the <strong>lower 32 bits</strong> of the timer.</p>
+<p>With the normal 1 µs tick, the maximum directly programmable distance into the future is approximately:</p>
+<div class="arithmatex">\[
+2^{32}~\mu s
+\]</div>
+<div class="arithmatex">\[
+\approx 4295~s \approx 71.6~min
+\]</div>
+<p>This does <strong>not</strong> mean that the 64-bit timer resets after 71.6 minutes. Only the lower 32-bit comparison wraps around.</p>
+<hr />
+<h2 id="7-from-the-sdk-to-the-registers">7. From the SDK to the registers</h2>
+<p>The SDK hides several hardware steps. At the register level we must configure the path ourselves:</p>
+<p><img alt="Timer interrupt register path" src="../images/timer_interrupt_path.png" /></p>
+<p><em>Figure 6. A match sets <code>INTR</code>; <code>INTE</code> determines whether that source is enabled; <code>INTS</code> is the masked status that reaches the timer IRQ and NVIC.</em></p>
+<p>Three timer interrupt registers are especially useful:</p>
+<table>
+<thead>
+<tr>
+<th>Register</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>intr</code></td>
+<td>Raw interrupt flags: which alarm fired?</td>
+</tr>
+<tr>
+<td><code>inte</code></td>
+<td>Interrupt enable: which alarms are allowed to generate an IRQ?</td>
+</tr>
+<tr>
+<td><code>ints</code></td>
+<td>Masked interrupt status (<code>intr</code> after applying <code>inte</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>intr</code> alarm bits are <strong>write-one-to-clear (W1C)</strong>.</p>
+<p>That means that to clear alarm 0 we write a <code>1</code> to bit 0:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">timer_hw</span><span class="o">-&gt;</span><span class="n">intr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span></code></pre></div>
+<p>This may feel backwards at first: writing a <code>1</code> clears the corresponding interrupt flag because that is how the register is defined by the hardware.</p>
+<hr />
+<h2 id="8-low-level-periodic-blink-using-a-hardware-alarm">8. Low-level periodic blink using a hardware alarm</h2>
+<p>The following example recreates the repeating blink without using <code>add_repeating_timer_ms()</code>.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/stdlib.h"</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"hardware/irq.h"</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"hardware/timer.h"</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"hardware/structs/timer.h"</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"hardware/structs/sio.h"</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="cp">#define LED_PIN       PICO_DEFAULT_LED_PIN</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="cp">#define ALARM_NUM     0</span>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="cp">#define TOGGLE_US     250000u</span>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="cp">#define ALARM_IRQ timer_hardware_alarm_get_irq_num(timer_hw, ALARM_NUM)</span>
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>
+</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="k">static</span><span class="w"> </span><span class="k">volatile</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">next_deadline</span><span class="p">;</span>
+</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>
+</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">on_alarm_irq</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="w">    </span><span class="c1">// 1. Clear the interrupt flag.</span>
+</span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a><span class="w">    </span><span class="c1">// TIMER INTR is write-one-to-clear (W1C).</span>
+</span><span id="__span-12-18"><a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="w">    </span><span class="n">timer_hw</span><span class="o">-&gt;</span><span class="n">intr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ALARM_NUM</span><span class="p">;</span>
+</span><span id="__span-12-19"><a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a>
+</span><span id="__span-12-20"><a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a><span class="w">    </span><span class="c1">// 2. Perform a short timed action.</span>
+</span><span id="__span-12-21"><a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a><span class="w">    </span><span class="n">sio_hw</span><span class="o">-&gt;</span><span class="n">gpio_togl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">LED_PIN</span><span class="p">;</span>
+</span><span id="__span-12-22"><a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a>
+</span><span id="__span-12-23"><a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a><span class="w">    </span><span class="c1">// 3. Schedule the next event using a cumulative deadline.</span>
+</span><span id="__span-12-24"><a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a><span class="w">    </span><span class="n">next_deadline</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">TOGGLE_US</span><span class="p">;</span>
+</span><span id="__span-12-25"><a id="__codelineno-12-25" name="__codelineno-12-25" href="#__codelineno-12-25"></a><span class="w">    </span><span class="n">timer_hw</span><span class="o">-&gt;</span><span class="n">alarm</span><span class="p">[</span><span class="n">ALARM_NUM</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">next_deadline</span><span class="p">;</span>
+</span><span id="__span-12-26"><a id="__codelineno-12-26" name="__codelineno-12-26" href="#__codelineno-12-26"></a><span class="p">}</span>
+</span><span id="__span-12-27"><a id="__codelineno-12-27" name="__codelineno-12-27" href="#__codelineno-12-27"></a>
+</span><span id="__span-12-28"><a id="__codelineno-12-28" name="__codelineno-12-28" href="#__codelineno-12-28"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-12-29"><a id="__codelineno-12-29" name="__codelineno-12-29" href="#__codelineno-12-29"></a><span class="w">    </span><span class="n">gpio_init</span><span class="p">(</span><span class="n">LED_PIN</span><span class="p">);</span>
+</span><span id="__span-12-30"><a id="__codelineno-12-30" name="__codelineno-12-30" href="#__codelineno-12-30"></a><span class="w">    </span><span class="n">gpio_set_dir</span><span class="p">(</span><span class="n">LED_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">GPIO_OUT</span><span class="p">);</span>
+</span><span id="__span-12-31"><a id="__codelineno-12-31" name="__codelineno-12-31" href="#__codelineno-12-31"></a><span class="w">    </span><span class="n">gpio_put</span><span class="p">(</span><span class="n">LED_PIN</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</span><span id="__span-12-32"><a id="__codelineno-12-32" name="__codelineno-12-32" href="#__codelineno-12-32"></a>
+</span><span id="__span-12-33"><a id="__codelineno-12-33" name="__codelineno-12-33" href="#__codelineno-12-33"></a><span class="w">    </span><span class="c1">// Cooperatively reserve hardware alarm 0.</span>
+</span><span id="__span-12-34"><a id="__codelineno-12-34" name="__codelineno-12-34" href="#__codelineno-12-34"></a><span class="w">    </span><span class="n">hardware_alarm_claim</span><span class="p">(</span><span class="n">ALARM_NUM</span><span class="p">);</span>
+</span><span id="__span-12-35"><a id="__codelineno-12-35" name="__codelineno-12-35" href="#__codelineno-12-35"></a>
+</span><span id="__span-12-36"><a id="__codelineno-12-36" name="__codelineno-12-36" href="#__codelineno-12-36"></a><span class="w">    </span><span class="c1">// Connect our ISR to this alarm's IRQ.</span>
+</span><span id="__span-12-37"><a id="__codelineno-12-37" name="__codelineno-12-37" href="#__codelineno-12-37"></a><span class="w">    </span><span class="n">irq_set_exclusive_handler</span><span class="p">(</span><span class="n">ALARM_IRQ</span><span class="p">,</span><span class="w"> </span><span class="n">on_alarm_irq</span><span class="p">);</span>
+</span><span id="__span-12-38"><a id="__codelineno-12-38" name="__codelineno-12-38" href="#__codelineno-12-38"></a>
+</span><span id="__span-12-39"><a id="__codelineno-12-39" name="__codelineno-12-39" href="#__codelineno-12-39"></a><span class="w">    </span><span class="c1">// Clear any old pending flag before enabling the interrupt.</span>
+</span><span id="__span-12-40"><a id="__codelineno-12-40" name="__codelineno-12-40" href="#__codelineno-12-40"></a><span class="w">    </span><span class="n">timer_hw</span><span class="o">-&gt;</span><span class="n">intr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ALARM_NUM</span><span class="p">;</span>
+</span><span id="__span-12-41"><a id="__codelineno-12-41" name="__codelineno-12-41" href="#__codelineno-12-41"></a>
+</span><span id="__span-12-42"><a id="__codelineno-12-42" name="__codelineno-12-42" href="#__codelineno-12-42"></a><span class="w">    </span><span class="c1">// Enable this alarm as an interrupt source inside the TIMER peripheral.</span>
+</span><span id="__span-12-43"><a id="__codelineno-12-43" name="__codelineno-12-43" href="#__codelineno-12-43"></a><span class="w">    </span><span class="n">hw_set_bits</span><span class="p">(</span><span class="o">&amp;</span><span class="n">timer_hw</span><span class="o">-&gt;</span><span class="n">inte</span><span class="p">,</span><span class="w"> </span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ALARM_NUM</span><span class="p">);</span>
+</span><span id="__span-12-44"><a id="__codelineno-12-44" name="__codelineno-12-44" href="#__codelineno-12-44"></a>
+</span><span id="__span-12-45"><a id="__codelineno-12-45" name="__codelineno-12-45" href="#__codelineno-12-45"></a><span class="w">    </span><span class="c1">// Enable the IRQ in the NVIC.</span>
+</span><span id="__span-12-46"><a id="__codelineno-12-46" name="__codelineno-12-46" href="#__codelineno-12-46"></a><span class="w">    </span><span class="n">irq_set_enabled</span><span class="p">(</span><span class="n">ALARM_IRQ</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+</span><span id="__span-12-47"><a id="__codelineno-12-47" name="__codelineno-12-47" href="#__codelineno-12-47"></a>
+</span><span id="__span-12-48"><a id="__codelineno-12-48" name="__codelineno-12-48" href="#__codelineno-12-48"></a><span class="w">    </span><span class="c1">// timerawl = lower 32 bits of the running timer.</span>
+</span><span id="__span-12-49"><a id="__codelineno-12-49" name="__codelineno-12-49" href="#__codelineno-12-49"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">now_us</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">timer_hw</span><span class="o">-&gt;</span><span class="n">timerawl</span><span class="p">;</span>
+</span><span id="__span-12-50"><a id="__codelineno-12-50" name="__codelineno-12-50" href="#__codelineno-12-50"></a>
+</span><span id="__span-12-51"><a id="__codelineno-12-51" name="__codelineno-12-51" href="#__codelineno-12-51"></a><span class="w">    </span><span class="c1">// First absolute deadline.</span>
+</span><span id="__span-12-52"><a id="__codelineno-12-52" name="__codelineno-12-52" href="#__codelineno-12-52"></a><span class="w">    </span><span class="n">next_deadline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">now_us</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">TOGGLE_US</span><span class="p">;</span>
+</span><span id="__span-12-53"><a id="__codelineno-12-53" name="__codelineno-12-53" href="#__codelineno-12-53"></a><span class="w">    </span><span class="n">timer_hw</span><span class="o">-&gt;</span><span class="n">alarm</span><span class="p">[</span><span class="n">ALARM_NUM</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">next_deadline</span><span class="p">;</span>
+</span><span id="__span-12-54"><a id="__codelineno-12-54" name="__codelineno-12-54" href="#__codelineno-12-54"></a>
+</span><span id="__span-12-55"><a id="__codelineno-12-55" name="__codelineno-12-55" href="#__codelineno-12-55"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-12-56"><a id="__codelineno-12-56" name="__codelineno-12-56" href="#__codelineno-12-56"></a><span class="w">        </span><span class="c1">// Timed blinking occurs in the ISR.</span>
+</span><span id="__span-12-57"><a id="__codelineno-12-57" name="__codelineno-12-57" href="#__codelineno-12-57"></a><span class="w">        </span><span class="c1">// main() remains available for other work.</span>
+</span><span id="__span-12-58"><a id="__codelineno-12-58" name="__codelineno-12-58" href="#__codelineno-12-58"></a><span class="w">        </span><span class="n">tight_loop_contents</span><span class="p">();</span>
+</span><span id="__span-12-59"><a id="__codelineno-12-59" name="__codelineno-12-59" href="#__codelineno-12-59"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-12-60"><a id="__codelineno-12-60" name="__codelineno-12-60" href="#__codelineno-12-60"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="follow-the-interrupt-path">Follow the interrupt path</h3>
+<p>When this line executes:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">timer_hw</span><span class="o">-&gt;</span><span class="n">alarm</span><span class="p">[</span><span class="n">ALARM_NUM</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">next_deadline</span><span class="p">;</span>
+</span></code></pre></div>
+<p>the alarm becomes armed.</p>
+<p>When the lower 32 bits of the timer reach that value:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>Timer counter
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>     ↓
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>ALARM compare
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>     ↓
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>intr bit becomes 1
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>     ↓
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>inte allows the interrupt
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>     ↓
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>IRQ reaches the NVIC
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>     ↓
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>on_alarm_irq()
+</span></code></pre></div>
+<p>This is the same interrupt concept used previously with GPIO, but the <strong>interrupt source is now a timer peripheral instead of an input pin</strong>.</p>
+<hr />
+<h2 id="9-why-use-cumulative-deadlines">9. Why use cumulative deadlines?</h2>
+<p>Consider two possible ways of scheduling the next event.</p>
+<h3 id="method-a-schedule-from-the-end-of-the-isr">Method A — schedule from the end of the ISR</h3>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">timer_hw</span><span class="o">-&gt;</span><span class="n">timerawl</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">interval_us</span><span class="p">;</span>
+</span></code></pre></div>
+<p>Suppose the interrupt should occur every 1000 µs, but the ISR and interrupt latency together introduce 20 µs before the next alarm is programmed.</p>
+<p>The events could become:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>1000 µs
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>2020 µs
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>3040 µs
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>4060 µs
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>...
+</span></code></pre></div>
+<p>The error accumulates. This is <strong>drift</strong>.</p>
+<h3 id="method-b-cumulative-deadline">Method B — cumulative deadline</h3>
+<p>Instead, keep track of the ideal timeline:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">next_deadline</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">interval_us</span><span class="p">;</span>
+</span></code></pre></div>
+<p>Now the intended deadlines remain:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>1000 µs
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>2000 µs
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>3000 µs
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>4000 µs
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>...
+</span></code></pre></div>
+<p>The ISR may still start a few microseconds late because of interrupt latency. That produces <strong>jitter</strong>, but the schedule does not continuously move away from the intended timing.</p>
+<p><img alt="Jitter compared with drift" src="../images/jitter_vs_drift.png" /></p>
+<p><em>Figure 7. Jitter varies around the desired timeline; drift progressively moves the schedule away from that timeline.</em></p>
+<hr />
+<h2 id="10-hardware-alarms-vs-software-timers">10. Hardware alarms vs software timers</h2>
+<p>A common misconception is:</p>
+<blockquote>
+<p>"If one RP2350 timer has four hardware alarms, can I only create four timers?"</p>
+</blockquote>
+<p>No.</p>
+<p>The Pico SDK can manage multiple software alarms and repeating timers using an <strong>alarm pool</strong> backed by a hardware alarm.</p>
+<p>The abstraction layers shown earlier in Figure 3 are important here: many software timers can share an alarm pool, while the alarm pool schedules the earliest required deadline on a hardware alarm.</p>
+<p>The hardware alarm is used to wake the software at the next required deadline. The SDK then determines which software callback should run and schedules the following deadline.</p>
+<p>This is one reason high-level APIs are convenient: they allow many timed software events without manually assigning one hardware alarm to each task.</p>
+<hr />
+<h2 id="11-one-shot-vs-periodic-events">11. One-shot vs periodic events</h2>
+<p>A <strong>one-shot</strong> event executes once:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>start ---------------------&gt; event
+</span></code></pre></div>
+<p>A <strong>periodic</strong> event repeats:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>start ------&gt; event ------&gt; event ------&gt; event ------&gt;
+</span></code></pre></div>
+<p>At the hardware-alarm level, an alarm fires once and must be programmed again for the next deadline.</p>
+<p>Therefore, our ISR creates periodic behavior by repeatedly doing:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="n">next_deadline</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">TOGGLE_US</span><span class="p">;</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="n">timer_hw</span><span class="o">-&gt;</span><span class="n">alarm</span><span class="p">[</span><span class="n">ALARM_NUM</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">next_deadline</span><span class="p">;</span>
+</span></code></pre></div>
+<hr />
+<h2 id="12-advanced-timer-source-on-rp2350">12. Advanced: timer source on RP2350</h2>
+<p>By default, the RP2350 timer uses the normal tick source, typically configured for a 1 µs tick.</p>
+<p>The RP2350 can also configure the timer to count <code>clk_sys</code> cycles instead. This provides much finer resolution, but the timer values now depend on the system clock frequency.</p>
+<p>For example, if:</p>
+<div class="arithmatex">\[
+f_{sys}=150~MHz
+\]</div>
+<p>then one clock cycle is:</p>
+<div class="arithmatex">\[
+\Delta t = \frac{1}{150\times10^6}\approx6.67~ns
+\]</div>
+<p>This can be useful for specialized high-resolution measurements.</p>
+<blockquote>
+<p><strong>Important:</strong> the Pico SDK timing functions expect the default hardware timer to remain a monotonically increasing microsecond timebase. Do not change the source of the timer used by <code>pico_time</code> unless you intentionally isolate your implementation from those SDK timing functions.</p>
+</blockquote>
+<p>For this course, we will normally keep:</p>
+<div class="arithmatex">\[
+1~tick = 1~\mu s
+\]</div>
+<hr />
+<h2 id="13-general-timer-architecture-in-other-microcontrollers">13. General timer architecture in other microcontrollers</h2>
+<p>The RP2350 timer is not the only timer architecture you will encounter.</p>
+<p>Many microcontrollers use a structure similar to:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>Clock → Prescaler → Counter → Compare / TOP / Reload → Event / IRQ
+</span></code></pre></div>
+<p>For this type of timer:</p>
+<div class="arithmatex">\[
+f_{timer}=\frac{f_{clk}}{P}
+\]</div>
+<p>and a counter that repeats after <code>TOP + 1</code> counts has approximately:</p>
+<div class="arithmatex">\[
+T = \frac{(TOP+1)P}{f_{clk}}
+\]</div>
+<p>This architecture will become especially useful in the next topic when we study <strong>PWM</strong>.</p>
+<p>Do not confuse this generic <code>prescaler + TOP</code> model with the RP2350 system timer used in the examples above. The RP2350 system timer is a continuously running 64-bit timebase with compare alarms.</p>
+<hr />
+<p>For the following exercises connect:</p>
+<ul>
+<li><strong>GP15 → Oscilloscope CH1</strong></li>
+<li><strong>GND → Oscilloscope GND</strong></li>
+</ul>
+<p>The goal is not only to make the LED blink, but to <strong>measure the timing generated by the program</strong>.</p>
+<hr />
+<h2 id="exercises">Exercises</h2>
+<h3 id="exercise-1-measure-a-repeating-timer">Exercise 1 — Measure a repeating timer</h3>
+<p>Start with the following code:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/stdlib.h"</span>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/time.h"</span>
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="cp">#define SIGNAL_PIN 15</span>
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="cp">#define TOGGLE_MS 250</span>
+</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a>
+</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="kt">bool</span><span class="w"> </span><span class="nf">timer_callback</span><span class="p">(</span><span class="n">repeating_timer_t</span><span class="w"> </span><span class="o">*</span><span class="n">rt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-23-9"><a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-23-10"><a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a>
+</span><span id="__span-23-11"><a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a><span class="w">    </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="n">state</span><span class="p">;</span>
+</span><span id="__span-23-12"><a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a><span class="w">    </span><span class="n">gpio_put</span><span class="p">(</span><span class="n">SIGNAL_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">state</span><span class="p">);</span>
+</span><span id="__span-23-13"><a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a>
+</span><span id="__span-23-14"><a id="__codelineno-23-14" name="__codelineno-23-14" href="#__codelineno-23-14"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+</span><span id="__span-23-15"><a id="__codelineno-23-15" name="__codelineno-23-15" href="#__codelineno-23-15"></a><span class="p">}</span>
+</span><span id="__span-23-16"><a id="__codelineno-23-16" name="__codelineno-23-16" href="#__codelineno-23-16"></a>
+</span><span id="__span-23-17"><a id="__codelineno-23-17" name="__codelineno-23-17" href="#__codelineno-23-17"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-23-18"><a id="__codelineno-23-18" name="__codelineno-23-18" href="#__codelineno-23-18"></a><span class="w">    </span><span class="n">stdio_init_all</span><span class="p">();</span>
+</span><span id="__span-23-19"><a id="__codelineno-23-19" name="__codelineno-23-19" href="#__codelineno-23-19"></a>
+</span><span id="__span-23-20"><a id="__codelineno-23-20" name="__codelineno-23-20" href="#__codelineno-23-20"></a><span class="w">    </span><span class="n">gpio_init</span><span class="p">(</span><span class="n">SIGNAL_PIN</span><span class="p">);</span>
+</span><span id="__span-23-21"><a id="__codelineno-23-21" name="__codelineno-23-21" href="#__codelineno-23-21"></a><span class="w">    </span><span class="n">gpio_set_dir</span><span class="p">(</span><span class="n">SIGNAL_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">GPIO_OUT</span><span class="p">);</span>
+</span><span id="__span-23-22"><a id="__codelineno-23-22" name="__codelineno-23-22" href="#__codelineno-23-22"></a>
+</span><span id="__span-23-23"><a id="__codelineno-23-23" name="__codelineno-23-23" href="#__codelineno-23-23"></a><span class="w">    </span><span class="n">repeating_timer_t</span><span class="w"> </span><span class="n">timer</span><span class="p">;</span>
+</span><span id="__span-23-24"><a id="__codelineno-23-24" name="__codelineno-23-24" href="#__codelineno-23-24"></a>
+</span><span id="__span-23-25"><a id="__codelineno-23-25" name="__codelineno-23-25" href="#__codelineno-23-25"></a><span class="w">    </span><span class="n">add_repeating_timer_ms</span><span class="p">(</span>
+</span><span id="__span-23-26"><a id="__codelineno-23-26" name="__codelineno-23-26" href="#__codelineno-23-26"></a><span class="w">        </span><span class="o">-</span><span class="n">TOGGLE_MS</span><span class="p">,</span>
+</span><span id="__span-23-27"><a id="__codelineno-23-27" name="__codelineno-23-27" href="#__codelineno-23-27"></a><span class="w">        </span><span class="n">timer_callback</span><span class="p">,</span>
+</span><span id="__span-23-28"><a id="__codelineno-23-28" name="__codelineno-23-28" href="#__codelineno-23-28"></a><span class="w">        </span><span class="nb">NULL</span><span class="p">,</span>
+</span><span id="__span-23-29"><a id="__codelineno-23-29" name="__codelineno-23-29" href="#__codelineno-23-29"></a><span class="w">        </span><span class="o">&amp;</span><span class="n">timer</span>
+</span><span id="__span-23-30"><a id="__codelineno-23-30" name="__codelineno-23-30" href="#__codelineno-23-30"></a><span class="w">    </span><span class="p">);</span>
+</span><span id="__span-23-31"><a id="__codelineno-23-31" name="__codelineno-23-31" href="#__codelineno-23-31"></a>
+</span><span id="__span-23-32"><a id="__codelineno-23-32" name="__codelineno-23-32" href="#__codelineno-23-32"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-23-33"><a id="__codelineno-23-33" name="__codelineno-23-33" href="#__codelineno-23-33"></a><span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">"Main is still running</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+</span><span id="__span-23-34"><a id="__codelineno-23-34" name="__codelineno-23-34" href="#__codelineno-23-34"></a><span class="w">        </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+</span><span id="__span-23-35"><a id="__codelineno-23-35" name="__codelineno-23-35" href="#__codelineno-23-35"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-23-36"><a id="__codelineno-23-36" name="__codelineno-23-36" href="#__codelineno-23-36"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="before-measuring">Before measuring</h4>
+<p>Predict:</p>
+<ul>
+<li>How often does the GPIO change state?</li>
+<li>What will be the <strong>period</strong> of the waveform?</li>
+<li>What will be its <strong>frequency</strong>?</li>
+<li>What duty cycle do you expect?</li>
+</ul>
+<p>For:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="cp">#define TOGGLE_MS 250</span>
+</span></code></pre></div>
+<p>calculate:</p>
+<div class="arithmatex">\[
+T = ?
+\]</div>
+<div class="arithmatex">\[
+f = ?
+\]</div>
+<hr />
+<h4 id="measure">Measure</h4>
+<p>Using the oscilloscope, measure:</p>
+<ul>
+<li>HIGH time</li>
+<li>LOW time</li>
+<li>Period</li>
+<li>Frequency</li>
+</ul>
+<p>Compare the measured values with your calculations.</p>
+<h4 id="compare">Compare</h4>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Is <code>TOGGLE_MS</code> the period of the output signal?</p>
+</div>
+<hr />
+<h4 id="experiment">Experiment</h4>
+<p>Change:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="cp">#define TOGGLE_MS 100</span>
+</span></code></pre></div>
+<p>Before running the program, predict the new:</p>
+<ul>
+<li>Period</li>
+<li>Frequency</li>
+</ul>
+<p>Then verify your prediction with the oscilloscope.</p>
+<p>Finally try one additional value of your choice.</p>
+<h4 id="what-should-you-conclude">What should you conclude?</h4>
+<p>For a GPIO that toggles every <span class="arithmatex">\(t_{toggle}\)</span>:</p>
+<div class="arithmatex">\[
+T = 2t_{toggle}
+\]</div>
+<p>and therefore:</p>
+<div class="arithmatex">\[
+f = \frac{1}{2t_{toggle}}
+\]</div>
+<hr />
+<h3 id="exercise-2-does-callback-execution-time-matter">Exercise 2 — Does callback execution time matter?</h3>
+<p>Now we will intentionally make the callback take some time.</p>
+<p>Use:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="cp">#define SIGNAL_PIN 15</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="cp">#define TIMER_MS 100</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="cp">#define WORK_US 20000</span>
+</span></code></pre></div>
+<p>and modify the callback:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="kt">bool</span><span class="w"> </span><span class="nf">timer_callback</span><span class="p">(</span><span class="n">repeating_timer_t</span><span class="w"> </span><span class="o">*</span><span class="n">rt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="w">    </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="n">state</span><span class="p">;</span>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="w">    </span><span class="n">gpio_put</span><span class="p">(</span><span class="n">SIGNAL_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">state</span><span class="p">);</span>
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="w">    </span><span class="n">busy_wait_us_32</span><span class="p">(</span><span class="n">WORK_US</span><span class="p">);</span>
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a>
+</span><span id="__span-27-9"><a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+</span><span id="__span-27-10"><a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>First use:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="n">add_repeating_timer_ms</span><span class="p">(</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="w">    </span><span class="o">-</span><span class="n">TIMER_MS</span><span class="p">,</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="w">    </span><span class="n">timer_callback</span><span class="p">,</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="w">    </span><span class="nb">NULL</span><span class="p">,</span>
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="w">    </span><span class="o">&amp;</span><span class="n">timer</span>
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="p">);</span>
+</span></code></pre></div>
+<h4 id="observe">Observe</h4>
+<p>Measure the time between GPIO transitions.</p>
+<p>Then change only:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="o">-</span><span class="n">TIMER_MS</span>
+</span></code></pre></div>
+<p>to:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="o">+</span><span class="n">TIMER_MS</span>
+</span></code></pre></div>
+<p>and measure again.</p>
+<p>Record:</p>
+<table>
+<thead>
+<tr>
+<th>Configuration</th>
+<th style="text-align: right;">Expected interval</th>
+<th style="text-align: right;">Measured interval</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-100 ms</code></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td><code>+100 ms</code></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+</tbody>
+</table>
+<h4 id="explain">Explain</h4>
+<p>Why are the measurements different?</p>
+<p>A <strong>negative delay</strong> schedules callbacks relative to their expected start time:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>0 ms        100 ms       200 ms       300 ms
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>|-------------|-------------|-------------|
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>callback      callback      callback
+</span></code></pre></div>
+<p>A <strong>positive delay</strong> waits until the callback finishes before starting the next delay:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>callback
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>|---20 ms---|----100 ms----| callback
+</span></code></pre></div>
+<p>so the execution time of the callback becomes part of the period.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Periodic real-time behavior normally requires us to schedule events
+relative to a timeline, not relative to when the previous task finished.</p>
+</div>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../Bloque1-GPIO/Tema_E/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Interrupts">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Interrupts
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../Tema_G/" class="md-footer__link md-footer__link--next" aria-label="Next: PWM">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                PWM
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "search.highlight", "search.suggest", "content.code.copy", "content.code.annotate", "content.tooltips", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
