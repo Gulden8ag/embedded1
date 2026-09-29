@@ -1,0 +1,2219 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Course notes for Embedded Systems I — RP2350 / Raspberry Pi Pico 2">
+      
+      
+        <meta name="author" content="Oliver Ochoa Garcia">
+      
+      
+      
+        <link rel="prev" href="../../Bloque2-Temporizador/Tema_H/">
+      
+      
+        <link rel="next" href="../Tema_J/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>ADC - Embedded Systems I (LIIE1214)</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="red">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#adc-analog-to-digital-converter" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Embedded Systems I (LIIE1214)" class="md-header__button md-logo" aria-label="Embedded Systems I (LIIE1214)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Embedded Systems I (LIIE1214)
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              ADC
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Gulden8ag/embedded1" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Gulden8ag/embedded1
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Embedded Systems I (LIIE1214)" class="md-nav__button md-logo" aria-label="Embedded Systems I (LIIE1214)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Embedded Systems I (LIIE1214)
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Gulden8ag/embedded1" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Gulden8ag/embedded1
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 0 — Introduction
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 0 — Introduction
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque0-Introduccion/T1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Syllabus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque0-Introduccion/T0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab log template
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--draft"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque0-Introduccion/T2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab log Example
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--complete"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque0-Introduccion/Tema_A/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is an embedded system?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 1 — GPIO
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 1 — GPIO
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque1-GPIO/Tema_B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Environment and toolchain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque1-GPIO/Tema_C_GPIO_Control_revised/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPIO control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque1-GPIO/Tema_D/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Digital inputs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque1-GPIO/Tema_E/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interrupts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 2 — Timing and serial
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 2 — Timing and serial
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque2-Temporizador/Tema_F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque2-Temporizador/Tema_G/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PWM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque2-Temporizador/Tema_H/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UART
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 3 — Analog and buses
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 3 — Analog and buses
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADC
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introduction
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-fundamental-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Fundamental concepts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Fundamental concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-resolution-lsb-range-and-vref" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Resolution, LSB, range, and VREF
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-sampling-and-nyquist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Sampling and Nyquist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-quantization-noise-and-enob" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Quantization, noise, and ENOB
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-adc-architectures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. ADC architectures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. ADC architectures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-sar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 SAR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-sigma-delta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Sigma-Delta
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-flash" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Flash
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-choosing-an-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Choosing an architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.4 Choosing an architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#35-input-topologies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 Input topologies
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-minimal-front-end-and-anti-alias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Minimal front-end and anti-alias
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Minimal front-end and anti-alias">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-input-rc-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Input RC filter
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-op-amp-buffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Op-amp buffer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-protection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Protection
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-adc-on-the-rp2350" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. ADC on the RP2350
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. ADC on the RP2350">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-function-glossary-pico-sdk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Function glossary (Pico SDK)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-basic-adc-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Basic ADC examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-improving-measurements-in-software" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Improving measurements in software
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Improving measurements in software">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-averaging-and-median" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Averaging and median
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-oversampling-and-decimation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Oversampling and decimation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-iir-and-fir-filters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 IIR and FIR filters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-linearization-and-two-point-calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 Linearization and two-point calibration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tema_J/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I2C
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Proyecto/Instrucciones/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capstone Project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introduction
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-fundamental-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Fundamental concepts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Fundamental concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-resolution-lsb-range-and-vref" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Resolution, LSB, range, and VREF
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-sampling-and-nyquist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Sampling and Nyquist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-quantization-noise-and-enob" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Quantization, noise, and ENOB
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-adc-architectures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. ADC architectures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. ADC architectures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-sar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 SAR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-sigma-delta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Sigma-Delta
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-flash" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Flash
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-choosing-an-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Choosing an architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.4 Choosing an architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#35-input-topologies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 Input topologies
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-minimal-front-end-and-anti-alias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Minimal front-end and anti-alias
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Minimal front-end and anti-alias">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-input-rc-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Input RC filter
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-op-amp-buffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Op-amp buffer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-protection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Protection
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-adc-on-the-rp2350" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. ADC on the RP2350
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. ADC on the RP2350">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-function-glossary-pico-sdk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Function glossary (Pico SDK)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-basic-adc-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Basic ADC examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-improving-measurements-in-software" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Improving measurements in software
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Improving measurements in software">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-averaging-and-median" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Averaging and median
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-oversampling-and-decimation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Oversampling and decimation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-iir-and-fir-filters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 IIR and FIR filters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-linearization-and-two-point-calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 Linearization and two-point calibration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="adc-analog-to-digital-converter">ADC — Analog-to-Digital Converter</h1>
+<h2 id="1-introduction">1. Introduction</h2>
+<p>The analog-to-digital converter lets you read voltages as numbers. In embedded systems it is used for sensing temperature, current, position, or basic audio. This topic combines sampling and quantization theory with the practical use of the RP2350's built-in ADC on the Pico 2.</p>
+<h2 id="2-fundamental-concepts">2. Fundamental concepts</h2>
+<h3 id="21-resolution-lsb-range-and-vref">2.1 Resolution, LSB, range, and VREF</h3>
+<p><img align="center" alt="ADC resolution" src="../../images/resol_adc.avif" width="60%" /></p>
+<ul>
+<li>Resolution: the ADC's number of bits N. For 12 bits there are <span class="arithmatex">\(2^{12}\)</span> levels.</li>
+<li>Vref: the reference against which the ADC compares the input. It can be internal or external depending on the board.</li>
+<li>
+<p>LSB: the size of the quantization step.
+    $$
+    \mathrm{LSB}=\frac{V_{\mathrm{ref}}}{2^{N}}
+    $$
+    For example, for a 12-bit ADC with Vref = 3.3 V:
+    $$
+    \mathrm{LSB}=\frac{3.3 V}{2^{12}}= 0.806 mV
+    $$</p>
+</li>
+<li>
+<p>Range: 0 to Vref for single-ended inputs (as on the RP2350) and Vref1 to Vref2 for differential ones.</p>
+</li>
+</ul>
+<h3 id="22-sampling-and-nyquist">2.2 Sampling and Nyquist</h3>
+<ul>
+<li>Sampling frequency Fs. The number of samples per second the ADC takes from a continuous signal. Expressed in Hz or samples/s.</li>
+<li>Aliasing: the phenomenon whereby frequency components above Fn "fold" into low frequencies in the sampled spectrum, showing up as false signals.</li>
+</ul>
+<p><img align="center" alt="Aliasing" src="../../images/aliasing.JPG" width="80%" /></p>
+<ul>
+<li>Nyquist theorem. To avoid aliasing, Fs must be at least 2 times the highest useful frequency in the signal.
+    $$
+    F_{s} \geq 2 \cdot F_{max}
+    $$
+    where <span class="arithmatex">\(F_{max}\)</span> is the highest frequency present in the analog signal.</li>
+<li>Acquisition time. The time during which the ADC's sample-and-hold circuit is connected to the input to charge its internal capacitance to within a maximum allowed error before starting the conversion.</li>
+</ul>
+<h3 id="23-quantization-noise-and-enob">2.3 Quantization, noise, and ENOB</h3>
+<ul>
+<li>Quantization. When an ADC measures a continuous signal, it can only report values on a grid of equal steps. This process of "snapping" the signal to the nearest step is called quantization.</li>
+<li>Quantization noise. The error that arises from rounding to the grid. If the signal is sufficiently "rich" and the ADC is working well, that error can be modeled as a small noise varying between −LSB/2 and +LSB/2. The smaller the LSB, the smaller this noise.</li>
+<li>SNR (Signal to Noise Ratio). The ratio between signal power and noise power. Expressed in decibels. A large SNR means the signal clearly stands out above the noise.</li>
+</ul>
+<p><img align="center" alt="SNR" src="../../images/SNR-simulation-result.png" width="60%" /></p>
+<ul>
+<li>THD (Total Harmonic Distortion). Measures how much energy appears in harmonics of the fundamental signal due to non-linearities. Low THD means little distortion.</li>
+</ul>
+<p><img align="center" alt="THD" src="../../images/thd.webp" width="60%" /></p>
+<ul>
+<li>SINAD (Signal to Noise And Distortion). Like SNR, but it counts both noise and distortion. That's why SINAD is usually lower than the pure quantization SNR. It is widely used to characterize an ADC's overall quality.</li>
+<li>ENOB (Effective Number Of Bits). A way of expressing "how many useful bits" you get, considering real noise and distortion. It's computed from SINAD:
+$$
+ENOB = (SINAD − 1.76) / 6.02.
+$$
+Example
+If you measure SINAD = 62 dB, then ENOB ≈ (62 − 1.76) / 6.02 ≈ 10 bits.</li>
+</ul>
+<h2 id="3-adc-architectures">3. ADC architectures</h2>
+<h3 id="31-sar">3.1 SAR</h3>
+<p><img align="center" alt="SAR ADC" src="../../images/SARADC.avif" width="60%" /></p>
+<p><strong>Operation</strong></p>
+<ol>
+<li>Sampling. A sample-and-hold circuit captures the input voltage over a brief window and holds it constant.</li>
+<li>Successive approximations. A SAR register controls an internal DAC. Starting from the most significant bit, the DAC generates a trial value and a comparator decides whether the input is above or below it.</li>
+<li>Binary search. On each cycle one bit is fixed according to the comparator's result and the DAC is updated. After N cycles on an N-bit ADC, the final code is obtained.</li>
+<li>Timing. The conversion requires an acquisition time plus N comparison cycles. Many SARs in MCUs allow adjusting the acquisition time to ensure the sample-and-hold charges properly when the source has high impedance.</li>
+<li>Multiple channels. A multiplexer selects the channel before sampling. When switching channels, the internal capacitance must settle again, so acquisition time is critical.</li>
+</ol>
+<p><strong>Typical use</strong>
+General sensors in MCUs, current measurement with shunts, control and automation where low latency and moderate power consumption matter.</p>
+<h3 id="32-sigma-delta">3.2 Sigma-Delta</h3>
+<p><strong>Operation</strong></p>
+<ol>
+<li>Closed-loop modulator. The input goes through an integrator and a 1-bit (or few-bit) quantizer. The digital output feeds an internal DAC that closes the loop with feedback.</li>
+<li>Noise shaping. The loop pushes quantization noise toward high frequencies, outside the band of interest.</li>
+<li>Oversampling. The modulator operates at a frequency far above the useful band. The 1-bit stream contains the signal plus shaped noise.</li>
+<li>Digital filtering and decimation. A digital low-pass filter (often cascaded CIC and FIR) removes out-of-band noise and reduces the data rate to the desired output frequency.</li>
+<li>Order and SNR gain. A first-order modulator improves SNR by roughly 9 dB for every doubling of the oversampling ratio. Second-order, about 15 dB per doubling.</li>
+<li>Latency. The output suffers the digital filter's group delay, so latency is higher than in a SAR.</li>
+</ol>
+<p><strong><em>Typical use</em></strong>
+Precision scales, slow instrumentation, high-fidelity audio, high-resolution temperature and pressure measurements.</p>
+<h3 id="33-flash">3.3 Flash</h3>
+<p><img align="center" alt="Pipeline ADC" src="../../images/flash.avif" width="60%" /></p>
+<p><strong>Operation</strong></p>
+<ol>
+<li>Cascaded stages. Each stage performs a coarse m-bit conversion using a fast sub-ADC.</li>
+<li>Sub-DAC and residue. The stage reconstructs the value of those m bits with a sub-DAC and subtracts it from the input signal to generate a residue.</li>
+<li>Residue amplification. The residue is typically amplified by 2^m and passed to the next stage, where the process repeats.</li>
+<li>Alignment and digital correction. The bits from all stages are time-aligned and small errors are corrected through redundant digital logic.</li>
+<li>Latency. Total latency is the number of stages, measured in clock cycles. In exchange you get high speed with medium-to-high resolutions.</li>
+</ol>
+<p><strong>Typical use</strong>
+Software-defined radio systems, intermediate-frequency digitizers, medium-to-high-bandwidth data acquisition, and embedded vision.</p>
+<h3 id="34-choosing-an-architecture">3.4 Choosing an architecture</h3>
+<ul>
+<li>Slow, precise signals. Sigma-Delta.</li>
+<li>General sensors in MCUs. SAR.</li>
+<li>High speeds. Pipeline or Flash.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>ADC Type</th>
+<th>Pros</th>
+<th>Cons</th>
+<th>Max Resolution</th>
+<th>Max Sample Rate</th>
+<th>Main Applications</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Successive Approximation (SAR)</td>
+<td>Good speed/resolution ratio</td>
+<td>No intrinsic anti-aliasing protection</td>
+<td>18 bits</td>
+<td>10 MHz</td>
+<td>Data acquisition</td>
+</tr>
+<tr>
+<td>Delta-sigma (ΔΣ)</td>
+<td>High dynamic performance, intrinsic anti-aliasing protection</td>
+<td>Hysteresis on non-natural signals</td>
+<td>32 bits</td>
+<td>1 MHz</td>
+<td>Data acquisition, noise and vibration, audio</td>
+</tr>
+<tr>
+<td>Dual Slope</td>
+<td>Accurate, inexpensive</td>
+<td>Low speed</td>
+<td>20 bits</td>
+<td>100 Hz</td>
+<td>Voltmeters</td>
+</tr>
+<tr>
+<td>Pipelined</td>
+<td>Very fast</td>
+<td>Limited resolution</td>
+<td>16 bits</td>
+<td>1 GHz</td>
+<td>Oscilloscopes</td>
+</tr>
+<tr>
+<td>Flash</td>
+<td>The fastest</td>
+<td>Low bit resolution</td>
+<td>12 bits</td>
+<td>10 GHz</td>
+<td>Oscilloscopes</td>
+</tr>
+</tbody>
+</table>
+<h4 id="35-input-topologies">3.5 Input topologies</h4>
+<p>This is not a conversion architecture. It describes how the signal is applied to the ADC.</p>
+<p><strong>Single-ended</strong>
+Measures the voltage on one pin with respect to a common reference. It's simple and uses fewer pins. It requires clean returns and good layout to prevent ground noise from degrading the measurement.</p>
+<p><strong>Differential</strong>
+Measures the difference between two nodes that share a common mode. Internally the ADC samples both inputs and subtracts them, which improves common-mode noise rejection. It requires a compatible front-end and ADC, and the allowed common-mode range must be respected.</p>
+<table>
+<thead>
+<tr>
+<th>Topology</th>
+<th>How it measures</th>
+<th>Advantages</th>
+<th>Precautions</th>
+<th>Typical uses</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Single-ended</td>
+<td>Against a common reference</td>
+<td>Simplicity, fewer pins</td>
+<td>Sensitive to ground noise and return loops</td>
+<td>MCUs, general sensors, potentiometers</td>
+</tr>
+<tr>
+<td>Differential</td>
+<td>Difference between two nodes</td>
+<td>High common-mode rejection, better noise immunity</td>
+<td>Requires differential ADC and front-end, respect common mode</td>
+<td>Bridge sensors, pro audio, RF, instrumentation</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-minimal-front-end-and-anti-alias">4. Minimal front-end and anti-alias</h2>
+<h3 id="41-input-rc-filter">4.1 Input RC filter</h3>
+<p>A circuit with a resistor (R) and a capacitor (C) that acts as a low-pass filter, letting low-frequency signals through and attenuating high-frequency ones such as noise.</p>
+<p><img align="center" alt="RC filter" src="../../images/1st_Order_Lowpass_Filter_RC.svg" width="40%" /></p>
+<div class="arithmatex">\[ f_c = \frac{1}{2\pi RC} \]</div>
+<p>Suggested cutoff frequency for slow signals: fc ≈ 0.4 to 0.5 of the useful Fs, or as defined by the bandwidth requirements.</p>
+<h3 id="42-op-amp-buffer">4.2 Op-amp buffer</h3>
+<p><img align="center" alt="Voltage follower" src="../../images/buffer_opamp_adc.png" width="40%" /></p>
+<ul>
+<li>A low-impedance voltage follower helps charge the sampling capacitance.</li>
+<li>Use a rail-to-rail op-amp with adequate GBW and good PSRR at 3.3 V.</li>
+</ul>
+<h3 id="43-protection">4.3 Protection</h3>
+<ul>
+<li>A small series resistor to limit input currents.</li>
+<li>Clamping diodes or ESD protection depending on the environment.</li>
+</ul>
+<h2 id="5-adc-on-the-rp2350">5. ADC on the RP2350</h2>
+<p><strong>Feature summary</strong></p>
+<ul>
+<li>12-bit SAR-type ADC.</li>
+<li>Representative speed on the order of hundreds of kSps depending on clock and configuration.</li>
+<li>Multiplexed single-ended channels. The number of external inputs depends on the silicon package and the board.<ul>
+<li>ADC0 – GPIO26</li>
+<li>ADC1 – GPIO27</li>
+<li>ADC2 – GPIO28</li>
+<li>ADC3 – GPIO29 (exists but is not connected to a pin)</li>
+<li>ADC4 – Internal temperature sensor</li>
+</ul>
+</li>
+<li>Vref is taken from the 3.3 V rail or from the VREF pin if available on the board.</li>
+<li>No differential mode is exposed. Avoid sharing analog lines with noisy digital loads. Separate return paths whenever possible.</li>
+</ul>
+<h3 id="51-function-glossary-pico-sdk">5.1 Function glossary (Pico SDK)</h3>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>adc_init()</code></td>
+<td>Enables the ADC peripheral</td>
+<td><code>adc_init();</code></td>
+</tr>
+<tr>
+<td><code>adc_gpio_init(pin)</code></td>
+<td>Configures the GPIO as an ADC input</td>
+<td><code>adc_gpio_init(26);</code></td>
+</tr>
+<tr>
+<td><code>adc_select_input(n)</code></td>
+<td>Selects ADC channel n</td>
+<td><code>adc_select_input(0);</code></td>
+</tr>
+<tr>
+<td><code>adc_read()</code></td>
+<td>Performs one conversion and returns 12 bits</td>
+<td><code>uint16_t v = adc_read();</code></td>
+</tr>
+<tr>
+<td><code>adc_set_clkdiv(div)</code></td>
+<td>Sets the ADC clock divider</td>
+<td><code>adc_set_clkdiv(479.0f);</code></td>
+</tr>
+<tr>
+<td><code>adc_fifo_setup(en, dreq, thr, err, shift)</code></td>
+<td>Configures the FIFO, DREQ for DMA, and threshold</td>
+<td><code>adc_fifo_setup(true, true, 1, false, false);</code></td>
+</tr>
+<tr>
+<td><code>adc_run(run)</code></td>
+<td>Starts or stops free-running conversions</td>
+<td><code>adc_run(true);</code></td>
+</tr>
+<tr>
+<td><code>adc_set_round_robin(mask)</code></td>
+<td>Enables automatic channel scanning</td>
+<td><code>adc_set_round_robin(0b00001111);</code></td>
+</tr>
+<tr>
+<td><code>adc_set_temp_sensor_enabled(en)</code></td>
+<td>Enables the internal temperature sensor</td>
+<td><code>adc_set_temp_sensor_enabled(true);</code></td>
+</tr>
+<tr>
+<td><code>adc_fifo_drain()</code></td>
+<td>Empties the ADC FIFO before starting</td>
+<td><code>adc_fifo_drain();</code></td>
+</tr>
+<tr>
+<td><code>adc_fifo_get_level()</code></td>
+<td>Reads how many entries are in the FIFO</td>
+<td><code>uint lvl = adc_fifo_get_level();</code></td>
+</tr>
+<tr>
+<td><code>irq_set_exclusive_handler(ADC_IRQ_FIFO, h)</code></td>
+<td>Registers an ISR for the ADC IRQ</td>
+<td><code>irq_set_exclusive_handler(ADC_IRQ_FIFO, adc_isr);</code></td>
+</tr>
+<tr>
+<td><code>irq_set_enabled(ADC_IRQ_FIFO, en)</code></td>
+<td>Enables or disables the ADC IRQ</td>
+<td><code>irq_set_enabled(ADC_IRQ_FIFO, true);</code></td>
+</tr>
+<tr>
+<td><code>adc_irq_set_enabled(en)</code></td>
+<td>Enables IRQ generation from the FIFO</td>
+<td><code>adc_irq_set_enabled(true);</code></td>
+</tr>
+<tr>
+<td><code>DREQ_ADC</code></td>
+<td>DREQ selection for DMA from the ADC FIFO</td>
+<td><code>channel_config_set_dreq(&amp;cfg, DREQ_ADC);</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="52-basic-adc-examples">5.2 Basic ADC examples</h3>
+<ol>
+<li>Initialize the ADC subsystem.</li>
+<li>Configure the pin as an ADC input.</li>
+<li>Select the channel.</li>
+<li>Read with a single conversion and store the value.</li>
+</ol>
+<div class="language-c highlight"><span class="filename">Basic ADC read example</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/stdlib.h"</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"hardware/adc.h"</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1">// Configure the ADC channel to use</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="cp">#define ADC_INPUT 0 </span><span class="c1">// channel 0</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="n">stdio_init_all</span><span class="p">();</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="n">adc_init</span><span class="p">();</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="c1">// Configure the corresponding GPIO pin as an ADC input</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="n">adc_gpio_init</span><span class="p">(</span><span class="mi">26</span><span class="p">);</span><span class="w"> </span><span class="c1">// GPIO26 usually maps to ADC0 on the Pico 2</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span><span class="c1">// Select the channel</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">    </span><span class="n">adc_select_input</span><span class="p">(</span><span class="n">ADC_INPUT</span><span class="p">);</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">    </span><span class="c1">// Optional: adjust the clock divider if you need to limit Fs</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">    </span><span class="c1">// adc_set_clkdiv(div);</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">        </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">adc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">adc_read</span><span class="p">();</span><span class="w"> </span><span class="c1">// 12 bits aligned to 0..4095</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">        </span><span class="c1">// float v = (adc * VREF) / 4095.0f;</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">"%u</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">adc</span><span class="p">);</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">        </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="p">}</span>
+</span></code></pre></div>
+<h2 id="6-improving-measurements-in-software">6. Improving measurements in software</h2>
+<h3 id="61-averaging-and-median">6.1 Averaging and median</h3>
+<ul>
+<li>Moving average and exponential average to reject spikes.</li>
+</ul>
+<div class="language-c highlight"><span class="filename">Moving Average example</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/stdlib.h"</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"hardware/adc.h"</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1">// Configure the ADC channel to use</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="cp">#define ADC_INPUT 0 </span><span class="c1">// channel 0</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1">// number of samples to average</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="cp">#define N_SAMPLES 16</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="n">stdio_init_all</span><span class="p">();</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="n">adc_init</span><span class="p">();</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="c1">// Configure the corresponding GPIO pin as an ADC input</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">    </span><span class="n">adc_gpio_init</span><span class="p">(</span><span class="mi">26</span><span class="p">);</span><span class="w"> </span><span class="c1">// GPIO26 usually maps to ADC0 on the Pico 2</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">    </span><span class="c1">// Select the channel</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">    </span><span class="n">adc_select_input</span><span class="p">(</span><span class="n">ADC_INPUT</span><span class="p">);</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="c1">// -- Variables --</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">buffer</span><span class="p">[</span><span class="n">N_SAMPLES</span><span class="p">];</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">    </span><span class="kt">uint8_t</span><span class="w">  </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">              </span><span class="c1">// next position to overwrite</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">    </span><span class="kt">uint8_t</span><span class="w">  </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">              </span><span class="c1">// number of filled samples, up to N_SAMPLES</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">        </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">adc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">adc_read</span><span class="p">();</span><span class="w"> </span><span class="c1">// 12 bits aligned to 0..4095</span>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">count</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">N_SAMPLES</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">            </span><span class="c1">// fill the buffer initially</span>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">            </span><span class="n">buffer</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">adc</span><span class="p">;</span>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">            </span><span class="n">sum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">adc</span><span class="p">;</span>
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">            </span><span class="n">count</span><span class="o">++</span><span class="p">;</span>
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w">            </span><span class="n">index</span><span class="o">++</span><span class="p">;</span>
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">            </span><span class="c1">// buffer full, proceed with the moving average</span>
+</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w">            </span><span class="n">sum</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">buffer</span><span class="p">[</span><span class="n">index</span><span class="p">];</span><span class="w">         </span><span class="c1">// subtract the old value</span>
+</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="w">            </span><span class="n">buffer</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">adc</span><span class="p">;</span><span class="w">          </span><span class="c1">// add the new value to the buffer</span>
+</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="w">            </span><span class="n">sum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">adc</span><span class="p">;</span><span class="w">                   </span><span class="c1">// add the new value to the total</span>
+</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="w">            </span><span class="c1">// Advance through the circular buffer</span>
+</span><span id="__span-1-38"><a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="w">            </span><span class="n">index</span><span class="o">++</span><span class="p">;</span>
+</span><span id="__span-1-39"><a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">index</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">N_SAMPLES</span><span class="p">)</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-1-40"><a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a><span class="w">            </span><span class="c1">// compute the average</span>
+</span><span id="__span-1-41"><a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a><span class="w">            </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">average</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">N_SAMPLES</span><span class="p">;</span>
+</span><span id="__span-1-42"><a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a>
+</span><span id="__span-1-43"><a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a><span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">"%u</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">average</span><span class="p">);</span>
+</span><span id="__span-1-44"><a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a><span class="w">            </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+</span><span id="__span-1-45"><a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-1-46"><a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a>
+</span><span id="__span-1-47"><a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-48"><a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a><span class="p">}</span>
+</span></code></pre></div>
+<ul>
+<li>Exponential average for fast smoothing with less lag; it uses a recursive formula to smooth out noise. Formula:
+  $$
+  y(n) = alpha \cdot x(n) + (1 - alpha) \cdot y(n-1)
+  $$
+  where:
+  y(n) is the smoothed output at sample n,
+  x(n) is the current input at sample n,
+  y(n-1) is the smoothed output at the previous sample,
+  alpha is the smoothing factor (0 &lt; alpha ≤ 1).</li>
+</ul>
+<div class="language-c highlight"><span class="filename">Exponential Average example</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"pico/stdlib.h"</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"hardware/adc.h"</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="cp">#define ADC_INPUT 0          </span><span class="c1">// channel 0 -&gt; GPIO26</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0625f</span><span class="p">;</span><span class="w"> </span><span class="c1">// 0&lt;alpha&lt;=1 (0.0625 = 1/16)</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="n">stdio_init_all</span><span class="p">();</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">    </span><span class="n">adc_init</span><span class="p">();</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="n">adc_gpio_init</span><span class="p">(</span><span class="mi">26</span><span class="p">);</span><span class="w">        </span><span class="c1">// GPIO26 = ADC0</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="n">adc_select_input</span><span class="p">(</span><span class="n">ADC_INPUT</span><span class="p">);</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">    </span><span class="kt">bool</span><span class="w">   </span><span class="n">y_init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">    </span><span class="kt">float</span><span class="w">  </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">        </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">adc_read</span><span class="p">();</span><span class="w">   </span><span class="c1">// 0..4095 (12 bits)</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">y_init</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">            </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">x</span><span class="p">;</span><span class="w">          </span><span class="c1">// initialize with the first reading</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">            </span><span class="n">y_init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="w">            </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0f</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">alpha</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y</span><span class="p">;</span><span class="w">  </span><span class="c1">// y(n) = αx + (1-α)y</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="w">        </span><span class="c1">// If you prefer an integer for printing/outputs:</span>
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="w">        </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">y_u16</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint16_t</span><span class="p">)(</span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5f</span><span class="p">);</span>
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">"raw=%u ema=%u</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y_u16</span><span class="p">);</span>
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="w">        </span><span class="n">sleep_ms</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="62-oversampling-and-decimation">6.2 Oversampling and decimation</h3>
+<ul>
+<li>Increase the sampling rate M times and average to gain effective bits. Rule of thumb: every 4× oversampling adds 1 bit, provided there is enough noise for dithering.</li>
+</ul>
+<h3 id="63-iir-and-fir-filters">6.3 IIR and FIR filters</h3>
+<ul>
+<li>First-order IIR for fast smoothing. FIR for linear phase.</li>
+</ul>
+<h3 id="64-linearization-and-two-point-calibration">6.4 Linearization and two-point calibration</h3>
+<ul>
+<li>Measure the output at 0 V and at a known reference point close to Vref. Compute offset and gain and correct in software.</li>
+</ul>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/hIRZeYgcG5E?si=uIy8H0GFnar9grEK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../Bloque2-Temporizador/Tema_H/" class="md-footer__link md-footer__link--prev" aria-label="Previous: UART">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                UART
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../Tema_J/" class="md-footer__link md-footer__link--next" aria-label="Next: I2C">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                I2C
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "search.highlight", "search.suggest", "content.code.copy", "content.code.annotate", "content.tooltips", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

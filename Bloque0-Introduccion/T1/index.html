@@ -1,0 +1,1931 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Course notes for Embedded Systems I — RP2350 / Raspberry Pi Pico 2">
+      
+      
+        <meta name="author" content="Oliver Ochoa Garcia">
+      
+      
+      
+        <link rel="prev" href="../..">
+      
+      
+        <link rel="next" href="../T0/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Syllabus - Embedded Systems I (LIIE1214)</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="red">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#syllabus" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Embedded Systems I (LIIE1214)" class="md-header__button md-logo" aria-label="Embedded Systems I (LIIE1214)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Embedded Systems I (LIIE1214)
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Syllabus
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Gulden8ag/embedded1" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Gulden8ag/embedded1
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Embedded Systems I (LIIE1214)" class="md-nav__button md-logo" aria-label="Embedded Systems I (LIIE1214)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Embedded Systems I (LIIE1214)
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Gulden8ag/embedded1" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Gulden8ag/embedded1
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 0 — Introduction
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 0 — Introduction
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Syllabus
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Syllabus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#course-meeting-times" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Course Meeting Times
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#course-text" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Course Text
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grading-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grading Policy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calendar-sessions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Calendar Sessions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-submit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to submit
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How to submit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#once-at-the-start-of-the-course-due-in-session-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Once, at the start of the course (due in session 2)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#every-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Every session
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-counts-as-submitted" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What counts as submitted
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checklist-before-you-push" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checklist before you push
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../T0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab log template
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--draft"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../T2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab log Example
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--complete"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tema_A/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is an embedded system?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 1 — GPIO
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 1 — GPIO
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque1-GPIO/Tema_B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Environment and toolchain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque1-GPIO/Tema_C_GPIO_Control_revised/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPIO control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque1-GPIO/Tema_D/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Digital inputs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque1-GPIO/Tema_E/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interrupts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 2 — Timing and serial
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 2 — Timing and serial
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque2-Temporizador/Tema_F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque2-Temporizador/Tema_G/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PWM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque2-Temporizador/Tema_H/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UART
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block 3 — Analog and buses
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block 3 — Analog and buses
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque3/Tema_I/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Bloque3/Tema_J/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I2C
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Proyecto/Instrucciones/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capstone Project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#course-meeting-times" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Course Meeting Times
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#course-text" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Course Text
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grading-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grading Policy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calendar-sessions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Calendar Sessions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-submit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to submit
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How to submit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#once-at-the-start-of-the-course-due-in-session-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Once, at the start of the course (due in session 2)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#every-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Every session
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-counts-as-submitted" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What counts as submitted
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checklist-before-you-push" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checklist before you push
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="syllabus">Syllabus</h1>
+<h2 id="course-meeting-times">Course Meeting Times</h2>
+<p><strong>Lectures</strong>: 2 sessions / week, 2 hours / session</p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Days</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>Monday &amp; Wednesday</td>
+<td>17:00 - 19:00</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Tuesday &amp; Thursday</td>
+<td>17:00 - 19:00</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Room</strong>: J-144 (Electronics Laboratory)</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li><strong>Formal prerequisite</strong>: Digital Design (LIIE program).</li>
+<li><strong>Programming</strong>: basic C proficiency; comfortable with compiling from the command line.</li>
+<li><strong>Electronics</strong>: breadboard prototyping, safe power practices, using a multimeter; ESD awareness.</li>
+<li><strong>Tools readiness</strong>: laptop capable of running the Pico SDK toolchain (CMake, GDB, OpenOCD), VS Code, and Python for plotting; known-good USB data cable(s).</li>
+</ul>
+<h2 id="course-text">Course Text</h2>
+<ul>
+<li>Raspberry Pi Pico C/C++ SDK documentation and RP2350 Datasheet (registers, GPIO, timers, PWM, ADC, UART, PIO, DMA, multicore).</li>
+<li>WARD, Hubert Henry. <em>C Programming for the PIC Microcontroller: Demystify Coding</em>. Apress, 2019.</li>
+<li>BARRETT, Steven F. &amp; PACK, Daniel J. <em>Microchip AVR® Microcontroller Primer: Programming and Interfacing</em>, 3rd ed. Morgan &amp; Claypool, 2019.</li>
+<li>PAREDES, Ernesto M. <em>Curso práctico para programación de AVR</em>. Alfaomega, 2017.</li>
+</ul>
+<p><strong>Supplementary references</strong></p>
+<ul>
+<li>IEEE RAS (Robotics &amp; Automation Society) official magazine: https://www.ieee-ras.org/publications/ram</li>
+<li>IEEE Xplore article repository: https://ieeexplore.ieee.org/Xplore/home.jsp</li>
+<li>IEEE article writing guide: https://site.ieee.org/sb-luz/2017/01/20/describir-tu-proyecto-con-el-modelo-ieee-para-articulos/</li>
+<li>IEEE citation guide: https://ieeeauthorcenter.ieee.org/wp-content/uploads/IEEE-Reference-Guide.pdf</li>
+</ul>
+<h2 id="grading-policy">Grading Policy</h2>
+<p><strong>Grade Components:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>What it covers</th>
+<th>Deliverables/Evidence</th>
+<th style="text-align: right;">Weight</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lab Log</td>
+<td>All programming exercises and in-class practices across sessions</td>
+<td>Dated entries with code, measurements (scope/LA captures), and analysis</td>
+<td style="text-align: right;"><strong>35%</strong></td>
+</tr>
+<tr>
+<td>Embedded System Prototype</td>
+<td>Micromouse capstone: integration, testing, competition performance</td>
+<td>Working prototype, test plan, competition results</td>
+<td style="text-align: right;"><strong>35%</strong></td>
+</tr>
+<tr>
+<td>Exam 1</td>
+<td>Practical take-home + oral defense (sessions 1–8 content)</td>
+<td>Code, measurement evidence, live demo and defense</td>
+<td style="text-align: right;"><strong>10%</strong></td>
+</tr>
+<tr>
+<td>Exam 2</td>
+<td>Practical take-home + oral defense (PWM/ADC/PIO content)</td>
+<td>Code, measurement evidence, live demo and defense</td>
+<td style="text-align: right;"><strong>10%</strong></td>
+</tr>
+<tr>
+<td>Exam 3</td>
+<td>Written theory exam (architecture, timing, FSM, PIO, DMA, UART, WDT, EMC)</td>
+<td>In-class written exam</td>
+<td style="text-align: right;"><strong>10%</strong></td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td></td>
+<td></td>
+<td style="text-align: right;"><strong>100%</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Passing requirement</strong>: a minimum average of <strong>6.0</strong> in the exams <em>and</em> in the final course grade is required to pass.</p>
+<p><strong>Grading scale</strong> (applied to the final grade only; mid-semester grades are not rounded)</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Raw average</th>
+<th style="text-align: left;">Reported grade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">up to 5.9</td>
+<td style="text-align: left;"><strong>5</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">6.0–6.8</td>
+<td style="text-align: left;"><strong>6</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">6.9–7.7</td>
+<td style="text-align: left;"><strong>7</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">7.8–8.6</td>
+<td style="text-align: left;"><strong>8</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">8.7–9.4</td>
+<td style="text-align: left;"><strong>9</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">9.5–10.0</td>
+<td style="text-align: left;"><strong>10</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Late &amp; makeup policy</strong></p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Policy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Late submissions</td>
+<td>−20% penalty (grade capped at 8.0) if submitted within <strong>7 days</strong> of the deadline; after that, not accepted except for justified, documented cases.</td>
+</tr>
+<tr>
+<td>Submission format</td>
+<td>All deliverables in <strong>PDF</strong>, following the provided rubric, on the designated platform. Wrong format or platform = <strong>−1 point</strong> on that item.</td>
+</tr>
+<tr>
+<td>Exams</td>
+<td>The late-submission penalty does <strong>not</strong> apply to exams; an unjustified absence on an exam = <strong>0</strong>. With a justified, documented absence, the exam is rescheduled close to the original date.</td>
+</tr>
+<tr>
+<td>Extensions</td>
+<td>May be requested <strong>by email before the deadline</strong> for justified absences.</td>
+</tr>
+<tr>
+<td>Regrade window</td>
+<td>Written request within <strong>7 business days</strong> of grade release. Forfeited with more than 5 unjustified absences.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exam policies</strong></p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Policy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exams 1 &amp; 2 format</td>
+<td><strong>Practical, take-home</strong>: the specification is handed out in a prior session and solved outside class. On the scheduled date, students present and defend: live demo, questions on design decisions, and optionally a live modification of the submitted code.</td>
+</tr>
+<tr>
+<td>Exam 3 format</td>
+<td><strong>Written, theoretical, individual, in-class</strong>. Topic list provided at least one week in advance. One <strong>handwritten</strong> reference sheet allowed.</td>
+</tr>
+<tr>
+<td>Submission</td>
+<td>Practical exam materials (code, measurement evidence, report) are uploaded <strong>before</strong> the presentation session. The submitted version is the one graded — no same-day modifications.</td>
+</tr>
+<tr>
+<td>Grading criteria</td>
+<td>Specification compliance, quality of measurement evidence, and oral defense. An incomplete but well-measured and well-justified solution scores better than a functional one without evidence or explanation.</td>
+</tr>
+<tr>
+<td>Authorship</td>
+<td>Documentation and support tools may be consulted. Authorship is verified during the defense: a student who cannot explain or modify their own code does <strong>not</strong> pass the exam.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attendance</strong></p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Policy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Justified absences</td>
+<td>Medical, serious family matters, legal appointments, force majeure. Documentation must be submitted within <strong>7 business days</strong> of the absence.</td>
+</tr>
+<tr>
+<td>Unjustified absences</td>
+<td>Do not directly affect the grade, but accumulating <strong>more than 5</strong> forfeits the right to grade reviews.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="modules">Modules</h2>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Topics</th>
+<th>Sessions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>M0 — Setup &amp; Toolchain</strong></td>
+<td>ESD safety, Pico SDK / CMake / GDB / OpenOCD installation, first builds</td>
+<td>1</td>
+</tr>
+<tr>
+<td><strong>M1 — Bare-Metal I/O &amp; Timing</strong></td>
+<td>Register-level programming, GPIO &amp; bitwise ops, debouncing, FSMs, SysTick, IRQ latency, HW timers</td>
+<td>2–6</td>
+</tr>
+<tr>
+<td><strong>M2 — Serial Communication &amp; Scheduling</strong></td>
+<td>UART from scratch (ISR RX/TX, ring buffers, CLI), cooperative time-slicing, UART-based debugging</td>
+<td>7–9</td>
+</tr>
+<tr>
+<td><strong>M3 — Analog Interfacing</strong></td>
+<td>PWM (LEDs, servos, DC motors), ADC &amp; sampling theory, filtering &amp; telemetry, sensor linearization</td>
+<td>10–14</td>
+</tr>
+<tr>
+<td><strong>M4 — PIO &amp; DMA</strong></td>
+<td>PIO architecture, generation &amp; capture, PIO+C integration, DMA to PWM/PIO/UART</td>
+<td>15–20</td>
+</tr>
+<tr>
+<td><strong>M5 — Performance, Robustness &amp; Production</strong></td>
+<td>ISR profiling, watchdog/brown-out, low power, EMC, multicore, boot &amp; memory, unit testing</td>
+<td>21–26</td>
+</tr>
+<tr>
+<td><strong>M6 — Capstone: Micromouse</strong></td>
+<td>Final integration, arena mode, technical inspection, competition</td>
+<td>27–29</td>
+</tr>
+</tbody>
+</table>
+<h2 id="calendar-sessions">Calendar Sessions</h2>
+<table>
+<thead>
+<tr>
+<th>S</th>
+<th>Module</th>
+<th>Topic</th>
+<th>Deliverable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>M0</strong></td>
+<td>Course intro, ESD safety, toolchain installation</td>
+<td>Lab Log: environment building example projects</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>M1</strong></td>
+<td>Inside the MCU: clocks, bus, memory, SIO; register-level blink</td>
+<td>Lab Log: oscillograms + timing parameters</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>M1</strong></td>
+<td>Bitwise &amp; GPIO; software debouncing; polling FSM</td>
+<td>Lab Log: state diagram + documented tests</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>M1</strong></td>
+<td>Timing &amp; SysTick; timestamping; pin-toggle tracing</td>
+<td>Lab Log: jitter measurement (LA/scope captures)</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>M1</strong></td>
+<td>Interrupts (IRQ): latency &amp; priorities</td>
+<td>Lab Log: latency report with captures</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>M1</strong></td>
+<td>HW timers: compare/capture; timer-based debounce</td>
+<td>Lab Log: frequency/duty measurement + error calculation</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>M2</strong></td>
+<td>UART I (no Arduino): baud/framing, ISR RX/TX, ring buffer, minimal CLI</td>
+<td>Lab Log: overrun/framing log + short video</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>M2</strong></td>
+<td>Cooperative scheduling + UART debugging — <strong>Exam 1 spec released</strong></td>
+<td>Lab Log: 3-task mini-scheduler + UART traces</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>M2</strong></td>
+<td><strong>EXAM 1 (practical, take-home): presentation &amp; defense</strong></td>
+<td>Exam 1: code, measurement evidence, oral defense</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>M3</strong></td>
+<td>PWM: resolution &amp; frequency; LED dimming &amp; buzzer</td>
+<td>Lab Log: brightness vs. duty curve + frequency</td>
+</tr>
+<tr>
+<td>11</td>
+<td><strong>M3</strong></td>
+<td>PWM: 50 Hz servos &amp; DC motor control</td>
+<td>Lab Log: test video + pulse-width measurements</td>
+</tr>
+<tr>
+<td>12</td>
+<td><strong>M3</strong></td>
+<td>ADC: reference, errors, Nyquist/aliasing; potentiometer</td>
+<td>Lab Log: histogram + effective LSBs</td>
+</tr>
+<tr>
+<td>13</td>
+<td><strong>M3</strong></td>
+<td>Filtering + telemetry: moving average/IIR; ADC→UART streaming; PWM→RC DAC</td>
+<td>Lab Log: PC captures + aliasing/filtering analysis; waveform + log</td>
+</tr>
+<tr>
+<td>14</td>
+<td><strong>M3</strong></td>
+<td>Analog sensors (LDR/NTC/Hall): linearization</td>
+<td>Lab Log: sensor curve + equation</td>
+</tr>
+<tr>
+<td>15</td>
+<td><strong>M4</strong></td>
+<td>Intro to PIO: architecture, instructions, side-set — <strong>Exam 2 spec released</strong></td>
+<td>Lab Log: sub-cycle jitter evidence</td>
+</tr>
+<tr>
+<td>16</td>
+<td><strong>M4</strong></td>
+<td>PIO as generator (WS2812/pulse trains) &amp; capturer (quadrature/pulse width)</td>
+<td>Lab Log: timing analysis + real-encoder tests</td>
+</tr>
+<tr>
+<td>17</td>
+<td><strong>M4</strong></td>
+<td><strong>EXAM 2 (practical, take-home): presentation &amp; defense</strong></td>
+<td>Exam 2: code, measurement evidence, oral defense</td>
+</tr>
+<tr>
+<td>18</td>
+<td><strong>M4</strong></td>
+<td>PIO + C: interfacing, PIO IRQs &amp; queues</td>
+<td>Lab Log: minimal driver + demo</td>
+</tr>
+<tr>
+<td>19</td>
+<td><strong>M4</strong></td>
+<td>DMA basics: circular buffer → PWM/PIO (arbitrary waveform)</td>
+<td>Lab Log: waveform + spectrum captures</td>
+</tr>
+<tr>
+<td>20</td>
+<td><strong>M4</strong></td>
+<td>DMA→UART and DMA+PIO</td>
+<td>Lab Log: %CPU with/without DMA + UART throughput</td>
+</tr>
+<tr>
+<td>21</td>
+<td><strong>M5</strong></td>
+<td>Performance: ISR profiling, bus saturation, priorities</td>
+<td>Lab Log: comparative report with tables</td>
+</tr>
+<tr>
+<td>22</td>
+<td><strong>M5</strong></td>
+<td>Robustness: watchdog, brown-out, common failures</td>
+<td>Lab Log: recovery demo + event log</td>
+</tr>
+<tr>
+<td>23</td>
+<td><strong>M5</strong></td>
+<td>Low power: clock gating, sleep, GPIO/timer wake-up; EMC &amp; noise</td>
+<td>Lab Log: current/wake-up tables + before/after noise (RMS)</td>
+</tr>
+<tr>
+<td>24</td>
+<td><strong>M5</strong></td>
+<td>Multicore concurrency on RP2350</td>
+<td>Lab Log: latency &amp; contention measurements</td>
+</tr>
+<tr>
+<td>25</td>
+<td><strong>M5</strong></td>
+<td>Boot &amp; memory: BootROM, IRQ vector, linker, clock tree</td>
+<td>Lab Log: memory map + boot timing</td>
+</tr>
+<tr>
+<td>26</td>
+<td><strong>M5</strong></td>
+<td>Quality &amp; testing: unit tests, asserts, fault injection — <strong>Exam 3 topics released</strong></td>
+<td>Lab Log: test plan with coverage &amp; criteria</td>
+</tr>
+<tr>
+<td>27</td>
+<td><strong>M6</strong></td>
+<td>Final integration; ARENA_MODE; technical inspection &amp; seeding (maze)</td>
+<td>Final test plan + ARENA_MODE binary + signed checklist — <strong>Lab Log deadline</strong></td>
+</tr>
+<tr>
+<td>28</td>
+<td><strong>M6</strong></td>
+<td><strong>EXAM 3 (written, theoretical, in-class)</strong></td>
+<td>Exam 3</td>
+</tr>
+<tr>
+<td>29</td>
+<td><strong>M6</strong></td>
+<td><strong>MICROMOUSE COMPETITION (capstone)</strong></td>
+<td>Results table + penalties/bonuses — <strong>late-submission cutoff</strong></td>
+</tr>
+<tr>
+<td>30</td>
+<td>—</td>
+<td>Grade review &amp; feedback, course closure</td>
+<td>Final grades + feedback</td>
+</tr>
+</tbody>
+</table>
+<h2 id="how-to-submit">How to submit</h2>
+<h3 id="once-at-the-start-of-the-course-due-in-session-2">Once, at the start of the course (due in session 2)</h3>
+<ol>
+<li>On GitHub, open the course template repo → <strong>Use the template</strong> → name it <code>lablog-&lt;studentID&gt;-embedded1</code> (e.g. <code>lablog-190123-embedded1</code>). Public repo.</li>
+<li>Enable GitHub Pages: <em>Settings → Pages → Source: GitHub Actions</em>. The included workflow builds and publishes your site on every push to <code>main</code>.</li>
+<li>Edit <code>docs/index.md</code> with your name, ID, group and board label. Push. Confirm your site loads at <code>https://&lt;user&gt;.github.io/lablog-&lt;id&gt;/</code>.</li>
+<li>Send the repo URL and site URL through the platform. No URL by session 2 = Lab Log entries can't be graded until it exists.</li>
+</ol>
+<h3 id="every-session">Every session</h3>
+<ol>
+<li>Copy <code>docs/sessions/_template.md</code> → <code>docs/sessions/YYYY-MM-DD-sNN.md</code>. Fill in <strong>Prediction before you run anything</strong>.</li>
+<li>Put the session's code in <code>src/sNN_&lt;short_name&gt;/</code> as a buildable Pico project (own <code>CMakeLists.txt</code>). Commit it.</li>
+<li>Do the work. Save captures and photos to <code>docs/images/</code> using the <code>sNN_</code> prefix.</li>
+<li>Finish the entry. Put the commit hash of the code you documented in the front matter (<code>commit:</code>). Push before the <strong>next session starts</strong>.</li>
+<li>Export the entry to PDF (browser → Print → Save as PDF from your Pages site) and upload it to the platform under the corresponding assignment.</li>
+</ol>
+<h3 id="what-counts-as-submitted">What counts as submitted</h3>
+<ul>
+<li>The repo is the evidence: the commit must build, images must exist, and <code>git log</code> dates must be consistent with the entry date. If they aren't, the entry is treated as late.</li>
+<li>Late = after next session start: max grade 8.0 within 7 days, not accepted after (see syllabus).</li>
+</ul>
+<h3 id="checklist-before-you-push">Checklist before you push</h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox"/><span class="task-list-indicator"></span></label> Prediction written with arithmetic, not just a number.</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox"/><span class="task-list-indicator"></span></label> Every number in "Predicted vs measured" points to an evidence file that exists in <code>docs/images/</code>.</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox"/><span class="task-list-indicator"></span></label> Setup photo has the date card in frame.</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox"/><span class="task-list-indicator"></span></label> "What went wrong" has at least one real item.</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox"/><span class="task-list-indicator"></span></label> <code>commit:</code> in the front matter matches the code in <code>src/</code>.</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox"/><span class="task-list-indicator"></span></label> Disclosure filled in (write "none" if none).</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox"/><span class="task-list-indicator"></span></label> Site builds (check the Actions tab is green).</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Be ready to defend it</p>
+<p>Any entry may be discussed in person: expect to explain any line of code, any number, and any capture. Entries you can't explain are graded as if not submitted.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../.." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Home
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../T0/" class="md-footer__link md-footer__link--next" aria-label="Next: Lab log template">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Lab log template
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "search.highlight", "search.suggest", "content.code.copy", "content.code.annotate", "content.tooltips", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
