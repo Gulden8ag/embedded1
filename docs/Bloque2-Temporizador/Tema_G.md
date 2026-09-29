@@ -32,7 +32,7 @@ Power in a load \( R \) is computed as:
 P = \frac{V_{rms}^2}{R}
 \]
 
-⚠️ Note: The formula \( V_{avg} = D \cdot V_{cc} \) holds when the low level = 0V and the high level = \( V_{cc} \).
+
 
 ---
 
